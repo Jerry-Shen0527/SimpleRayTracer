@@ -1,2 +1,3 @@
-# SimpleRayTracer
-Based on https://github.com/RayTracing/raytracing.github.io. Try to learn raytracing fast.
+# Simple Ray Tracer
+Based on [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html). Try to learn raytracing fast.
+

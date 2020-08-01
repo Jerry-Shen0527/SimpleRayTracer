@@ -12,7 +12,7 @@
 books/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
+out/
 # Mono auto generated files
 mono_crash.*
 

@@ -1,15 +1,15 @@
-#include <camera.h>
-#include <dielectric.h>
-
 #include "rtweekend.h"
 
 #include "color.h"
-#include "hittable_list.h"
-#include "sphere.h"
 #include <iostream>
-#include <lambertian.h>
-#include <metal.h>
 #include <thread>
+#include <BRDF/dielectric.h>
+#include <BRDF/lambertian.h>
+#include <BRDF/metal.h>
+#include <Geometry/hittable_list.h>
+#include <Geometry/sphere.h>
+#include <Tools/camera.h>
+#include <AABB/bvh.h>
 
 hittable_list random_scene() {
 	hittable_list world;
@@ -56,7 +56,7 @@ hittable_list random_scene() {
 	auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
 	world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
-	return world;
+	return hittable_list(make_shared<bvh_node>(world, 0, 0));
 }
 
 color ray_color(const ray& r, const hittable& world, int depth) {
@@ -82,8 +82,8 @@ void idx_to_ij(int idx, int& i, int& j, int width)
 	j = idx / width;
 }
 
-constexpr auto aspect_ratio = 16.0 / 10.0;
-constexpr int image_width = 2560;
+constexpr auto aspect_ratio = 3.0 / 2.0;
+constexpr int image_width = 1200;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr  int pixelcount = image_width * image_height;
 
@@ -94,6 +94,8 @@ int main() {
 
 	const int samples_per_pixel = 600;
 	const int max_depth = 50;
+
+	clock_t start, finish;
 
 	//world
 	//hittable_list world;
@@ -120,9 +122,9 @@ int main() {
 	camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
 	// Render
-
 #ifndef _DEBUG
-	int MAX_THREAD = std::thread::hardware_concurrency();
+	int MAX_THREAD = std::thread::hardware_concurrency() - 2;
+	start = clock();
 
 	std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
@@ -183,7 +185,9 @@ int main() {
 	}
 
 #endif
+	finish = clock();
 
+	std::cerr << "time = " << double(finish - start) / CLOCKS_PER_SEC << "s" << std::endl;  //输出时间（单位：ｓ）
 	for (int i = 0; i < pixelcount; ++i)
 	{
 		std::cout << static_cast<int>(image[i].x()) << ' ';

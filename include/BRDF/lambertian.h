@@ -1,5 +1,5 @@
 #pragma once
-#include <hittable.h>
+#include <Geometry/hittable.h>
 #include <ray.h>
 #include <vec3.h>
 

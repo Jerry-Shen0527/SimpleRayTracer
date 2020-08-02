@@ -9,7 +9,9 @@
 #include "AABB.h"
 #include "rtweekend.h"
 
-class bvh_node : public hittable {
+//this serves as a decorator for simple hittable list
+class bvh_node : public hittable
+{
 public:
 	bvh_node();
 
@@ -63,7 +65,7 @@ bvh_node::bvh_node(
 	std::vector<shared_ptr<hittable>>& objects,
 	size_t start, size_t end, double time0, double time1
 ) {
-	int axis = random_int(0, 2);
+	int axis = random_int(0, 2);//select one axis
 	auto comparator = (axis == 0) ? box_x_compare
 		: (axis == 1) ? box_y_compare
 		: box_z_compare;

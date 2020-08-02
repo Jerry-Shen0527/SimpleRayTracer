@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-void write_color(vec3 image[], int i, int j, int width, color pixel_color, int samples_per_pixel) {
+void write_color(unsigned char image[], int i, int j, int width, color pixel_color, int samples_per_pixel) {
 	auto r = pixel_color.x();
 	auto g = pixel_color.y();
 	auto b = pixel_color.z();
@@ -17,9 +17,9 @@ void write_color(vec3 image[], int i, int j, int width, color pixel_color, int s
 	b = sqrt(scale * b);
 
 	// Write the translated [0,255] value of each color component.
-	image[j * width + i].e[0] = 256 * clamp(r, 0.0, 0.999);
-	image[j * width + i].e[1] = 256 * clamp(g, 0.0, 0.999);
-	image[j * width + i].e[2] = 256 * clamp(b, 0.0, 0.999);
+	image[(j) * 3 * width + i * 3 + 0] = static_cast <unsigned char>(256 * clamp(r, 0.0, 0.999));
+	image[(j) * 3 * width + i * 3 + 1] = static_cast <unsigned char>(256 * clamp(g, 0.0, 0.999));
+	image[(j) * 3 * width + i * 3 + 2] = static_cast <unsigned char>(256 * clamp(b, 0.0, 0.999));
 }
 
 #endif

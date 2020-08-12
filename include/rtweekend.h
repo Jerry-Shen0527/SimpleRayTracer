@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <limits>
 #include <memory>
+#include <string>
 // Common Headers
 
 // Usings
@@ -17,7 +18,7 @@ using std::sqrt;
 
 const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
-
+const std::string path = "C:/Users/Jerry/WorkSpace/SimpleRayTracer/resources/";
 // Utility Functions
 
 inline double degrees_to_radians(double degrees) {

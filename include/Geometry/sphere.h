@@ -16,6 +16,8 @@ public:
 	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
 
 	void get_sphere_uv(const vec3& p, double& u, double& v) const;
+	double pdf_value(const point3& o, const vec3& v) const override;
+	vec3 random(const point3& o) const override;
 
 public:
 	point3 center;
@@ -80,6 +82,26 @@ inline void sphere::get_sphere_uv(const vec3& p, double& u, double& v) const
 	auto theta = asin(p.y());
 	u = 1 - (phi + pi) / (2 * pi);
 	v = (theta + pi / 2) / pi;
+}
+
+
+double sphere::pdf_value(const point3& o, const vec3& v) const {
+	hit_record rec;
+	if (!this->hit(ray(o, v), 0.001, infinity, rec))
+		return 0;
+
+	auto cos_theta_max = sqrt(1 - radius * radius / (center - o).length_squared());
+	auto solid_angle = 2 * pi * (1 - cos_theta_max);
+
+	return  1 / solid_angle;
+}
+
+vec3 sphere::random(const point3& o) const {
+	vec3 direction = center - o;
+	auto distance_squared = direction.length_squared();
+	onb uvw;
+	uvw.build_from_w(direction);
+	return uvw.local(random_to_sphere(radius, distance_squared));
 }
 
 #endif

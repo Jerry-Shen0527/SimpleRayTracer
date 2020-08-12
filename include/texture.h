@@ -75,11 +75,11 @@ public:
     image_texture()
         : data(nullptr), width(0), height(0), bytes_per_scanline(0) {}
 
-    image_texture(const char* filename) {
+    image_texture(const std::string& filename) {
         auto components_per_pixel = bytes_per_pixel;
 
         data = stbi_load(
-            filename, &width, &height, &components_per_pixel, components_per_pixel);
+            filename.c_str(), &width, &height, &components_per_pixel, components_per_pixel);
 
         if (!data) {
             std::cerr << "ERROR: Could not load texture image file '" << filename << "'.\n";

@@ -24,8 +24,8 @@
 #include <Worlds.h>
 #include <Tools/stb_image_write.h>
 
-constexpr auto aspect_ratio = 1.0;
-constexpr int image_width = 600;
+constexpr auto aspect_ratio = 1.5;
+constexpr int image_width = 900;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr  int pixelcount = image_width * image_height;
 unsigned char image[pixelcount * 3];
@@ -57,7 +57,7 @@ color ray_color(
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
 	//mixture_pdf p(light_ptr, srec.pdf_ptr);
 
-	mixture_pdf p(light_ptr, srec.pdf_ptr,0.3);
+	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.5);
 
 	ray scattered = ray(rec.p, p.generate(), r.time());
 	auto pdf_val = p.value(scattered.direction());
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 	// Image
 
 	const int max_depth = 50;
-	int samples_per_pixel = 100;
+	int samples_per_pixel = 16;
 
 	clock_t start, finish;
 
@@ -91,6 +91,8 @@ int main(int argc, char** argv) {
 	color background(0, 0, 0);
 
 	switch (0) {
+
+
 	case 1:
 		world = random_scene();
 		background = color(0.70, 0.80, 1.00);
@@ -131,11 +133,10 @@ int main(int argc, char** argv) {
 		lookat = point3(0, 2, 0);
 		vfov = 20.0;
 		break;
-	default:
 
 	case 6:
 		world = cornell_box();
-		samples_per_pixel = 16;
+		samples_per_pixel = 1000;
 		background = color(0, 0, 0);
 		lookfrom = point3(278, 278, -800);
 		lookat = point3(278, 278, 0);
@@ -149,6 +150,7 @@ int main(int argc, char** argv) {
 		lookat = point3(278, 278, 0);
 		vfov = 40.0;
 		break;
+	default:
 
 	case 8:
 		world = final_scene();
@@ -161,9 +163,8 @@ int main(int argc, char** argv) {
 	}
 
 	auto lights = make_shared<hittable_list>();
-	lights->add(make_shared<xz_rect>(213, 343, 227, 332, 554, make_shared<material>()));
+	lights->add(make_shared<xz_rect>(123, 423, 147, 412, 554, make_shared<material>()));
 	//lights->add(make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>()));
-
 	// Camera
 
 	vec3 vup(0, 1, 0);

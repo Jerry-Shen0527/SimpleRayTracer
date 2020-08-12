@@ -11,6 +11,12 @@ void write_color(unsigned char image[], int i, int j, int width, color pixel_col
 	auto b = pixel_color.z();
 
 	auto scale = 1.0 / samples_per_pixel;
+
+	// Replace NaN components with zero. See explanation in Ray Tracing: The Rest of Your Life.
+	if (r != r) r = 0.0;
+	if (g != g) g = 0.0;
+	if (b != b) b = 0.0;
+
 	// Divide the color by the number of samples and gamma-correct for gamma=2.0.
 	r = sqrt(scale * r);
 	g = sqrt(scale * g);

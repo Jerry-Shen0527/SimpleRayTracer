@@ -121,16 +121,19 @@ hittable_list cornell_box() {
 	world.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
 	world.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
-	shared_ptr<material> aluminum = make_shared<metal>(color(0.8, 0.85, 0.88), 0.0);
-	shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), aluminum);
+	//shared_ptr<material> aluminum = make_shared<metal>(color(0.8, 0.85, 0.88), 0.0);
+	shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
 	box1 = make_shared<rotate_y>(box1, 15);
 	box1 = make_shared<translate>(box1, vec3(265, 0, 295));
 	world.add(box1);
 
-	shared_ptr<hittable> box2 = make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
-	box2 = make_shared<rotate_y>(box2, -18);
-	box2 = make_shared<translate>(box2, vec3(130, 0, 65));
-	world.add(box2);
+	//shared_ptr<hittable> box2 = make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
+	//box2 = make_shared<rotate_y>(box2, -18);
+	//box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+	//world.add(box2);
+	shared_ptr<material> glass = make_shared<dielectric>(1.5);
+	shared_ptr<hittable> glass_sphere = make_shared<sphere>(point3(190, 90, 190), 90.0, glass);
+	world.add(glass_sphere);
 
 	return world;
 }
@@ -188,7 +191,7 @@ hittable_list final_scene() {
 	objects.add(make_shared<bvh_node>(boxes1, 0, 1));
 
 	auto light = make_shared<diffuse_light>(color(7, 7, 7));
-	objects.add(make_shared<xz_rect>(123, 423, 147, 412, 554, light));
+	objects.add(make_shared<flip_face>(make_shared<xz_rect>(123, 423, 147, 412, 554, light)));
 
 	auto center1 = point3(400, 400, 200);
 	auto center2 = center1 + vec3(30, 0, 0);
@@ -206,7 +209,7 @@ hittable_list final_scene() {
 	boundary = make_shared<sphere>(point3(0, 0, 0), 5000, make_shared<dielectric>(1.5));
 	objects.add(make_shared<constant_medium>(boundary, .0001, color(1, 1, 1)));
 
-	auto emat = make_shared<lambertian>(make_shared<image_texture>("earthmap.jpg"));
+	auto emat = make_shared<lambertian>(make_shared<image_texture>(path + "earthmap.jpg"));
 	objects.add(make_shared<sphere>(point3(400, 200, 400), 100, emat));
 	auto pertext = make_shared<noise_texture>(0.1);
 	objects.add(make_shared<sphere>(point3(220, 280, 300), 80, make_shared<lambertian>(pertext)));

@@ -10,10 +10,10 @@ public:
 	isotropic(shared_ptr<texture> a) : albedo(a) {}
 
 	virtual bool scatter(
-		const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
+		const ray& r_in, const hit_record& rec, scatter_record& srec
 	) const override {
-		scattered = ray(rec.p, random_in_unit_sphere(), r_in.time());
-		attenuation = albedo->value(rec.u, rec.v, rec.p);
+		srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
+		srec.is_specular = false;
 		return true;
 	}
 

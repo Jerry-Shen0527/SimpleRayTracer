@@ -2,21 +2,36 @@
 #define MATERIAL_H
 
 #include <ray.h>
-#include <Geometry/hittable.h>
-#include <Geometry/hittable.h>
+
+class pdf;
 
 struct hit_record;
-
+struct scatter_record {
+	ray specular_ray;
+	bool is_specular;
+	color attenuation;
+	shared_ptr<pdf> pdf_ptr;
+};
 class material {
 public:
-	virtual color emitted(double u, double v, const point3& p) const {
+
+	virtual color emitted(
+		const ray& r_in, const hit_record& rec, double u, double v, const point3& p
+	) const {
 		return color(0, 0, 0);
 	}
+
 	virtual bool scatter(
-		const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
-	) const = 0;
+		const ray& r_in, const hit_record& rec, scatter_record& srec
+	) const {
+		return false;
+	}
+
+	virtual double scattering_pdf(
+		const ray& r_in, const hit_record& rec, const ray& scattered
+	) const {
+		return 0;
+	}
 };
-
-
 
 #endif

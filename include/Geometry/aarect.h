@@ -62,6 +62,23 @@ public:
 		return true;
 	}
 
+	virtual double pdf_value(const point3& origin, const vec3& v) const override {
+		hit_record rec;
+		if (!this->hit(ray(origin, v), 0.001, infinity, rec))
+			return 0;
+
+		auto area = (x1 - x0) * (z1 - z0);
+		auto distance_squared = rec.t * rec.t * v.length_squared();
+		auto cosine = fabs(dot(v, rec.normal) / v.length());
+
+		return distance_squared / (cosine * area);
+	}
+
+	virtual vec3 random(const point3& origin) const override {
+		auto random_point = point3(random_double(x0, x1), k, random_double(z0, z1));
+		return random_point - origin;
+	}
+	
 public:
 	shared_ptr<material> mp;
 	double x0, x1, z0, z1, k;
@@ -124,5 +141,27 @@ bool yz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 	rec.p = r.at(t);
 	return true;
 }
+
+class flip_face : public hittable {
+public:
+	flip_face(shared_ptr<hittable> p) : ptr(p) {}
+
+	virtual bool hit(
+		const ray& r, double t_min, double t_max, hit_record& rec) const override {
+
+		if (!ptr->hit(r, t_min, t_max, rec))
+			return false;
+
+		rec.front_face = !rec.front_face;
+		return true;
+	}
+
+	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override {
+		return ptr->bounding_box(t0, t1, output_box);
+	}
+
+public:
+	shared_ptr<hittable> ptr;
+};
 
 #endif

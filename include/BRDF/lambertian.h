@@ -3,6 +3,7 @@
 #include <ray.h>
 #include <texture.h>
 #include <vec3.h>
+#include <Tools/pdf.h>
 
 class lambertian : public material {
 public:
@@ -11,14 +12,18 @@ public:
 	lambertian(shared_ptr<texture> a) : albedo(a) {}
 
 	virtual bool scatter(
-		const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
+		const ray& r_in, const hit_record& rec, scatter_record& srec
 	) const override {
-		vec3 scatter_direction = rec.normal + random_unit_vector();
-		scattered = ray(rec.p, scatter_direction, r_in.time());
-
-		attenuation = albedo->value(rec.u, rec.v, rec.p);
-
+		srec.is_specular = false;
+		srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
+		srec.pdf_ptr = make_shared< cosine_pdf>(rec.normal);
 		return true;
+	}
+
+	double scattering_pdf(const ray& r_in, const hit_record& rec, const ray& scattered) const override
+	{
+		auto cosine = dot(rec.normal, unit_vector(scattered.direction()));
+		return cosine < 0 ? 0 : cosine / pi;
 	}
 
 public:

@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
 
 	case 8:
 		world = final_scene();
-		samples_per_pixel = 8;
+		samples_per_pixel = 128;
 		background = color(0, 0, 0);
 		lookfrom = point3(478, 278, -600);
 		lookat = point3(278, 278, 0);
@@ -164,6 +164,10 @@ int main(int argc, char** argv) {
 
 	auto lights = make_shared<hittable_list>();
 	lights->add(make_shared<xz_rect>(123, 423, 147, 412, 554, make_shared<material>()));
+	lights->add(make_shared<sphere>(point3(260, 150, 45), 50, make_shared<dielectric>(1.5)));
+	lights->add(make_shared<sphere>(
+		point3(0, 150, 145), 50, make_shared<metal>(color(0.8, 0.8, 0.9), 10.0)
+		));
 	//lights->add(make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>()));
 	// Camera
 

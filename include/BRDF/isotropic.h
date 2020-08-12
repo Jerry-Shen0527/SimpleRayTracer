@@ -13,7 +13,8 @@ public:
 		const ray& r_in, const hit_record& rec, scatter_record& srec
 	) const override {
 		srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
-		srec.is_specular = false;
+		srec.specular_ray = ray(rec.p, random_in_unit_sphere(), r_in.time());
+		srec.is_specular = true;
 		return true;
 	}
 

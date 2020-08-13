@@ -57,7 +57,7 @@ color ray_color(
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
 	//mixture_pdf p(light_ptr, srec.pdf_ptr);
 
-	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.6);
+	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.1);
 
 	ray scattered = ray(rec.p, p.generate(), r.time());
 	auto pdf_val = p.value(scattered.direction());
@@ -131,6 +131,8 @@ int main(int argc, char** argv) {
 		lookat = point3(0, 2, 0);
 		vfov = 20.0;
 		break;
+	default:
+
 	case 6:
 		world = cornell_box();
 		samples_per_pixel = 16;
@@ -147,16 +149,24 @@ int main(int argc, char** argv) {
 		lookat = point3(278, 278, 0);
 		vfov = 40.0;
 		break;
-	default:
 
 	case 8:
 		world = final_scene();
-		samples_per_pixel = 16;
+		samples_per_pixel = 512;
 		background = color(0, 0, 0);
 		lookfrom = point3(478, 278, -600);
 		lookat = point3(278, 278, 0);
 		vfov = 40.0;
 		break;
+	}
+
+	if (argc < 2)
+	{
+		std::cerr << "Usage: main.exe filename <spp>" << std::endl;
+	}
+	if (argc == 3)
+	{
+		samples_per_pixel = stoi(std::string(argv[2]));
 	}
 
 	auto lights = make_shared<hittable_list>(world);
@@ -201,7 +211,7 @@ int main(int argc, char** argv) {
 						std::cerr << " ";
 					}
 				}
-				std::cerr << double(j) / image_height * 100 << '%' << "]" << std::flush;
+				std::cerr << int(double(j) / image_height * 100) << '%' << "]" << std::flush;
 			}
 			old_j = j;
 			color pixel_color(0, 0, 0);

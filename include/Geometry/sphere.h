@@ -7,8 +7,10 @@
 class sphere : public hittable {
 public:
 	sphere() {}
-	sphere(point3 cen, double r, shared_ptr<material> m)
-		: center(cen), radius(r), mat_ptr(m) {};
+	sphere(point3 cen, double r, shared_ptr<material> m, bool pdf = false)
+		: center(cen), radius(r), mat_ptr(m) {
+		pdf_enabled = pdf;
+	}
 
 	virtual bool hit(
 		const ray& r, double tmin, double tmax, hit_record& rec) const override;
@@ -20,6 +22,7 @@ public:
 	vec3 random(const point3& o) const override;
 
 public:
+
 	point3 center;
 	double radius;
 	shared_ptr<material> mat_ptr;
@@ -83,7 +86,6 @@ inline void sphere::get_sphere_uv(const vec3& p, double& u, double& v) const
 	u = 1 - (phi + pi) / (2 * pi);
 	v = (theta + pi / 2) / pi;
 }
-
 
 double sphere::pdf_value(const point3& o, const vec3& v) const {
 	hit_record rec;

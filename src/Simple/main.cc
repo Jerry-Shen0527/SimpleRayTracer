@@ -24,8 +24,8 @@
 #include <Worlds.h>
 #include <Tools/stb_image_write.h>
 
-constexpr auto aspect_ratio = 1.5;
-constexpr int image_width = 900;
+constexpr auto aspect_ratio = 1.0;
+constexpr int image_width = 800;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr  int pixelcount = image_width * image_height;
 unsigned char image[pixelcount * 3];
@@ -57,7 +57,7 @@ color ray_color(
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
 	//mixture_pdf p(light_ptr, srec.pdf_ptr);
 
-	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.5);
+	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.6);
 
 	ray scattered = ray(rec.p, p.generate(), r.time());
 	auto pdf_val = p.value(scattered.direction());
@@ -91,8 +91,6 @@ int main(int argc, char** argv) {
 	color background(0, 0, 0);
 
 	switch (0) {
-
-
 	case 1:
 		world = random_scene();
 		background = color(0.70, 0.80, 1.00);
@@ -133,10 +131,9 @@ int main(int argc, char** argv) {
 		lookat = point3(0, 2, 0);
 		vfov = 20.0;
 		break;
-
 	case 6:
 		world = cornell_box();
-		samples_per_pixel = 1000;
+		samples_per_pixel = 16;
 		background = color(0, 0, 0);
 		lookfrom = point3(278, 278, -800);
 		lookat = point3(278, 278, 0);
@@ -154,7 +151,7 @@ int main(int argc, char** argv) {
 
 	case 8:
 		world = final_scene();
-		samples_per_pixel = 128;
+		samples_per_pixel = 16;
 		background = color(0, 0, 0);
 		lookfrom = point3(478, 278, -600);
 		lookat = point3(278, 278, 0);
@@ -162,13 +159,12 @@ int main(int argc, char** argv) {
 		break;
 	}
 
-	auto lights = make_shared<hittable_list>();
-	lights->add(make_shared<xz_rect>(123, 423, 147, 412, 554, make_shared<material>()));
-	lights->add(make_shared<sphere>(point3(260, 150, 45), 50, make_shared<dielectric>(1.5)));
-	lights->add(make_shared<sphere>(
-		point3(0, 150, 145), 50, make_shared<metal>(color(0.8, 0.8, 0.9), 10.0)
-		));
-	//lights->add(make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>()));
+	auto lights = make_shared<hittable_list>(world);
+	//lights->add(make_shared<xz_rect>(123, 423, 147, 412, 554, make_shared<material>()));
+	//lights->add(make_shared<sphere>(point3(260, 150, 45), 50, make_shared<dielectric>(1.5)));
+	//lights->add(make_shared<sphere>(
+	//	point3(0, 150, 145), 50, make_shared<metal>(color(0.8, 0.8, 0.9), 10.0)
+	//	));
 	// Camera
 
 	vec3 vup(0, 1, 0);
@@ -247,7 +243,7 @@ int main(int argc, char** argv) {
 			auto v = (j + random_double()) / (image_height - 1);
 			ray r = cam.get_ray(u, 1 - v);
 			pixel_color += ray_color(r, background, world, lights, max_depth);
-		}
+}
 		write_color(image, i, j, image_width, pixel_color, samples_per_pixel);
 		old_j = j;
 	}
@@ -269,4 +265,4 @@ int main(int argc, char** argv) {
 	stbi_write_png((std::string(argv[1]) + " " + std::to_string(sys.wMonth) + "_" + std::to_string(sys.wDay) + " " + std::to_string(sys.wHour) + "_" + std::to_string(sys.wMinute) + "_" + std::to_string(sys.wSecond) + ".png").c_str(), image_width, image_height, 3, image, 0);
 
 	std::cerr << "\nDone.\n";
-}
+	}

@@ -50,8 +50,10 @@ public:
 	xz_rect() {}
 
 	xz_rect(double _x0, double _x1, double _z0, double _z1, double _k,
-		shared_ptr<material> mat)
-		: x0(_x0), x1(_x1), z0(_z0), z1(_z1), k(_k), mp(mat) {};
+		shared_ptr<material> mat, bool pdf_ = false)
+		: x0(_x0), x1(_x1), z0(_z0), z1(_z1), k(_k), mp(mat) {
+		pdf_enabled = pdf_;
+	}
 
 	virtual bool hit(const ray& r, double t0, double t1, hit_record& rec) const override;
 
@@ -78,7 +80,7 @@ public:
 		auto random_point = point3(random_double(x0, x1), k, random_double(z0, z1));
 		return random_point - origin;
 	}
-	
+
 public:
 	shared_ptr<material> mp;
 	double x0, x1, z0, z1, k;
@@ -148,7 +150,6 @@ public:
 
 	virtual bool hit(
 		const ray& r, double t_min, double t_max, hit_record& rec) const override {
-
 		if (!ptr->hit(r, t_min, t_max, rec))
 			return false;
 
@@ -160,8 +161,27 @@ public:
 		return ptr->bounding_box(t0, t1, output_box);
 	}
 
-public:
+	bool get_pdf_enabled() override;
+
+	double pdf_value(const point3& o, const vec3& v) const override;
+	vec3 random(const vec3& o) const override;
+
 	shared_ptr<hittable> ptr;
 };
+
+inline bool flip_face::get_pdf_enabled()
+{
+	return ptr->get_pdf_enabled();
+}
+
+inline double flip_face::pdf_value(const point3& o, const vec3& v) const
+{
+	return ptr->pdf_value(o, v);
+}
+
+inline vec3 flip_face::random(const vec3& o) const
+{
+	return ptr->random(o);
+}
 
 #endif

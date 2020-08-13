@@ -116,7 +116,7 @@ hittable_list cornell_box() {
 
 	world.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
 	world.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
-	world.add(make_shared<flip_face>(make_shared<xz_rect>(213, 343, 227, 332, 554, light)));
+	world.add(make_shared<flip_face>(make_shared<xz_rect>(213, 343, 227, 332, 554, light, true)));
 	world.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
 	world.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
 	world.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
@@ -191,7 +191,7 @@ hittable_list final_scene() {
 	objects.add(make_shared<bvh_node>(boxes1, 0, 1));
 
 	auto light = make_shared<diffuse_light>(color(7, 7, 7));
-	objects.add(make_shared<flip_face>(make_shared<xz_rect>(123, 423, 147, 412, 554, light)));
+	objects.add(make_shared<flip_face>(make_shared<xz_rect>(123, 423, 147, 412, 554, light,true)));
 
 	auto center1 = point3(400, 400, 200);
 	auto center2 = center1 + vec3(30, 0, 0);

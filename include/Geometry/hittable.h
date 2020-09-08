@@ -1,7 +1,7 @@
 #pragma once
 
-#include <BRDF/material.h>
 #include <AABB/AABB.h>
+#include <BRDF/material.h>
 
 struct hit_record {
 	point3 p;
@@ -10,7 +10,7 @@ struct hit_record {
 	double v;
 	double t;
 	bool front_face;
-	shared_ptr<material> mat_ptr;
+	std::shared_ptr<material> mat_ptr;
 	inline void set_face_normal(const ray& r, const vec3& outward_normal) {
 		front_face = dot(r.direction(), outward_normal) < 0;
 		normal = front_face ? outward_normal : -outward_normal;

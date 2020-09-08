@@ -1,12 +1,9 @@
-#include "rtweekend.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <ctime>
 #include <thread>
 #include <Windows.h>
-#include <Tools/stb_image_write.h>
 
-#include "pdf/hittable_pdf.h"
-#include "Scene/WorldFactory.h"
+
+#include <Tools/Files/FIileWrite.h>
 
 constexpr auto aspect_ratio = 9.0 / 9.0;
 constexpr int image_width = 1024;

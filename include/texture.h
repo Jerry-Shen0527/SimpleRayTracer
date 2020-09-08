@@ -6,7 +6,6 @@
 #include <Tools/rtw_stb_image.h>
 
 
-#include "rtweekend.h"
 
 class texture {
 public:

@@ -1,6 +1,5 @@
 #ifndef PERLIN_H
 #define PERLIN_H
-#include <rtweekend.h>
 
 inline double trilinear_interp(double c[2][2][2], double u, double v, double w) {
 	auto accum = 0.0;

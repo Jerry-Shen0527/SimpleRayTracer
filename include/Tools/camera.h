@@ -3,7 +3,6 @@
 
 #include <ray.h>
 
-#include "rtweekend.h"
 
 inline vec3 random_in_unit_disk() {
 	while (true) {

@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdlib>
-#include <vec3.h>
 
 inline double random_double() {
 	// Returns a random real in [0,1).

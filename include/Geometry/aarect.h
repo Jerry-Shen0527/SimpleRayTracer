@@ -3,7 +3,6 @@
 #include <AABB/AABB.h>
 #include <BRDF/material.h>
 
-#include "hittable.h"
 
 class xy_rect : public hittable {
 public:

@@ -2,6 +2,7 @@
 #include <AABB/bvh.h>
 #include <BRDF/BRDF.h>
 #include <Geometry/Geometry.h>
+#include <common.h>
 
 hittable_list random_scene() {
 	hittable_list world;

@@ -1,6 +1,6 @@
 #pragma once
 #include <Tools/onb.h>
-#include <Geometry/hittable.h>
+#include <common.h>
 
 class pdf {
 public:

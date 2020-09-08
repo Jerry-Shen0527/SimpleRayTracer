@@ -2,14 +2,15 @@
 #define MATERIAL_H
 
 #include "ray.h"
-#include "pdf/pdf.h"
 
+
+class pdf;
 struct hit_record;
 struct scatter_record {
 	ray specular_ray;
 	bool is_specular;
 	color attenuation;
-	shared_ptr<pdf> pdf_ptr;
+	std::shared_ptr<pdf> pdf_ptr;
 };
 class material {
 public:

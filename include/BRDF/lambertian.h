@@ -1,9 +1,4 @@
 #pragma once
-#include <Geometry/hittable.h>
-#include <ray.h>
-#include <texture.h>
-#include <vec3.h>
-#include <Tools/pdf.h>
 
 class lambertian : public material {
 public:

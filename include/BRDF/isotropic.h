@@ -2,7 +2,6 @@
 
 #include <ray.h>
 #include <texture.h>
-#include <Geometry/hittable.h>
 
 class isotropic : public material {
 public:

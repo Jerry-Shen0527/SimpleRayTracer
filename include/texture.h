@@ -1,7 +1,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <color.h>
 #include <Tools/perlin.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <Tools/rtw_stb_image.h>

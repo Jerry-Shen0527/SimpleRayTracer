@@ -1,9 +1,8 @@
 #pragma once
 
 #include <ray.h>
-#include <Geometry/hittable.h>
 
-#include "metal.h"
+#include <BRDF/metal.h>
 
 vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
 	auto cos_theta = dot(-uv, n);

@@ -1,7 +1,6 @@
 #pragma once
 #include <Geometry/hittable.h>
 #include <ray.h>
-#include <vec3.h>
 
 vec3 reflect(const vec3& v, const vec3& n) {
 	return v - 2 * dot(v, n) * n;

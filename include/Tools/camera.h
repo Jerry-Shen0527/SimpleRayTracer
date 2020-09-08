@@ -16,6 +16,8 @@ inline vec3 random_in_unit_disk() {
 class camera {
 public:
 
+	camera() {}
+
 	camera(
 		point3 lookfrom,
 		point3 lookat,

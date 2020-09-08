@@ -1,8 +1,6 @@
 #pragma once
+#include "texture.h"
 
-#include <ray.h>
-#include <texture.h>
-#include <Geometry/hittable.h>
 
 class diffuse_light : public material {
 public:

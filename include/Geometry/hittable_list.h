@@ -1,10 +1,9 @@
 #ifndef HITTABLE_LIST_H
 #define HITTABLE_LIST_H
-
-#include "hittable.h"
-
 #include <memory>
 #include <vector>
+
+#include "hittable.h"
 
 using std::shared_ptr;
 using std::make_shared;
@@ -81,6 +80,5 @@ vec3 hittable_list::random(const vec3& o) const {
 	auto int_size = static_cast<int>(pdf_objects.size());
 	return pdf_objects[random_int(0, int_size - 1)]->random(o);
 }
-
 
 #endif

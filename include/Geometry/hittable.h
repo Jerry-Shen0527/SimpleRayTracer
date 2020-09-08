@@ -1,10 +1,7 @@
-#ifndef HITTABLE_H
-#define HITTABLE_H
+#pragma once
 
-#include <AABB/AABB.h>
 #include <BRDF/material.h>
-
-class hittable_pdf;
+#include <AABB/AABB.h>
 
 struct hit_record {
 	point3 p;
@@ -48,5 +45,3 @@ inline bool hittable::get_pdf_enabled()
 {
 	return pdf_enabled;
 }
-
-#endif

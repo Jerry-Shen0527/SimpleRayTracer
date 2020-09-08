@@ -1,13 +1,11 @@
 #ifndef BVH_H
 #define BVH_H
 
+#include <AABB/AABB.h>
 #include <algorithm>
 #include <vector>
-#include <Geometry/hittable.h>
 #include <Geometry/hittable_list.h>
 
-#include "AABB.h"
-#include "rtweekend.h"
 
 //this serves as a decorator for simple hittable list
 class bvh_node : public hittable
@@ -42,7 +40,7 @@ bool bvh_node::bounding_box(double t0, double t1, aabb& output_box) const {
 inline bool box_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis) {
 	aabb box_a;
 	aabb box_b;
-
+#undef min
 	if (!a->bounding_box(0, 0, box_a) || !b->bounding_box(0, 0, box_b))
 		std::cerr << "No bounding box in bvh_node constructor.\n";
 

@@ -1,31 +1,15 @@
 #include "rtweekend.h"
-
-#include "color.h"
-#include <iostream>
-#include <thread>
-#include <BRDF/dielectric.h>
-#include <BRDF/lambertian.h>
-#include <BRDF/metal.h>
-#include <Geometry/hittable_list.h>
-#include <Geometry/sphere.h>
-#include <Tools/camera.h>
-#include <AABB/bvh.h>
-#include <windows.h>
-#include <Geometry/MovingSphere.h>
-
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <string>
-#include <BRDF/diffuse_light.h>
-#include <Geometry/aarect.h>
-#include <Geometry/box.h>
-#include <Geometry/constant_medium.h>
-#include <Geometry/translation.h>
-#include <Tools/pdf.h>
-#include <Worlds.h>
+#include <ctime>
+#include <thread>
+#include <Windows.h>
 #include <Tools/stb_image_write.h>
 
-constexpr auto aspect_ratio = 1.0;
-constexpr int image_width = 800;
+#include "pdf/hittable_pdf.h"
+#include "Scene/WorldFactory.h"
+
+constexpr auto aspect_ratio = 9.0 / 9.0;
+constexpr int image_width = 1024;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 constexpr  int pixelcount = image_width * image_height;
 unsigned char image[pixelcount * 3];
@@ -57,7 +41,7 @@ color ray_color(
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
 	//mixture_pdf p(light_ptr, srec.pdf_ptr);
 
-	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.1);
+	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
 	ray scattered = ray(rec.p, p.generate(), r.time());
 	auto pdf_val = p.value(scattered.direction());
@@ -66,12 +50,6 @@ color ray_color(
 		* rec.mat_ptr->scattering_pdf(r, rec, scattered)
 		* ray_color(scattered, background, world, lights, depth - 1)
 		/ pdf_val;
-}
-
-void idx_to_ij(int idx, int& i, int& j, int width)
-{
-	i = idx % width;
-	j = idx / width;
 }
 
 int main(int argc, char** argv) {
@@ -84,81 +62,11 @@ int main(int argc, char** argv) {
 
 	//World
 	hittable_list world;
-	point3 lookfrom;
-	point3 lookat;
-	auto vfov = 40.0;
-	auto aperture = 0.0;
-	color background(0, 0, 0);
+	camera cam;
+	WorldFactory world_factory;
+	color background;
 
-	switch (0) {
-	case 1:
-		world = random_scene();
-		background = color(0.70, 0.80, 1.00);
-		lookfrom = point3(13, 2, 3);
-		lookat = point3(0, 0, 0);
-		vfov = 20.0;
-		aperture = 0.1;
-		break;
-
-	case 2:
-		world = two_spheres();
-		background = color(0.70, 0.80, 1.00);
-		lookfrom = point3(13, 2, 3);
-		lookat = point3(0, 0, 0);
-		vfov = 20.0;
-		break;
-		//default:
-	case 3:
-		world = two_perlin_spheres();
-		background = color(0.70, 0.80, 1.00);
-		lookfrom = point3(13, 2, 3);
-		lookat = point3(0, 0, 0);
-		vfov = 20.0;
-		break;
-
-	case 4:
-		world = earth();
-		background = color(0.70, 0.80, 1.00);
-		lookfrom = point3(13, 2, 3);
-		lookat = point3(0, 0, 0);
-		vfov = 20.0;
-		break;
-
-	case 5:
-		world = simple_light();
-		background = color(0, 0, 0);
-		lookfrom = point3(26, 3, 6);
-		lookat = point3(0, 2, 0);
-		vfov = 20.0;
-		break;
-	default:
-
-	case 6:
-		world = cornell_box();
-		samples_per_pixel = 16;
-		background = color(0, 0, 0);
-		lookfrom = point3(278, 278, -800);
-		lookat = point3(278, 278, 0);
-		vfov = 40.0;
-		break;
-
-	case 7:
-		world = cornell_smoke();
-		samples_per_pixel = 1024;
-		lookfrom = point3(278, 278, -800);
-		lookat = point3(278, 278, 0);
-		vfov = 40.0;
-		break;
-
-	case 8:
-		world = final_scene();
-		samples_per_pixel = 512;
-		background = color(0, 0, 0);
-		lookfrom = point3(478, 278, -600);
-		lookat = point3(278, 278, 0);
-		vfov = 40.0;
-		break;
-	}
+	world_factory.get_world(6, aspect_ratio, world, cam, background);
 
 	if (argc < 2)
 	{
@@ -170,17 +78,6 @@ int main(int argc, char** argv) {
 	}
 
 	auto lights = make_shared<hittable_list>(world);
-	//lights->add(make_shared<xz_rect>(123, 423, 147, 412, 554, make_shared<material>()));
-	//lights->add(make_shared<sphere>(point3(260, 150, 45), 50, make_shared<dielectric>(1.5)));
-	//lights->add(make_shared<sphere>(
-	//	point3(0, 150, 145), 50, make_shared<metal>(color(0.8, 0.8, 0.9), 10.0)
-	//	));
-	// Camera
-
-	vec3 vup(0, 1, 0);
-	auto dist_to_focus = 10.0;
-
-	camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0, 1.0);
 
 	// Render
 #ifndef _DEBUG
@@ -253,7 +150,7 @@ int main(int argc, char** argv) {
 			auto v = (j + random_double()) / (image_height - 1);
 			ray r = cam.get_ray(u, 1 - v);
 			pixel_color += ray_color(r, background, world, lights, max_depth);
-}
+		}
 		write_color(image, i, j, image_width, pixel_color, samples_per_pixel);
 		old_j = j;
 	}

@@ -3,7 +3,9 @@
 
 #include <ray.h>
 
-#include "rtweekend.h"
+#undef min
+#undef max
+#undef small
 
 class aabb {
 public:

@@ -1,14 +1,7 @@
 #pragma once
-#include <color.h>
 #include <AABB/bvh.h>
-#include <BRDF/dielectric.h>
-#include <BRDF/diffuse_light.h>
-#include <BRDF/lambertian.h>
-#include <BRDF/metal.h>
-#include <Geometry/box.h>
-#include <Geometry/constant_medium.h>
-#include <Geometry/sphere.h>
-#include <Geometry/translation.h>
+#include <BRDF/BRDF.h>
+#include <Geometry/Geometry.h>
 
 hittable_list random_scene() {
 	hittable_list world;

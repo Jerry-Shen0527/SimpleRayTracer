@@ -1,9 +1,8 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include <ray.h>
-
-class pdf;
+#include "ray.h"
+#include "pdf/pdf.h"
 
 struct hit_record;
 struct scatter_record {
@@ -14,6 +13,7 @@ struct scatter_record {
 };
 class material {
 public:
+	virtual ~material() = default;
 
 	virtual color emitted(
 		const ray& r_in, const hit_record& rec, double u, double v, const point3& p

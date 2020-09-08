@@ -1,9 +1,6 @@
 #pragma once
 #include <AABB/AABB.h>
 
-#include "hittable.h"
-#include <vec3.h>
-
 #undef min
 #undef max
 

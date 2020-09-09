@@ -14,6 +14,7 @@ books/
 *.userprefs
 out/
 build/
+lib/
 # Mono auto generated files
 mono_crash.*
 

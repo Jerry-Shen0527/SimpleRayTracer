@@ -1,4 +1,5 @@
 #pragma once
+
 #include <AABB/bvh.h>
 #include <BRDF/BRDF.h>
 #include <Geometry/Geometry.h>

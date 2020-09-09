@@ -7,7 +7,7 @@
 #include <Tools/Files/FileWrite.h>
 
 constexpr auto aspect_ratio = 1.0;
-constexpr int image_width = 1024;
+constexpr int image_width = 1000;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 
 int main(int argc, char** argv) {
@@ -44,6 +44,7 @@ int main(int argc, char** argv) {
 
 	finish = clock();
 
+	//film_to_file("out", film);
 	film_to_file(std::string(argv[1]), film);
 
 	std::cerr << "time = " << double(finish - start) / CLOCKS_PER_SEC << "s" << std::endl;  //输出时间（单位：ｓ）

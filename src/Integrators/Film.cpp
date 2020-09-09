@@ -1,4 +1,4 @@
-#include <Tools/Film.h>
+#include <Integrators/Film.h>
 
 void Film::write_color(int i, int j, color pixel_color, int samples_per_pixel)
 {

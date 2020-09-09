@@ -1,1 +1,5 @@
-aux_source_directory(. simple_src)
+aux_source_directory(. integrator_src)
+add_library(Integrator STATIC ${integrator_src})
+include_directories(${PROJECT_SOURCE_DIR}/include)
+link_directories(Integrator ${PROJECT_SOURCE_DIR}/lib)
+target_link_libraries(Integrator Geometry)

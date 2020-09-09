@@ -1,10 +1,11 @@
 #include <thread>
 #include <Integrators/SimpleIntegrator.h>
+#include <pdf/hittable_pdf.h>
+#include <BRDF/BRDF.h>
 
-#include "pdf/hittable_pdf.h"
 #include "Tools/camera.h"
 
-void SimpleIntegrator::integrate(camera& cam, Film& film, hittable_list& world,color background)
+void SimpleIntegrator::integrate(camera& cam, Film& film, hittable_list& world, color background)
 {
 	auto lights = make_shared<hittable_list>(world);
 
@@ -13,7 +14,7 @@ void SimpleIntegrator::integrate(camera& cam, Film& film, hittable_list& world,c
 
 	//std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-	auto worker = [MAX_THREAD, &world, max_depth, &cam, background, &lights, &film, this](int arg)
+	auto worker = [MAX_THREAD, &world, &cam, background, &lights, &film, this](int arg)
 	{
 		int i, j, old_j;
 
@@ -86,7 +87,7 @@ void SimpleIntegrator::integrate(camera& cam, Film& film, hittable_list& world,c
 }
 
 color SimpleIntegrator::ray_color(const ray& r, const color& background, const hittable& world,
-	shared_ptr<hittable> lights, int depth)
+                                  std::shared_ptr<hittable> lights, int depth)
 {
 	hit_record rec;
 

@@ -1,7 +1,7 @@
 #ifndef MOVING_SPHERE_H
 #define MOVING_SPHERE_H
 
-#include <Geometry/hittable.h>
+#include "hittable.h"
 
 class moving_sphere : public hittable {
 public:
@@ -23,7 +23,7 @@ public:
 	shared_ptr<material> mat_ptr;
 };
 
-point3 moving_sphere::center(double time) const {
+inline point3 moving_sphere::center(double time) const {
 	return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0);
 }
 

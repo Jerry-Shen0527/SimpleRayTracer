@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <Geometry/bvh.h>
+#include <Geometry/hittable_list.h>
 
+aabb surrounding_box(aabb box0, aabb box1);
+using std::shared_ptr;
 bool bvh_node::bounding_box(double t0, double t1, aabb& output_box) const {
 	output_box = box;
 	return true;
@@ -81,6 +84,10 @@ bvh_node::bvh_node(
 
 	box = surrounding_box(box_left, box_right);
 }
+
+bvh_node::bvh_node(hittable_list& list, double time0, double time1) : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
+{}
+
 
 bool bvh_node::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
 	if (!box.hit(r, t_min, t_max))

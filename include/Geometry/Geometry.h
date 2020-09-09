@@ -1,7 +1,7 @@
 #pragma once
-#include <Geometry/aarect.h>
-#include <Geometry/box.h>
-#include <Geometry/constant_medium.h>
-#include <Geometry/MovingSphere.h>
-#include <Geometry/sphere.h>
-#include <Geometry/translation.h>
+
+#include <texture.h>
+#include "box.h"
+#include "MovingSphere.h"
+#include "sphere.h"
+#include "translation.h"

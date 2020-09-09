@@ -6,7 +6,7 @@
 class isotropic : public material {
 public:
 	isotropic(color c) : albedo(make_shared<solid_color>(c)) {}
-	isotropic(shared_ptr<texture> a) : albedo(a) {}
+	isotropic(std::shared_ptr<texture> a) : albedo(a) {}
 
 	virtual bool scatter(
 		const ray& r_in, const hit_record& rec, scatter_record& srec
@@ -18,5 +18,5 @@ public:
 	}
 
 public:
-	shared_ptr<texture> albedo;
+	std::shared_ptr<texture> albedo;
 };

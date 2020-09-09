@@ -18,6 +18,14 @@ bool xy_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 	return true;
 }
 
+bool xy_rect::bounding_box(double t0, double t1, aabb& output_box) const
+{
+	// The bounding box must have non-zero width in each dimension, so pad the Z
+	// dimension a small amount.
+	output_box = aabb(point3(x0, y0, k - 0.0001), point3(x1, y1, k + 0.0001));
+	return true;
+}
+
 bool xz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 	auto t = (k - r.origin().y()) / r.direction().y();
 	if (t < t0 || t > t1)
@@ -36,6 +44,25 @@ bool xz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 	return true;
 }
 
+double xz_rect::pdf_value(const point3& origin, const vec3& v) const
+{
+	hit_record rec;
+	if (!this->hit(ray(origin, v), 0.001, infinity, rec))
+		return 0;
+
+	auto area = (x1 - x0) * (z1 - z0);
+	auto distance_squared = rec.t * rec.t * v.length_squared();
+	auto cosine = fabs(dot(v, rec.normal) / v.length());
+
+	return distance_squared / (cosine * area);
+}
+
+vec3 xz_rect::random(const point3& origin) const
+{
+	auto random_point = point3(random_double(x0, x1), k, random_double(z0, z1));
+	return random_point - origin;
+}
+
 bool yz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 	auto t = (k - r.origin().x()) / r.direction().x();
 	if (t < t0 || t > t1)
@@ -52,6 +79,28 @@ bool yz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
 	return true;
+}
+
+bool yz_rect::bounding_box(double t0, double t1, aabb& output_box) const
+{
+	// The bounding box must have non-zero width in each dimension, so pad the X
+	// dimension a small amount.
+	output_box = aabb(point3(k - 0.0001, y0, z0), point3(k + 0.0001, y1, z1));
+	return true;
+}
+
+bool flip_face::hit(const ray& r, double t_min, double t_max, hit_record& rec) const
+{
+	if (!ptr->hit(r, t_min, t_max, rec))
+		return false;
+
+	rec.front_face = !rec.front_face;
+	return true;
+}
+
+bool flip_face::bounding_box(double t0, double t1, aabb& output_box) const
+{
+	return ptr->bounding_box(t0, t1, output_box);
 }
 
 bool flip_face::get_pdf_enabled()

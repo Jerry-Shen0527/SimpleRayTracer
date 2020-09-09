@@ -3,10 +3,10 @@
 #include <Windows.h>
 
 #include <Integrators/SimpleIntegrator.h>
-#include <Tools/Files/FileWrite.h>
 #include <Scene/WorldFactory.h>
+#include <Tools/Files/FileWrite.h>
 
-constexpr auto aspect_ratio = 9.0 / 9.0;
+constexpr auto aspect_ratio = 1.0;
 constexpr int image_width = 1024;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 

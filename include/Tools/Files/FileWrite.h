@@ -3,8 +3,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <string>
 #include <Tools/stb_image_write.h>
-
-#include "Tools/Film.h"
+#include <Integrators/Film.h>
 
 void film_to_file(std::string file_name, Film& film)
 {

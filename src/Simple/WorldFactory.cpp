@@ -1,3 +1,4 @@
+#include <Geometry/hittable_list.h>
 #include <Scene/WorldFactory.h>
 
 void WorldFactory::get_world(int idx, double aspect_ratio, hittable_list& world, camera& cam, color& background)

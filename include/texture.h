@@ -3,6 +3,7 @@
 
 #include <Tools/perlin.h>
 #define STB_IMAGE_IMPLEMENTATION
+#include <vec3.h>
 #include <Tools/rtw_stb_image.h>
 
 
@@ -32,7 +33,7 @@ class checker_texture : public texture {
 public:
 	checker_texture() {}
 
-	checker_texture(shared_ptr<texture> t0, shared_ptr<texture> t1)
+	checker_texture(std::shared_ptr<texture> t0, std::shared_ptr<texture> t1)
 		: even(t0), odd(t1) {}
 
 	checker_texture(color c1, color c2)
@@ -47,8 +48,8 @@ public:
 	}
 
 public:
-	shared_ptr<texture> odd;
-	shared_ptr<texture> even;
+	std::shared_ptr<texture> odd;
+	std::shared_ptr<texture> even;
 };
 
 class noise_texture : public texture {

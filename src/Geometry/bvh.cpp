@@ -1,43 +1,12 @@
-#ifndef BVH_H
-#define BVH_H
-
-#include <AABB/AABB.h>
 #include <algorithm>
-#include <vector>
-#include <Geometry/hittable_list.h>
-
-
-//this serves as a decorator for simple hittable list
-class bvh_node : public hittable
-{
-public:
-	bvh_node();
-
-	bvh_node(hittable_list& list, double time0, double time1)
-		: bvh_node(list.objects, 0, list.objects.size(), time0, time1)
-	{}
-
-	bvh_node(
-		std::vector<shared_ptr<hittable>>& objects,
-		size_t start, size_t end, double time0, double time1);
-
-	virtual bool hit(
-		const ray& r, double tmin, double tmax, hit_record& rec) const override;
-
-	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
-
-public:
-	shared_ptr<hittable> left;
-	shared_ptr<hittable> right;
-	aabb box;
-};
+#include <Geometry/bvh.h>
 
 bool bvh_node::bounding_box(double t0, double t1, aabb& output_box) const {
 	output_box = box;
 	return true;
 }
 
-inline bool box_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis) {
+bool box_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis) {
 	aabb box_a;
 	aabb box_b;
 #undef min
@@ -57,6 +26,18 @@ bool box_y_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
 
 bool box_z_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b) {
 	return box_compare(a, b, 2);
+}
+
+aabb surrounding_box(aabb box0, aabb box1) {
+	point3 small(fmin(box0.min().x(), box1.min().x()),
+		fmin(box0.min().y(), box1.min().y()),
+		fmin(box0.min().z(), box1.min().z()));
+
+	point3 big(fmax(box0.max().x(), box1.max().x()),
+		fmax(box0.max().y(), box1.max().y()),
+		fmax(box0.max().z(), box1.max().z()));
+
+	return aabb(small, big);
 }
 
 bvh_node::bvh_node(
@@ -111,4 +92,17 @@ bool bvh_node::hit(const ray& r, double t_min, double t_max, hit_record& rec) co
 	return hit_left || hit_right;
 }
 
-#endif
+inline bool aabb::hit(const ray& r, double tmin, double tmax) const {
+	for (int a = 0; a < 3; a++) {
+		auto invD = 1.0f / r.direction()[a];
+		auto t0 = (min()[a] - r.origin()[a]) * invD;
+		auto t1 = (max()[a] - r.origin()[a]) * invD;
+		if (invD < 0.0f)
+			std::swap(t0, t1);
+		tmin = t0 > tmin ? t0 : tmin;
+		tmax = t1 < tmax ? t1 : tmax;
+		if (tmax <= tmin)
+			return false;
+	}
+	return true;
+}

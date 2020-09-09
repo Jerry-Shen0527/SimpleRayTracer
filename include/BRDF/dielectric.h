@@ -2,7 +2,8 @@
 
 #include <ray.h>
 
-#include <BRDF/metal.h>
+#include "metal.h"
+
 
 vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
 	auto cos_theta = dot(-uv, n);

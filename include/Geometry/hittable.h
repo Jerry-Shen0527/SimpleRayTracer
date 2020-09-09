@@ -1,21 +1,11 @@
 #pragma once
-
-#include <AABB/AABB.h>
+#include <ray.h>
+#include <vec3.h>
 #include <BRDF/material.h>
 
-struct hit_record {
-	point3 p;
-	vec3 normal;
-	double u;
-	double v;
-	double t;
-	bool front_face;
-	std::shared_ptr<material> mat_ptr;
-	inline void set_face_normal(const ray& r, const vec3& outward_normal) {
-		front_face = dot(r.direction(), outward_normal) < 0;
-		normal = front_face ? outward_normal : -outward_normal;
-	}
-};
+class aabb;
+
+
 
 class hittable {
 public:
@@ -34,14 +24,3 @@ public:
 
 	bool pdf_enabled = false;
 };
-
-inline bool hittable::bounding_box(double t0, double t1, aabb& output_box) const
-{
-	output_box = aabb(vec3(-DBL_MAX, -DBL_MAX, -DBL_MAX), vec3(DBL_MAX, DBL_MAX, DBL_MAX));
-	return false;
-}
-
-inline bool hittable::get_pdf_enabled()
-{
-	return pdf_enabled;
-}

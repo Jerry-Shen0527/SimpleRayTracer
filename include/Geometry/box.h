@@ -1,6 +1,7 @@
 #ifndef BOX_H
 #define BOX_H
 #include <Geometry/aarect.h>
+#include <Geometry/hittable_list.h>
 
 class box : public hittable {
 public:

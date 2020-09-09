@@ -1,9 +1,17 @@
 #pragma once
 
-#include <AABB/bvh.h>
-#include <BRDF/BRDF.h>
-#include <Geometry/Geometry.h>
 #include <common.h>
+#include <BRDF/dielectric.h>
+#include <BRDF/diffuse_light.h>
+#include <BRDF/lambertian.h>
+#include <Geometry/bvh.h>
+#include <Geometry/sphere.h>
+#include <Geometry/translation.h>
+#include <Geometry/box.h>
+#include <Geometry/constant_medium.h>
+#include <Geometry/MovingSphere.h>
+
+using std::make_shared;
 
 hittable_list random_scene() {
 	hittable_list world;
@@ -186,7 +194,7 @@ hittable_list final_scene() {
 	objects.add(make_shared<bvh_node>(boxes1, 0, 1));
 
 	auto light = make_shared<diffuse_light>(color(7, 7, 7));
-	objects.add(make_shared<flip_face>(make_shared<xz_rect>(123, 423, 147, 412, 554, light,true)));
+	objects.add(make_shared<flip_face>(make_shared<xz_rect>(123, 423, 147, 412, 554, light, true)));
 
 	auto center1 = point3(400, 400, 200);
 	auto center2 = center1 + vec3(30, 0, 0);

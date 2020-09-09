@@ -1,6 +1,7 @@
 #pragma once
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <string>
 #include <Tools/stb_image_write.h>
 
 #include "Tools/Film.h"

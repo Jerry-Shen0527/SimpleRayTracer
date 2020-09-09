@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ray.h>
 #include <texture.h>
+#include <BRDF/material.h>
 
 class isotropic : public material {
 public:

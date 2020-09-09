@@ -1,17 +1,25 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "ray.h"
+#include <ray.h>
+#include <pdf/pdf.h>
 
+class material;
 
-class pdf;
-struct hit_record;
-struct scatter_record {
-	ray specular_ray;
-	bool is_specular;
-	color attenuation;
-	std::shared_ptr<pdf> pdf_ptr;
+struct hit_record {
+	point3 p;
+	vec3 normal;
+	double u;
+	double v;
+	double t;
+	bool front_face;
+	std::shared_ptr<material> mat_ptr;
+	inline void set_face_normal(const ray& r, const vec3& outward_normal) {
+		front_face = dot(r.direction(), outward_normal) < 0;
+		normal = front_face ? outward_normal : -outward_normal;
+	}
 };
+
 class material {
 public:
 	virtual ~material() = default;

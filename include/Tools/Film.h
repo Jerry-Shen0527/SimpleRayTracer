@@ -1,7 +1,6 @@
 #pragma once
+#include <vec3.h>
 #include <vector>
-
-#include "common.h"
 
 class Film
 {
@@ -18,7 +17,6 @@ public:
 
 	int width;
 	int height;
-
 
 	std::vector<unsigned> image;
 };

@@ -1,5 +1,6 @@
 #pragma once
-#include <AABB/AABB.h>
+#include <Geometry/hittable.h>
+#include <Geometry/bvh.h>
 
 #undef min
 #undef max

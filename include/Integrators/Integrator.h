@@ -1,6 +1,6 @@
 #pragma once
 #include <Tools/Film.h>
-#include <Geometry/hittable_list.h>
+#include <Geometry/Geometry.h>
 
 #include "Tools/camera.h"
 

@@ -1,5 +1,7 @@
 #pragma once
-#include "pdf/pdf.h"
+#include <texture.h>
+
+#include "material.h"
 
 class lambertian : public material {
 public:

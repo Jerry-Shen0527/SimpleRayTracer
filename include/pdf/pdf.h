@@ -1,6 +1,16 @@
 #pragma once
 #include <Tools/onb.h>
-#include <common.h>
+#include <ray.h>
+
+class pdf;
+
+struct scatter_record {
+	ray specular_ray;
+	bool is_specular;
+	color attenuation;
+	std::shared_ptr<pdf> pdf_ptr;
+};
+
 
 class pdf {
 public:
@@ -31,7 +41,7 @@ public:
 
 class mixture_pdf : public pdf {
 public:
-	mixture_pdf(shared_ptr<pdf> p0, shared_ptr<pdf> p1, double th = 0.5) {
+	mixture_pdf(std::shared_ptr<pdf> p0, std::shared_ptr<pdf> p1, double th = 0.5) {
 		p[0] = p0;
 		p[1] = p1;
 
@@ -51,5 +61,5 @@ public:
 
 public:
 	double threshold;
-	shared_ptr<pdf> p[2];
+	std::shared_ptr<pdf> p[2];
 };

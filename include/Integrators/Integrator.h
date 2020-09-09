@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Integrators/Film.h>
-#include <Geometry/Geometry.h>
+
+#include <Geometry/hittable_list.h>
 
 class camera;
 

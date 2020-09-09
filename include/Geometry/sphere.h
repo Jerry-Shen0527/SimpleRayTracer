@@ -2,7 +2,6 @@
 #define SPHERE_H
 
 #include <Geometry/hittable.h>
-#include <Tools/onb.h>
 
 class sphere : public hittable {
 public:

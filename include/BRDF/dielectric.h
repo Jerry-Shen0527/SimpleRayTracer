@@ -3,7 +3,8 @@
 #include <ray.h>
 
 #include "metal.h"
-
+#include <pdf/scatter_record.h>
+#include <Geometry/hit_record.h>
 
 vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
 	auto cos_theta = dot(-uv, n);

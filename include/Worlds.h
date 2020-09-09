@@ -1,8 +1,16 @@
 #pragma once
 #include <common.h>
-#include <BRDF/BRDF.h>
-#include <Geometry/Geometry.h>
+#include <texture.h>
+#include <BRDF/dielectric.h>
+#include <BRDF/diffuse_light.h>
+#include <BRDF/lambertian.h>
+#include <BRDF/metal.h>
+#include <Geometry/aarect.h>
+#include <Geometry/box.h>
 #include <Geometry/constant_medium.h>
+#include <Geometry/MovingSphere.h>
+#include <Geometry/sphere.h>
+#include <Geometry/translation.h>
 
 using std::make_shared;
 

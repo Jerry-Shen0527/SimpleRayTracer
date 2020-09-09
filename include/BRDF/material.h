@@ -3,6 +3,7 @@
 
 #include <ray.h>
 #include <pdf/pdf.h>
+#include <pdf/scatter_record.h>
 
 class material {
 public:

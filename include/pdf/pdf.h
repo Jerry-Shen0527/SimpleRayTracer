@@ -1,16 +1,5 @@
 #pragma once
 #include <Tools/onb.h>
-#include <ray.h>
-
-class pdf;
-
-struct scatter_record {
-	ray specular_ray;
-	bool is_specular;
-	color attenuation;
-	std::shared_ptr<pdf> pdf_ptr;
-};
-
 
 class pdf {
 public:
@@ -36,8 +25,6 @@ public:
 public:
 	onb uvw;
 };
-
-
 
 class mixture_pdf : public pdf {
 public:

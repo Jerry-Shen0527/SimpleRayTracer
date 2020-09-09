@@ -1,7 +1,8 @@
 #include <thread>
 #include <Integrators/SimpleIntegrator.h>
 #include <pdf/hittable_pdf.h>
-#include <BRDF/BRDF.h>
+#include <pdf/scatter_record.h>
+#include <BRDF/material.h>
 
 #include "Tools/camera.h"
 
@@ -65,21 +66,21 @@ void SimpleIntegrator::integrate(camera& cam, Film& film, hittable_list& world, 
 
 	int i, j, old_j = 0;
 
-	for (int idx = 0; idx < pixelcount; idx++)
+	for (int idx = 0; idx < film.pixelcount; idx++)
 	{
-		idx_to_ij(idx, i, j, image_width);
+		idx_to_ij(idx, i, j, film.width);
 		if (j != old_j)
 		{
-			std::cerr << "\rAlready finishd: " << double(j) / image_height * 100 << '%' << std::flush;
+			std::cerr << "\rAlready finishd: " << double(j) /film.height * 100 << '%' << std::flush;
 		}
 		color pixel_color(0, 0, 0);
-		for (int s = 0; s < samples_per_pixel; ++s) {
-			auto u = (i + random_double()) / (image_width - 1);
-			auto v = (j + random_double()) / (image_height - 1);
+		for (int s = 0; s < sample_per_pixel; ++s) {
+			auto u = (i + random_double()) / (film.width - 1);
+			auto v = (j + random_double()) / (film.height - 1);
 			ray r = cam.get_ray(u, 1 - v);
 			pixel_color += ray_color(r, background, world, lights, max_depth);
 		}
-		write_color(image, i, j, image_width, pixel_color, samples_per_pixel);
+		film.write_color(i, j, pixel_color, sample_per_pixel);
 		old_j = j;
 	}
 

@@ -6,4 +6,5 @@ link_directories(main ${PROJECT_SOURCE_DIR}/lib)
 target_link_libraries(main Integrator)
 target_link_libraries(main Geometry)
 target_link_libraries(main Tools)
+target_link_libraries(main BRDF)
 

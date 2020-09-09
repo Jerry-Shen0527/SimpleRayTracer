@@ -1,6 +1,5 @@
 #include <ctime>
 #include <thread>
-#include <Windows.h>
 
 #include <Integrators/SimpleIntegrator.h>
 #include <Scene/WorldFactory.h>

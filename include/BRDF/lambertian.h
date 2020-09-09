@@ -1,6 +1,6 @@
 #pragma once
-#include <texture.h>
-
+#include <Tools/texture.h>
+#include <pdf/pdf.h>
 #include "material.h"
 
 class lambertian : public material {
@@ -14,7 +14,7 @@ public:
 	) const override {
 		srec.is_specular = false;
 		srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
-		srec.pdf_ptr = make_shared< cosine_pdf>(rec.normal);
+		srec.pdf_ptr = make_shared<cosine_pdf>(rec.normal);
 		return true;
 	}
 

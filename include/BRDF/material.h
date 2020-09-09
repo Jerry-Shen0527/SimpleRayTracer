@@ -2,7 +2,7 @@
 #define MATERIAL_H
 
 #include <ray.h>
-#include <pdf/pdf.h>
+#include <Geometry/hit_record.h>
 #include <pdf/scatter_record.h>
 
 class material {

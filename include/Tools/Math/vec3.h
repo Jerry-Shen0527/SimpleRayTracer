@@ -5,8 +5,8 @@
 #include <iostream>
 using std::make_shared;
 
-#include "Tools/math_tools.h"
-#include "Tools/rng.h"
+#include "Tools/Math/math_tools.h"
+#include "Tools/Math/rng.h"
 
 using std::sqrt;
 

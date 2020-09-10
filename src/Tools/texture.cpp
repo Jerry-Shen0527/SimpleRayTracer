@@ -1,7 +1,7 @@
-#include <Tools/texture.h>
+#include <texture.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <Tools/rtw_stb_image.h>
+#include <Tools/Files/rtw_stb_image.h>
 
 color checker_texture::value(double u, double v, const point3& p) const
 {

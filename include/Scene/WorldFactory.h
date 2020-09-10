@@ -2,7 +2,7 @@
 
 #pragma once
 #include <common.h>
-#include <Tools/texture.h>
+#include <texture.h>
 #include <BRDF/dielectric.h>
 #include <BRDF/diffuse_light.h>
 #include <BRDF/lambertian.h>

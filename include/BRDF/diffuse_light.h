@@ -1,6 +1,7 @@
 #pragma once
 #include "material.h"
-#include <Tools/texture.h>
+
+#include "texture.h"
 
 class diffuse_light : public material {
 public:

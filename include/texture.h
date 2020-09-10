@@ -3,6 +3,8 @@
 
 #include <Tools/perlin.h>
 
+#include "Tools/Math/vec3.h"
+
 
 class texture {
 public:

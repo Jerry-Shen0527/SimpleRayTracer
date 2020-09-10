@@ -1,6 +1,5 @@
 #pragma once
 #include <ray.h>
-#include <vec3.h>
 #include "hit_record.h"
 
 class aabb;

@@ -1,6 +1,6 @@
 #ifndef ONB_H
 #define ONB_H
-#include <vec3.h>
+#include "vec3.h"
 
 class onb {
 public:

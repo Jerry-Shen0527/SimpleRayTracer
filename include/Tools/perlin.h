@@ -1,6 +1,7 @@
 #ifndef PERLIN_H
 #define PERLIN_H
-#include <vec3.h>
+
+#include <Tools/Math/vec3.h>
 
 inline double trilinear_interp(double c[2][2][2], double u, double v, double w) {
 	auto accum = 0.0;
@@ -110,8 +111,8 @@ inline double perlin::noise(const point3& p) const
 			for (int dk = 0; dk < 2; dk++)
 				c[di][dj][dk] = ranvec[
 					perm_x[(i + di) & 255] ^
-					perm_y[(j + dj) & 255] ^
-					perm_z[(k + dk) & 255]
+						perm_y[(j + dj) & 255] ^
+						perm_z[(k + dk) & 255]
 				];
 
 	return perlin_interp(c, u, v, w);

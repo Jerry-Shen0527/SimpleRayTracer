@@ -1,7 +1,7 @@
 #include <Tools/Files/FileWrite.h>
 #include <Windows.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <Tools/stb_image_write.h>
+#include <Tools/Files/stb_image_write.h>
 
 void film_to_file(std::string file_name, Film& film)
 {

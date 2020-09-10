@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Tools/texture.h>
 #include <BRDF/material.h>
+
+#include "texture.h"
 
 class isotropic : public material {
 public:

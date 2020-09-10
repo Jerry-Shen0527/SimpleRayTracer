@@ -53,13 +53,15 @@ CPU:10710U 35W
 
 ### 下一步计划
 
-重构代码，使扩展性更强。
+- [x] 重构代码，使扩展性更强。
 
-CPU矢量化支持。
 
-CUDA支持。
+- [ ] CPU矢量化支持。
 
-阅读mitsuba2和pbrt源码，融入部分功能。
+
+- [ ] CUDA支持。
+- [ ] 阅读mitsuba2和pbrt源码，融入部分功能。
+- [ ] Spectrum rendering
 
 - [ ] Stokes矢量和Muller矩阵
 - [ ] Volume Rendering and atomsphere 

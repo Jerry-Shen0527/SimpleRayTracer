@@ -52,12 +52,12 @@
 //}
 
 
-#include <Tools/CoefficientSpecturm.h>
+#include <Tools/Spectrum/SampledSpectrum.h>
 
 int main()
 {
-	CoefficentSpectrum<3> a(1);
-	CoefficentSpectrum<3> b(2);
+	CoefficientSpectrum<3> a(1);
+	CoefficientSpectrum<3> b(2);
 
 
 	Lerp(0.5, a, b).print();

@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <Tools/Math/math_tools.h>
+#include <algorithm>
 
 template<int nSamples>
 class CoefficientSpectrum
@@ -94,8 +94,8 @@ template <int nSamples>
 CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::Clamp(float low, float high) const
 {
 	CoefficientSpectrum ret;
-	for (int i = 0; i < nSpectrumSamples; ++i)
-		ret.c[i] = pbrt::Clamp(c[i], low, high);
+	for (int i = 0; i < nSamples; ++i)
+		ret.c[i] = clamp(c[i], low, high);
 	return ret;
 }
 
@@ -180,7 +180,6 @@ inline void XYZToRGB(const float xyz[3], float rgb[3]) {
 	rgb[1] = -0.969256f * xyz[0] + 1.875991f * xyz[1] + 0.041556f * xyz[2];
 	rgb[2] = 0.055648f * xyz[0] - 0.204043f * xyz[1] + 1.057311f * xyz[2];
 }
-
 
 inline void RGBToXYZ(const float rgb[3], float xyz[3]) {
 	xyz[0] = 0.412453f * rgb[0] + 0.357580f * rgb[1] + 0.180423f * rgb[2];

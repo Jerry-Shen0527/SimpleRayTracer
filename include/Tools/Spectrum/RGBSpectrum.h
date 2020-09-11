@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "CoefficientSpecturm.h"
+#include <Tools/Math/math_tools.h>
 
 class RGBSpectrum :public CoefficientSpectrum<3>
 {
@@ -14,7 +15,6 @@ public:
 	static RGBSpectrum FromSampled(const float* lambda, const float* v, int n);
 
 	static float InterpolateSpectrumSamples(const float* lambda, const float* p, int i, const float x);
-
 
 	void ToRGB(float* rgb) const;
 	float y() const;
@@ -35,7 +35,6 @@ inline RGBSpectrum RGBSpectrum::FromRGB(const float rgb[3], SpectrumType type)
 
 inline RGBSpectrum RGBSpectrum::FromXYZ(const float xyz[3], SpectrumType type)
 {
-	float xyz[3];
 	float rgb[3];
 
 	XYZToRGB(xyz, rgb);

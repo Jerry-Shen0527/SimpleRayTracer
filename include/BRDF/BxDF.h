@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include <Tools/Math/vec3.h>
 
 enum BxDFType {
 	BSDF_REFLECTION = 1 << 0,
@@ -15,7 +16,7 @@ class BxDF
 {
 public:
 	BxDF(BxDFType type) : type(type) { }
-	//virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const = 0;
+	virtual Spectrum f(const vec3& wo, const vec3& wi) const = 0;
 
 	const BxDFType type;
 

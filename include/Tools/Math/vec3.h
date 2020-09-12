@@ -74,6 +74,8 @@ inline vec3 random_unit_vector() {
 
 using color = vec3;
 using point3 = vec3;   // 3D point
+using vec2 = vec<2>;
+using point2 = vec2;
 
 void vec3_test();
 

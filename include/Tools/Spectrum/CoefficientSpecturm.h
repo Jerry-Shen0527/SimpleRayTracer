@@ -18,9 +18,13 @@ public:
 
 	CoefficientSpectrum& operator+=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum operator+(const CoefficientSpectrum& s2) const;
+	CoefficientSpectrum& operator-=(const CoefficientSpectrum& s2);
+	CoefficientSpectrum operator-(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum& operator*=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum operator*(const CoefficientSpectrum& s2) const;
+	CoefficientSpectrum operator/(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum operator*(float x) const;
+	CoefficientSpectrum operator/(float x) const;
 
 	CoefficientSpectrum Clamp(float low = 0, float high = INFINITY) const;
 
@@ -59,6 +63,28 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator+(const Coe
 }
 
 template <int nSamples>
+CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator-=(const CoefficientSpectrum& s2)
+{
+	CoefficientSpectrum rst = *this;
+	for (int i = 0; i < nSamples; ++i)
+	{
+		rst.c[i] -= s2.c[i];
+	}
+	return rst;
+}
+
+template <int nSamples>
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator-(const CoefficientSpectrum& s2) const
+{
+	CoefficientSpectrum rst = *this;
+	for (int i = 0; i < nSamples; ++i)
+	{
+		rst.c[i] -= s2.c[i];
+	}
+	return rst;
+}
+
+template <int nSamples>
 CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(const CoefficientSpectrum& s2)
 {
 	for (int i = 0; i < nSamples; ++i)
@@ -80,12 +106,34 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator*(const Coe
 }
 
 template <int nSamples>
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(const CoefficientSpectrum& s2) const
+{
+	CoefficientSpectrum rst = *this;
+	for (int i = 0; i < nSamples; ++i)
+	{
+		rst.c[i] /= s2.c[i];
+	}
+	return rst;
+}
+
+template <int nSamples>
 CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator*(float x) const
 {
 	CoefficientSpectrum rst = *this;
 	for (int i = 0; i < nSamples; ++i)
 	{
 		rst.c[i] *= x;
+	}
+	return rst;
+}
+
+template <int nSamples>
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(float x) const
+{
+	CoefficientSpectrum rst = *this;
+	for (int i = 0; i < nSamples; ++i)
+	{
+		rst.c[i] /= x;
 	}
 	return rst;
 }

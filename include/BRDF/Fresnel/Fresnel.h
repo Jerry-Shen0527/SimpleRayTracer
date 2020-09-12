@@ -3,6 +3,34 @@
 #include "BRDF/BxDF_Utility.h"
 #include "Tools/Spectrum/SampledSpectrum.h"
 
+Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
+	cosThetaI = clamp(cosThetaI, -1, 1);
+
+	bool entering = cosThetaI > 0.f;
+	if (!entering) {
+		std::swap(etaI, etaT);
+		cosThetaI = std::abs(cosThetaI);
+	}
+
+	Float sinThetaI = std::sqrt(std::max((Float)0, 1 - cosThetaI * cosThetaI));
+	Float sinThetaT = etaI / etaT * sinThetaI;
+
+	Float cosThetaT = std::sqrt(std::max((Float)0, 1 - sinThetaT * sinThetaT));
+
+	if (sinThetaT >= 1)
+		return 1;
+
+	Float Rparl = ((etaT * cosThetaI) - (etaI * cosThetaT)) /
+		((etaT * cosThetaI) + (etaI * cosThetaT));
+	Float Rperp = ((etaI * cosThetaI) - (etaT * cosThetaT)) /
+		((etaI * cosThetaI) + (etaT * cosThetaT));
+	return (Rparl * Rparl + Rperp * Rperp) / 2;
+}
+
+inline Vector3f Reflect(const Vector3f& wo, const Vector3f& n) {
+	return -wo + 2 * dot(wo, n) * n;
+}
+
 inline Spectrum FrConductor(Float cosThetaI, const Spectrum& etaI, const Spectrum& etaT, const Spectrum& k)
 {
 	cosThetaI = clamp(cosThetaI, -1, 1);

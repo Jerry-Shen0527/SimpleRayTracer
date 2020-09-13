@@ -42,3 +42,8 @@ inline float CosDPhi(const vec3& wa, const vec3& wb) {
 
 typedef float Float;
 typedef vec3 Vector3f;
+
+inline normal3
+Faceforward(const normal3& n, const vec3& v) {
+	return (dot(n, v) < 0.f) ? -n : n;
+}

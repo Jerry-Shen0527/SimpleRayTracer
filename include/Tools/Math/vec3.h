@@ -76,6 +76,7 @@ using color = vec3;
 using point3 = vec3;   // 3D point
 using vec2 = vec<2>;
 using point2 = vec2;
+using normal3 = vec3;
 
 void vec3_test();
 

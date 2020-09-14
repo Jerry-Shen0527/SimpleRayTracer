@@ -1,4 +1,6 @@
 #pragma once
+#include <Tools/Math/Sampling.h>
+
 #include "Tools/Math/vec3.h"
 
 inline float CosTheta(const vec3& w) { return w.z(); }
@@ -46,4 +48,12 @@ typedef vec3 Vector3f;
 inline normal3
 Faceforward(const normal3& n, const vec3& v) {
 	return (dot(n, v) < 0.f) ? -n : n;
+}
+
+
+
+inline Vector3f CosineSampleHemisphere(const point2& u) {
+	point2 d = ConcentricSampleDisk(u);
+	Float z = std::sqrt(std::max((Float)0, 1 - d.x() * d.x - d.y * d.y));
+	return Vector3f(d.x, d.y, z);
 }

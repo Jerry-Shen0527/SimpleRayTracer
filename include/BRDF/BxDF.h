@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include <Tools/Math/vec3.h>
+#include <Tools/Spectrum/SampledSpectrum.h>
 
 enum BxDFType {
 	BSDF_REFLECTION = 1 << 0,

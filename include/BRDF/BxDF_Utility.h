@@ -50,10 +50,12 @@ Faceforward(const normal3& n, const vec3& v) {
 	return (dot(n, v) < 0.f) ? -n : n;
 }
 
-
-
 inline Vector3f CosineSampleHemisphere(const point2& u) {
 	point2 d = ConcentricSampleDisk(u);
-	Float z = std::sqrt(std::max((Float)0, 1 - d.x() * d.x - d.y * d.y));
-	return Vector3f(d.x, d.y, z);
+	Float z = std::sqrt(std::max((Float)0, 1 - d.x() * d.x() - d.y() * d.y()));
+	return Vector3f(d.x(), d.y(), z);
+}
+
+inline bool SameHemisphere(const Vector3f& w, const Vector3f& wp) {
+return w.z() * wp.z() > 0;
 }

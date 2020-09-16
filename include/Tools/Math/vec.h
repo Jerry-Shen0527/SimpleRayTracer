@@ -13,37 +13,37 @@ template<int n>
 class vec {
 public:
 	vec() : data{ 0.f } {}
-	vec(std::initializer_list<float> list);
+	vec(std::initializer_list<double> list);
 
 	inline static vec random();
-	inline static vec random(float min, float max);
+	inline static vec random(double min, double max);
 
 	vec operator-() const;
-	float operator[](int i) const { return data[i]; }
-	float& operator[](int i) { return data[i]; }
+	double operator[](int i) const { return data[i]; }
+	double& operator[](int i) { return data[i]; }
 
 	vec& operator+=(const vec<n>& v);
-	vec& operator*=(const float t);
-	vec& operator/=(const float t);
+	vec& operator*=(const double t);
+	vec& operator/=(const double t);
 
-	float length() const;
-	float length_squared() const;
+	double length() const;
+	double length_squared() const;
 
-	float x() const;
-	float& x();
-	float y() const;
-	float& y();
-	float z() const;
-	float& z();
+	double x() const;
+	double& x();
+	double y() const;
+	double& y();
+	double z() const;
+	double& z();
 
-	float w() const;
-	float& w();
+	double w() const;
+	double& w();
 public:
-	float data[n];
+	double data[n];
 };
 
 template <int n>
-vec<n>::vec(std::initializer_list<float> list)
+vec<n>::vec(std::initializer_list<double> list)
 {
 	assert(list.size() == n);
 
@@ -60,18 +60,18 @@ vec<n> vec<n>::random()
 	vec rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst.data[i] = random_float();
+		rst.data[i] = random_double();
 	}
 	return rst;
 }
 
 template <int n>
-vec<n> vec<n>::random(float min, float max)
+vec<n> vec<n>::random(double min, double max)
 {
 	vec rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst.data[i] = random_float(min, max);
+		rst.data[i] = random_double(min, max);
 	}
 	return rst;
 }
@@ -98,7 +98,7 @@ vec<n>& vec<n>::operator+=(const vec<n>& v)
 }
 
 template <int n>
-vec<n>& vec<n>::operator*=(const float t)
+vec<n>& vec<n>::operator*=(const double t)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -108,21 +108,21 @@ vec<n>& vec<n>::operator*=(const float t)
 }
 
 template <int n>
-vec<n>& vec<n>::operator/=(const float t)
+vec<n>& vec<n>::operator/=(const double t)
 {
 	return *this *= 1 / t;
 }
 
 template <int n>
-float vec<n>::length() const
+double vec<n>::length() const
 {
 	return sqrt(length_squared());
 }
 
 template <int n>
-float vec<n>::length_squared() const
+double vec<n>::length_squared() const
 {
-	float rst = 0.f;
+	double rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{
 		rst += data[i] * data[i];
@@ -131,56 +131,56 @@ float vec<n>::length_squared() const
 }
 
 template <int n>
-float vec<n>::x() const
+double vec<n>::x() const
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
 template <int n>
-float& vec<n>::x()
+double& vec<n>::x()
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
 template <int n>
-float vec<n>::y() const
+double vec<n>::y() const
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
 template <int n>
-float& vec<n>::y()
+double& vec<n>::y()
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
 template <int n>
-float vec<n>::z() const
+double vec<n>::z() const
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
 template <int n>
-float& vec<n>::z()
+double& vec<n>::z()
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
 template <int n>
-float vec<n>::w() const
+double vec<n>::w() const
 {
 	static_assert(n >= 4);
 	return data[3];
 }
 
 template <int n>
-float& vec<n>::w()
+double& vec<n>::w()
 {
 	static_assert(n >= 4);
 	return data[3];
@@ -226,7 +226,7 @@ inline vec<n> operator*(const vec<n>& u, const vec<n>& v) {
 }
 
 template<int n>
-inline vec<n> operator*(float t, const vec<n>& v) {
+inline vec<n> operator*(double t, const vec<n>& v) {
 	vec<n> rst;
 	for (int i = 0; i < n; ++i)
 	{
@@ -236,18 +236,18 @@ inline vec<n> operator*(float t, const vec<n>& v) {
 }
 
 template<int n>
-inline vec<n> operator*(const vec<n>& v, float t) {
+inline vec<n> operator*(const vec<n>& v, double t) {
 	return t * v;
 }
 
 template<int n>
-inline vec<n> operator/(vec<n> v, float t) {
+inline vec<n> operator/(vec<n> v, double t) {
 	return (1 / t) * v;
 }
 
 template<int n>
-inline float dot(const vec<n>& u, const vec<n>& v) {
-	float rst = 0.f;
+inline double dot(const vec<n>& u, const vec<n>& v) {
+	double rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{
 		rst += u.data[i] * v.data[i];

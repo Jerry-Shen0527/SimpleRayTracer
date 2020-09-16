@@ -3,46 +3,46 @@
 
 #include "Tools/Math/vec3.h"
 
-inline float CosTheta(const vec3& w) { return w.z(); }
-inline float Cos2Theta(const vec3& w) { return w.z() * w.z(); }
-inline float AbsCosTheta(const vec3& w) { return std::abs(w.z()); }
+inline double CosTheta(const vec3& w) { return w.z(); }
+inline double Cos2Theta(const vec3& w) { return w.z() * w.z(); }
+inline double AbsCosTheta(const vec3& w) { return std::abs(w.z()); }
 
-inline float Sin2Theta(const vec3& w) {
-	return std::max((float)0, (float)1 - Cos2Theta(w));
+inline double Sin2Theta(const vec3& w) {
+	return std::max((double)0, (double)1 - Cos2Theta(w));
 }
-inline float SinTheta(const vec3& w) {
+inline double SinTheta(const vec3& w) {
 	return std::sqrt(Sin2Theta(w));
 }
 
-inline float TanTheta(const vec3& w) {
+inline double TanTheta(const vec3& w) {
 	return SinTheta(w) / CosTheta(w);
 }
-inline float Tan2Theta(const vec3& w) {
+inline double Tan2Theta(const vec3& w) {
 	return Sin2Theta(w) / Cos2Theta(w);
 }
 
-inline float CosPhi(const vec3& w) {
-	float sinTheta = SinTheta(w);
+inline double CosPhi(const vec3& w) {
+	double sinTheta = SinTheta(w);
 	return (sinTheta == 0) ? 1 : clamp(w.x() / sinTheta, -1, 1);
 }
-inline float SinPhi(const vec3& w) {
-	float sinTheta = SinTheta(w);
+inline double SinPhi(const vec3& w) {
+	double sinTheta = SinTheta(w);
 	return (sinTheta == 0) ? 0 : clamp(w.y() / sinTheta, -1, 1);
 }
 
-inline float Cos2Phi(const vec3& w) {
+inline double Cos2Phi(const vec3& w) {
 	return CosPhi(w) * CosPhi(w);
 }
-inline float Sin2Phi(const vec3& w) {
+inline double Sin2Phi(const vec3& w) {
 	return SinPhi(w) * SinPhi(w);
 }
 
 //Calculate different phi between two vectors
-inline float CosDPhi(const vec3& wa, const vec3& wb) {
+inline double CosDPhi(const vec3& wa, const vec3& wb) {
 	return clamp((wa.x() * wb.x() + wa.y() * wb.y()) / std::sqrt((wa.x() * wa.x() + wa.y() * wa.y()) * (wb.x() * wb.x() + wb.y() * wb.y())), -1, 1);
 }
 
-typedef float Float;
+typedef double Float;
 typedef vec3 Vector3f;
 
 inline normal3

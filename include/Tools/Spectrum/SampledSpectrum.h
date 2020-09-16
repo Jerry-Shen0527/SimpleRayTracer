@@ -15,7 +15,7 @@ static  const int nSpectralSamples = 30;
 class SampledSpectrum :public CoefficientSpectrum<nSpectralSamples>
 {
 public:
-	SampledSpectrum(float v = 0.f) : CoefficientSpectrum(v) {}
+	SampledSpectrum(double v = 0.f) : CoefficientSpectrum(v) {}
 	SampledSpectrum(const CoefficientSpectrum<nSpectralSamples>& v)
 		: CoefficientSpectrum<nSpectralSamples>(v) {}
 	SampledSpectrum(const RGBSpectrum& r, SpectrumType t)
@@ -25,8 +25,8 @@ public:
 		*this = SampledSpectrum::FromRGB(rgb, t);
 	}
 
-	static float AverageSpectrumSamples(const float* lambda, const float* vals, int n, float lambda0, float lambda1);
-	static SampledSpectrum FromSampled(const float* lambda, const float* v, int n);
+	static double AverageSpectrumSamples(const double* lambda, const double* vals, int n, double lambda0, double lambda1);
+	static SampledSpectrum FromSampled(const double* lambda, const double* v, int n);
 	static SampledSpectrum FromRGB(const vec3& rgb, SpectrumType type = SpectrumType::Illuminant);
 	static SampledSpectrum FromXYZ(const vec3& xyz, SpectrumType type = SpectrumType::Reflectance);
 
@@ -34,11 +34,11 @@ public:
 
 	void ToXYZ(vec3& xyz) const;
 	void ToRGB(vec3& rgb) const;
-	float y() const;
+	double y() const;
 
 private:
 	static SampledSpectrum X, Y, Z;
-	static float yint;
+	static double yint;
 
 	static SampledSpectrum rgbRefl2SpectWhite, rgbRefl2SpectCyan;
 	static SampledSpectrum rgbRefl2SpectMagenta, rgbRefl2SpectYellow;
@@ -50,40 +50,40 @@ private:
 	static SampledSpectrum rgbIllum2SpectBlue;
 };
 
-inline float SampledSpectrum::AverageSpectrumSamples(const float* lambda, const float* vals, int n, float lambdaStart,
-	float lambdaEnd)
+inline double SampledSpectrum::AverageSpectrumSamples(const double* lambda, const double* vals, int n, double lambdaStart,
+	double lambdaEnd)
 {
 	if (lambdaEnd <= lambda[0]) return vals[0];
 	if (lambdaStart >= lambda[n - 1]) return vals[n - 1];
 	if (n == 1) return vals[0];
 
-	float sum = 0;
+	double sum = 0;
 	if (lambdaStart < lambda[0]) sum += vals[0] * (lambda[0] - lambdaStart);
 	if (lambdaEnd > lambda[n - 1]) sum += vals[n - 1] * (lambdaEnd - lambda[n - 1]);
 
 	int i = 0;
 	while (lambdaStart > lambda[i + 1])++i;
 
-	auto interp = [lambda, vals](float w, int i) {
+	auto interp = [lambda, vals](double w, int i) {
 		return Lerp((w - lambda[i]) / (lambda[i + 1] - lambda[i]), vals[i],
 			vals[i + 1]);
 	};
 	for (; i + 1 < n && lambdaEnd >= lambda[i]; ++i) {
-		float segLambdaStart = std::max(lambdaStart, lambda[i]);
-		float segLambdaEnd = std::min(lambdaEnd, lambda[i + 1]);
+		double segLambdaStart = std::max(lambdaStart, lambda[i]);
+		double segLambdaEnd = std::min(lambdaEnd, lambda[i + 1]);
 		sum += 0.5 * (interp(segLambdaStart, i) + interp(segLambdaEnd, i)) *
 			(segLambdaEnd - segLambdaStart);
 	}
 	return sum / (lambdaEnd - lambdaStart);
 }
 
-inline SampledSpectrum SampledSpectrum::FromSampled(const float* lambda, const float* v, int n)
+inline SampledSpectrum SampledSpectrum::FromSampled(const double* lambda, const double* v, int n)
 {
 	// Sort samples if unordered, use sorted for returned spectrum
 	if (!SpectrumSamplesSorted(lambda, v, n))
 	{
-		std::vector<float> slambda(&lambda[0], &lambda[n]);
-		std::vector<float> sv(&v[0], &v[n]);
+		std::vector<double> slambda(&lambda[0], &lambda[n]);
+		std::vector<double> sv(&v[0], &v[n]);
 		SortSpectrumSamples(&slambda[0], &sv[0], n);
 		return FromSampled(&slambda[0], &sv[0], n);
 	}
@@ -91,9 +91,9 @@ inline SampledSpectrum SampledSpectrum::FromSampled(const float* lambda, const f
 	for (int i = 0; i < nSpectralSamples; ++i)
 	{
 		// Compute average value of given SPD over $i$th sample's range
-		float lambda0 = Lerp(float(i) / float(nSpectralSamples),
+		double lambda0 = Lerp(double(i) / double(nSpectralSamples),
 			sampledLambdaStart, sampledLambdaEnd);
-		float lambda1 = Lerp(float(i + 1) / float(nSpectralSamples),
+		double lambda1 = Lerp(double(i + 1) / double(nSpectralSamples),
 			sampledLambdaStart, sampledLambdaEnd);
 		r.c[i] = AverageSpectrumSamples(lambda, v, n, lambda0, lambda1);
 	}
@@ -281,9 +281,9 @@ inline void SampledSpectrum::ToRGB(vec3& rgb) const
 	XYZToRGB(xyz, rgb);
 }
 
-inline float SampledSpectrum::y() const
+inline double SampledSpectrum::y() const
 {
-	float yy = 0.f;
+	double yy = 0.f;
 	for (int i = 0; i < nSpectralSamples; ++i)
 	{
 		yy += Y.c[i] * c[i];

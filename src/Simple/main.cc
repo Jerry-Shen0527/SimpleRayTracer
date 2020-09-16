@@ -8,7 +8,7 @@
 #include "Integrators/SpectrumIntegrator.h"
 
 constexpr auto aspect_ratio = 1.0;
-constexpr int image_width = 400;
+constexpr int image_width = 1024;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 
 int main(int argc, char** argv) {
@@ -45,8 +45,8 @@ int main(int argc, char** argv) {
 	SimpleIntegrator simple_integrator(samples_per_pixel, max_depth);
 
 	Film film(image_width, image_height);
-	//spectrum_integrator.integrate(cam, film, world, background);
-	simple_integrator.integrate(cam, film, world, background);
+	spectrum_integrator.integrate(cam, film, world, background);
+	//simple_integrator.integrate(cam, film, world, background);
 
 	finish = clock();
 

@@ -5,6 +5,7 @@ Spectrum BxDF::Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& p
 {
 	wi = CosineSampleHemisphere(sample);
 	if (wo.z() < 0) wi.z() *= -1;
+	return Spectrum(0);
 }
 
 float BxDF::pdf(const vec3& wo, const vec3& wi)

@@ -22,6 +22,7 @@ public:
 	CoefficientSpectrum& operator-=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum operator-(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum& operator*=(const CoefficientSpectrum& s2);
+	CoefficientSpectrum& operator*=(float f);
 	CoefficientSpectrum operator*(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum operator/(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum operator*(float x) const;
@@ -91,6 +92,16 @@ CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(const C
 	for (int i = 0; i < nSamples; ++i)
 	{
 		c[i] *= s2.c[i];
+	}
+	return *this;
+}
+
+template <int nSamples>
+CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(float f)
+{
+	for (int i = 0; i < nSamples; ++i)
+	{
+		c[i] *= f;
 	}
 	return *this;
 }

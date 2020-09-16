@@ -5,8 +5,10 @@
 #include <Scene/WorldFactory.h>
 #include <Tools/Files/FileWrite.h>
 
+#include "Integrators/SpectrumIntegrator.h"
+
 constexpr auto aspect_ratio = 1.0;
-constexpr int image_width = 1000;
+constexpr int image_width = 400;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 
 int main(int argc, char** argv) {
@@ -33,12 +35,17 @@ int main(int argc, char** argv) {
 	{
 		samples_per_pixel = stoi(std::string(argv[2]));
 	}
+	Spectrum::Init();
 
 	// Render
 	start = clock();
 
+
+	SpectrumIntegrator spectrum_integrator(samples_per_pixel, max_depth);
 	SimpleIntegrator simple_integrator(samples_per_pixel, max_depth);
+
 	Film film(image_width, image_height);
+	//spectrum_integrator.integrate(cam, film, world, background);
 	simple_integrator.integrate(cam, film, world, background);
 
 	finish = clock();
@@ -50,4 +57,3 @@ int main(int argc, char** argv) {
 
 	std::cerr << "\nDone.\n";
 }
-

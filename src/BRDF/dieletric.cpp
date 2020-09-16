@@ -17,6 +17,7 @@ double schlick(double cosine, double ref_idx) {
 bool dielectric::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const
 {
 	srec.attenuation = color(1.0, 1.0, 1.0);
+	srec.update();
 	srec.is_specular = true;
 	double etai_over_etat = rec.front_face ? (1.0 / ref_idx) : ref_idx;
 

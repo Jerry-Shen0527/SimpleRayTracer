@@ -6,6 +6,8 @@
 #include "RGBSpectrum.h"
 #include <vector>
 #include <Tools/Math/vec3.h>
+
+#include "BRDF/BxDF_Utility.h"
 static const int sampledLambdaStart = 400;
 static const int sampledLambdaEnd = 700;
 static  const int nSpectralSamples = 30;
@@ -194,17 +196,67 @@ inline SampledSpectrum SampledSpectrum::FromXYZ(const vec3& xyz, SpectrumType ty
 inline void SampledSpectrum::Init()
 {
 	for (int i = 0; i < nSpectralSamples; ++i) {
-		float wl0 = Lerp(float(i) / float(nSpectralSamples),
+		Float wl0 = Lerp(Float(i) / Float(nSpectralSamples),
 			sampledLambdaStart, sampledLambdaEnd);
-		float wl1 = Lerp(float(i + 1) / float(nSpectralSamples),
+		Float wl1 = Lerp(Float(i + 1) / Float(nSpectralSamples),
 			sampledLambdaStart, sampledLambdaEnd);
 		X.c[i] = AverageSpectrumSamples(CIE_lambda, CIE_X, nCIESamples, wl0,
 			wl1);
 		Y.c[i] = AverageSpectrumSamples(CIE_lambda, CIE_Y, nCIESamples, wl0,
 			wl1);
+		yint += Y.c[i];
 		Z.c[i] = AverageSpectrumSamples(CIE_lambda, CIE_Z, nCIESamples, wl0,
 			wl1);
-		yint += Y.c[i];
+	}
+
+	// Compute RGB to spectrum functions for _SampledSpectrum_
+	for (int i = 0; i < nSpectralSamples; ++i) {
+		Float wl0 = Lerp(Float(i) / Float(nSpectralSamples),
+			sampledLambdaStart, sampledLambdaEnd);
+		Float wl1 = Lerp(Float(i + 1) / Float(nSpectralSamples),
+			sampledLambdaStart, sampledLambdaEnd);
+		rgbRefl2SpectWhite.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBRefl2SpectWhite,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbRefl2SpectCyan.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBRefl2SpectCyan,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbRefl2SpectMagenta.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBRefl2SpectMagenta,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbRefl2SpectYellow.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBRefl2SpectYellow,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbRefl2SpectRed.c[i] = AverageSpectrumSamples(
+			RGB2SpectLambda, RGBRefl2SpectRed, nRGB2SpectSamples, wl0, wl1);
+		rgbRefl2SpectGreen.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBRefl2SpectGreen,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbRefl2SpectBlue.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBRefl2SpectBlue,
+				nRGB2SpectSamples, wl0, wl1);
+
+		rgbIllum2SpectWhite.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectWhite,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbIllum2SpectCyan.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectCyan,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbIllum2SpectMagenta.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectMagenta,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbIllum2SpectYellow.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectYellow,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbIllum2SpectRed.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectRed,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbIllum2SpectGreen.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectGreen,
+				nRGB2SpectSamples, wl0, wl1);
+		rgbIllum2SpectBlue.c[i] =
+			AverageSpectrumSamples(RGB2SpectLambda, RGBIllum2SpectBlue,
+				nRGB2SpectSamples, wl0, wl1);
 	}
 }
 

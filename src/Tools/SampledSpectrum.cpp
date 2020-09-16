@@ -1,5 +1,24 @@
 #include <Tools/Spectrum/SampledSpectrum.h>
 
+float SampledSpectrum::yint;
+SampledSpectrum SampledSpectrum::X;
+SampledSpectrum SampledSpectrum::Y;
+SampledSpectrum SampledSpectrum::Z;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectWhite;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectCyan;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectMagenta;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectYellow;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectRed;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectGreen;
+SampledSpectrum SampledSpectrum::rgbRefl2SpectBlue;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectWhite;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectCyan;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectMagenta;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectYellow;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectRed;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectGreen;
+SampledSpectrum SampledSpectrum::rgbIllum2SpectBlue;
+
 const float CIE_X[nCIESamples] = {
 	// CIE X function values
 	0.0001299000f,   0.0001458470f,   0.0001638021f,   0.0001840037f,

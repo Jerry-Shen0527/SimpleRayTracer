@@ -13,6 +13,7 @@ public:
     ) const override {
         srec.is_specular = false;
         srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
+        srec.update();
         srec.pdf_ptr = make_shared< cosine_pdf>(rec.normal);
         return true;
     }

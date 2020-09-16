@@ -1,7 +1,8 @@
 #pragma once
 #include <ray.h>
 
-class material;
+#include "BRDF/material.h"
+
 
 struct hit_record {
 	point3 p;

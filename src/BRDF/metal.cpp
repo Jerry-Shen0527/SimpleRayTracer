@@ -1,6 +1,7 @@
 #include <BRDF/metal.h>
 
 #include "Tools/Math/Sampling.h"
+#include <Geometry/hit_record.h>
 
 vec3 reflect(const vec3& v, const vec3& n) {
 	return v - 2 * dot(v, n) * n;
@@ -15,6 +16,7 @@ bool metal::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec
 	vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
 	srec.specular_ray = ray(rec.p, reflected + fuzz * random_in_unit_sphere());
 	srec.attenuation = albedo;
+	srec.update();
 	srec.is_specular = true;
 	srec.pdf_ptr = nullptr;
 	return true;

@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <Tools/Files/rtw_stb_image.h>
 
+#include "Tools/Math/math_tools.h"
+
 color checker_texture::value(double u, double v, const point3& p) const
 {
 	auto sines = sin(10 * p.x()) * sin(10 * p.y()) * sin(10 * p.z());

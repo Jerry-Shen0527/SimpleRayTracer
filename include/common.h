@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <Tools/Spectrum/SampledSpectrum.h>
 
 class SampledSpectrum;
 using std::shared_ptr;

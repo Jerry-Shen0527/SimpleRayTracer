@@ -1,6 +1,8 @@
 #pragma once
 #include <Tools/Math/onb.h>
 
+#include "Tools/Math/Sampling.h"
+
 
 class pdf {
 public:

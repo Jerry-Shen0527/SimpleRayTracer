@@ -1,5 +1,7 @@
 #include <Tools/Math/vec3.h>
 
+#include "Tools/Math/Sampling.h"
+
 void vec3_test()
 {
 	vec3 a(3, 4, 5);

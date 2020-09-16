@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cmath>
 #include <iostream>
 using std::make_shared;
@@ -44,10 +45,12 @@ public:
 template <int n>
 vec<n>::vec(std::initializer_list<float> list)
 {
-	static_assert(list.size() == n);
-	for (int i = 0; i < n; ++i)
+	assert(list.size() == n);
+
+	int i = 0;
+	for (auto iter=list.begin();iter!=list.end();iter++,i++)
 	{
-		data[i] = list[i];
+		data[i] = *iter;
 	}
 }
 

@@ -5,14 +5,16 @@
 #include <Geometry/hit_record.h>
 #include <pdf/scatter_record.h>
 
+#include "common.h"
+
 class material {
 public:
 	virtual ~material() = default;
 
-	virtual color emitted(
+	virtual Spectrum emitted(
 		const ray& r_in, const hit_record& rec, double u, double v, const point3& p
 	) const {
-		return color(0, 0, 0);
+		return Spectrum(0);
 	}
 
 	virtual bool scatter(

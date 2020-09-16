@@ -3,6 +3,7 @@
 #include <BRDF/material.h>
 
 #include "texture.h"
+#include "Tools/Math/Sampling.h"
 
 class isotropic : public material {
 public:

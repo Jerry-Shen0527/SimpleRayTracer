@@ -1,5 +1,7 @@
 #include <Integrators/Film.h>
 
+#include "Tools/Math/math_tools.h"
+
 Film::Film(int w, int h): width(w), height(h)
 {
 	pixelcount = width * height;

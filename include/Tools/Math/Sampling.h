@@ -51,4 +51,5 @@ Point2f ConcentricSampleDisk(const Point2f& u) {
 	
 	//	Handle degeneracy at the origin 779
 	//	Apply concentric mapping to point 779
+	return u;
 }

@@ -1,5 +1,7 @@
 #include <Geometry/translation.h>
 
+#include "Tools/Math/math_tools.h"
+
 bool translate::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
 	ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, t_min, t_max, rec))

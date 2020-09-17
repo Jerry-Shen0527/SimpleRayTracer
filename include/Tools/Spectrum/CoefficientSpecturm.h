@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <Tools/Math/vec3.h>
 
+#include "BRDF/BxDF_Utility.h"
+
 template<int nSamples>
 class CoefficientSpectrum
 {
@@ -291,3 +293,26 @@ extern const double RGBIllum2SpectYellow[nRGB2SpectSamples];
 extern const double RGBIllum2SpectRed[nRGB2SpectSamples];
 extern const double RGBIllum2SpectGreen[nRGB2SpectSamples];
 extern const double RGBIllum2SpectBlue[nRGB2SpectSamples];
+
+void Blackbody(const Float* lambda, int n, Float T, Float* Le) {
+	const Float c = 299792458;
+	const Float h = 6.62606957e-34;
+	const Float kb = 1.3806488e-23;
+	for (int i = 0; i < n; ++i) {
+		Float l = lambda[i] * 1e-9;
+		Float lambda5 = (l * l) * (l * l) * l;
+		Le[i] = (2 * h * c * c) /
+			(lambda5 * (std::exp((h * c) / (l * kb * T)) - 1));
+	}
+}
+
+void BlackbodyNormalized(const Float* lambda, int n, Float T,
+	Float* Le) {
+	Blackbody(lambda, n, T, Le);
+
+	Float lambdaMax = 2.8977721e-3 / T * 1e9;
+	Float maxL;
+	Blackbody(&lambdaMax, 1, T, &maxL);
+	for (int i = 0; i < n; ++i)
+		Le[i] /= maxL;
+}

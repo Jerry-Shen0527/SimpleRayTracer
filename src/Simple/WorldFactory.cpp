@@ -123,25 +123,26 @@ hittable_list WorldFactory::cornell_box() {
 	//world.add(box2);
 	shared_ptr<material> glass = make_shared<dielectric>(1.5);
 	shared_ptr<hittable> glass_sphere = make_shared<sphere>(point3(190, 90, 190), 90.0, glass);
+
 	world.add(glass_sphere);
 
 	return world;
 }
 
 hittable_list WorldFactory::cornell_smoke() {
-	hittable_list objects;
+	hittable_list world;
 
 	auto red = make_shared<lambertian>(color(.65, .05, .05));
 	auto white = make_shared<lambertian>(color(.73, .73, .73));
 	auto green = make_shared<lambertian>(color(.12, .45, .15));
-	auto light = make_shared<diffuse_light>(color(7, 7, 7));
+	auto light = make_shared<diffuse_light>(color(15, 15, 15));
 
-	objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
-	objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
-	objects.add(make_shared<xz_rect>(113, 443, 127, 432, 554, light));
-	objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
-	objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
-	objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
+	world.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
+	world.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
+	world.add(make_shared<flip_face>(make_shared<xz_rect>(213, 343, 227, 332, 554, light, true)));
+	world.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
+	world.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
+	world.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
 	shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
 	box1 = make_shared<rotate_y>(box1, 15);
@@ -151,10 +152,10 @@ hittable_list WorldFactory::cornell_smoke() {
 	box2 = make_shared<rotate_y>(box2, -18);
 	box2 = make_shared<translate>(box2, vec3(130, 0, 65));
 
-	objects.add(make_shared<constant_medium>(box1, 0.01, color(0, 0, 0)));
-	objects.add(make_shared<constant_medium>(box2, 0.01, color(1, 1, 1)));
+	world.add(make_shared<constant_medium>(box1, 0.01, color(0, 0, 0)));
+	world.add(make_shared<constant_medium>(box2, 0.01, color(1, 1, 1)));
 
-	return objects;
+	return world;
 }
 
 hittable_list WorldFactory::final_scene() {

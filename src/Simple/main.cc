@@ -7,8 +7,8 @@
 
 #include "Integrators/SpectrumIntegrator.h"
 
-constexpr auto aspect_ratio = 1.6/0.9;
-constexpr int image_width = 2560;
+constexpr auto aspect_ratio = 1.0;
+constexpr int image_width = 1024;
 constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
 
 int main(int argc, char** argv) {
@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 	WorldFactory world_factory;
 	color background;
 
-	world_factory.get_world(8, aspect_ratio, world, cam, background);
+	world_factory.get_world(7, aspect_ratio, world, cam, background);
 
 	if (argc < 2)
 	{

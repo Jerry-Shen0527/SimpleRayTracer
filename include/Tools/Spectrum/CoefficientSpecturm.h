@@ -294,7 +294,7 @@ extern const double RGBIllum2SpectRed[nRGB2SpectSamples];
 extern const double RGBIllum2SpectGreen[nRGB2SpectSamples];
 extern const double RGBIllum2SpectBlue[nRGB2SpectSamples];
 
-void Blackbody(const Float* lambda, int n, Float T, Float* Le) {
+inline void Blackbody(const Float* lambda, int n, Float T, Float* Le) {
 	const Float c = 299792458;
 	const Float h = 6.62606957e-34;
 	const Float kb = 1.3806488e-23;
@@ -306,7 +306,7 @@ void Blackbody(const Float* lambda, int n, Float T, Float* Le) {
 	}
 }
 
-void BlackbodyNormalized(const Float* lambda, int n, Float T,
+inline void BlackbodyNormalized(const Float* lambda, int n, Float T,
 	Float* Le) {
 	Blackbody(lambda, n, T, Le);
 

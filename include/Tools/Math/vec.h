@@ -25,6 +25,7 @@ public:
 	vec& operator+=(const vec<n>& v);
 	vec& operator*=(const double t);
 	vec& operator/=(const double t);
+	vec normalize() const;
 
 	double length() const;
 	double length_squared() const;
@@ -35,7 +36,6 @@ public:
 	double& y();
 	double z() const;
 	double& z();
-
 	double w() const;
 	double& w();
 public:
@@ -48,7 +48,7 @@ vec<n>::vec(std::initializer_list<double> list)
 	assert(list.size() == n);
 
 	int i = 0;
-	for (auto iter=list.begin();iter!=list.end();iter++,i++)
+	for (auto iter = list.begin(); iter != list.end(); iter++, i++)
 	{
 		data[i] = *iter;
 	}
@@ -111,6 +111,12 @@ template <int n>
 vec<n>& vec<n>::operator/=(const double t)
 {
 	return *this *= 1 / t;
+}
+
+template <int n>
+vec<n> vec<n>::normalize() const
+{
+	return this /= length();
 }
 
 template <int n>

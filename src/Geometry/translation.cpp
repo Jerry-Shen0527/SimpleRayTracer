@@ -2,7 +2,7 @@
 
 #include "Tools/Math/math_tools.h"
 
-bool translate::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+bool translate::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
 	ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, t_min, t_max, rec))
 		return false;
@@ -54,7 +54,7 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, double angle) : ptr(p) {
 	bbox = aabb(min, max);
 }
 
-bool rotate_y::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+bool rotate_y::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
 	auto origin = r.origin();
 	auto direction = r.direction();
 

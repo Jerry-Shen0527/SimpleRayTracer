@@ -8,7 +8,7 @@
 #undef min
 #undef max
 
-struct hit_record;
+struct surface_hit_record;
 #include "hittable.h"
 
 class aabb {
@@ -39,7 +39,7 @@ public:
 		size_t start, size_t end, double time0, double time1);
 
 	virtual bool hit(
-		const ray& r, double tmin, double tmax, hit_record& rec) const override;
+		const ray& r, double tmin, double tmax, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
 

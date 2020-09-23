@@ -18,7 +18,7 @@ bool moving_sphere::bounding_box(double t0, double t1, aabb& output_box) const
 }
 
 bool moving_sphere::hit(
-	const ray& r, double t_min, double t_max, hit_record& rec) const {
+	const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
 	vec3 oc = r.origin() - center(r.time());
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());

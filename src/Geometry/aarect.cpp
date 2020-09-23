@@ -2,7 +2,7 @@
 
 #include "Tools/Math/math_tools.h"
 
-bool xy_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
+bool xy_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) const {
 	auto t = (k - r.origin().z()) / r.direction().z();
 	if (t < t0 || t > t1)
 		return false;
@@ -28,7 +28,7 @@ bool xy_rect::bounding_box(double t0, double t1, aabb& output_box) const
 	return true;
 }
 
-bool xz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
+bool xz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) const {
 	auto t = (k - r.origin().y()) / r.direction().y();
 	if (t < t0 || t > t1)
 		return false;
@@ -48,7 +48,7 @@ bool xz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
 
 double xz_rect::pdf_value(const point3& origin, const vec3& v) const
 {
-	hit_record rec;
+	surface_hit_record rec;
 	if (!this->hit(ray(origin, v), 0.001, infinity, rec))
 		return 0;
 
@@ -65,7 +65,7 @@ vec3 xz_rect::random(const point3& origin) const
 	return random_point - origin;
 }
 
-bool yz_rect::hit(const ray& r, double t0, double t1, hit_record& rec) const {
+bool yz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) const {
 	auto t = (k - r.origin().x()) / r.direction().x();
 	if (t < t0 || t > t1)
 		return false;
@@ -91,7 +91,7 @@ bool yz_rect::bounding_box(double t0, double t1, aabb& output_box) const
 	return true;
 }
 
-bool flip_face::hit(const ray& r, double t_min, double t_max, hit_record& rec) const
+bool flip_face::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const
 {
 	if (!ptr->hit(r, t_min, t_max, rec))
 		return false;

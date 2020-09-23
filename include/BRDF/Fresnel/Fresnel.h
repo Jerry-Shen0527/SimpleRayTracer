@@ -3,7 +3,7 @@
 #include "BRDF/BxDF_Utility.h"
 #include "Tools/Spectrum/SampledSpectrum.h"
 
-Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
+inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
 	cosThetaI = clamp(cosThetaI, -1, 1);
 
 	bool entering = cosThetaI > 0.f;

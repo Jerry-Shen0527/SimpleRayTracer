@@ -3,19 +3,7 @@
 
 #include "BRDF/material.h"
 
-struct hit_record
-{
-
-	bool IsSurfaceInteraction() const {
-		return n != Normal3f();
-	}
-	
-	Point3f p;
-	Float t;
-	Normal3f n;
-};
-
-struct surface_hit_record {
+struct hit_record {
 	point3 p;
 	vec3 normal;
 	double u;

@@ -89,7 +89,7 @@ bvh_node::bvh_node(hittable_list& list, double time0, double time1) : bvh_node(l
 {}
 
 
-bool bvh_node::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+bool bvh_node::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
 	if (!box.hit(r, t_min, t_max))
 		return false;
 

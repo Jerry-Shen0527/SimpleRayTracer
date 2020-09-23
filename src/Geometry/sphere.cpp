@@ -4,7 +4,7 @@
 #include "Tools/Math/math_tools.h"
 #include "Tools/Math/Sampling.h"
 
-bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+bool sphere::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
 	vec3 oc = r.origin() - center;
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());
@@ -57,7 +57,7 @@ void sphere::get_sphere_uv(const vec3& p, double& u, double& v) const
 }
 
 double sphere::pdf_value(const point3& o, const vec3& v) const {
-	hit_record rec;
+	surface_hit_record rec;
 	if (!this->hit(ray(o, v), 0.001, infinity, rec))
 		return 0;
 

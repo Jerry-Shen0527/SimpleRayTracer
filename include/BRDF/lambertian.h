@@ -9,7 +9,7 @@ public:
     lambertian(const color& a) : albedo(make_shared<solid_color>(a)) {}
     lambertian(shared_ptr<texture> a) : albedo(a) {}
     virtual bool scatter(
-        const ray& r_in, const hit_record& rec, scatter_record& srec
+        const ray& r_in, const surface_hit_record& rec, scatter_record& srec
     ) const override {
         srec.is_specular = false;
         srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
@@ -19,7 +19,7 @@ public:
     }
 
     double scattering_pdf(
-        const ray& r_in, const hit_record& rec, const ray& scattered
+        const ray& r_in, const surface_hit_record& rec, const ray& scattered
     ) const {
         auto cosine = dot(rec.normal, unit_vector(scattered.direction()));
         return cosine < 0 ? 0 : cosine / pi;

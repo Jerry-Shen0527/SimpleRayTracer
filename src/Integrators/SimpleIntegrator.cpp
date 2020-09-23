@@ -90,7 +90,7 @@ void SimpleIntegrator::integrate(camera& cam, Film& film, hittable_list& world, 
 color SimpleIntegrator::ray_color(const ray& r, const color& background, const hittable& world,
                                   std::shared_ptr<hittable> lights, int depth)
 {
-	hit_record rec;
+	surface_hit_record rec;
 
 	if (depth <= 0)
 		return color(0, 0, 0);

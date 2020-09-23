@@ -10,8 +10,8 @@ void hittable_list::add(shared_ptr<hittable> object)
 	}
 }
 
-bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
-	hit_record temp_rec;
+bool hittable_list::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+	surface_hit_record temp_rec;
 	bool hit_anything = false;
 	auto closest_so_far = t_max;
 

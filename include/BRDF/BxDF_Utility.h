@@ -44,6 +44,8 @@ inline double CosDPhi(const vec3& wa, const vec3& wb) {
 
 typedef double Float;
 typedef vec3 Vector3f;
+typedef vec3 Point3f;
+typedef vec3 Normal3f;
 
 inline normal3
 Faceforward(const normal3& n, const vec3& v) {

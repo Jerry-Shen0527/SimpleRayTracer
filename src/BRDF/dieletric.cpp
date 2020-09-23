@@ -14,7 +14,7 @@ double schlick(double cosine, double ref_idx) {
 	return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
-bool dielectric::scatter(const ray& r_in, const hit_record& rec, scatter_record& srec) const
+bool dielectric::scatter(const ray& r_in, const surface_hit_record& rec, scatter_record& srec) const
 {
 	srec.attenuation = color(1.0, 1.0, 1.0);
 	srec.update();

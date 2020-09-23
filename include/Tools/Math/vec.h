@@ -25,6 +25,8 @@ public:
 	vec& operator+=(const vec<n>& v);
 	vec& operator*=(const double t);
 	vec& operator/=(const double t);
+	bool operator==(const vec& t)const;
+	bool operator!=(const vec& t)const;
 	vec normalize() const;
 
 	double length() const;
@@ -114,9 +116,28 @@ vec<n>& vec<n>::operator/=(const double t)
 }
 
 template <int n>
+bool vec<n>::operator==(const vec& t) const
+{
+	for (int i = 0; i < n; ++i)
+	{
+		if (data[i]!=t.data[i])
+		{
+			return false;
+		}
+	}
+	return  true;
+}
+
+template <int n>
+bool vec<n>::operator!=(const vec& t) const
+{
+	return !*this == t;
+}
+
+template <int n>
 vec<n> vec<n>::normalize() const
 {
-	return this /= length();
+	return *this / length();
 }
 
 template <int n>

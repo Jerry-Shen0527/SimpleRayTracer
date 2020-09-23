@@ -19,7 +19,7 @@ public:
 	void clear() { objects.clear(); }
 	void add(shared_ptr<hittable> object);
 
-	virtual bool hit(const ray& r, double tmin, double tmax, hit_record& rec) const override;
+	virtual bool hit(const ray& r, double tmin, double tmax, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
 	double pdf_value(const point3& o, const vec3& v) const override;

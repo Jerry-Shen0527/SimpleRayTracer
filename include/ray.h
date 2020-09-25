@@ -22,8 +22,9 @@ public:
 
 public:
 	point3 orig;
-	vec3 dir;
 	double tm;
+private:
+	vec3 dir;
 };
 
 #endif

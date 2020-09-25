@@ -3,6 +3,8 @@
 
 #include <ray.h>
 
+#include "Film.h"
+
 
 inline vec3 random_in_unit_disk() {
 	while (true) {
@@ -26,7 +28,8 @@ public:
 		double aperture,
 		double focus_dist,
 		double t0 = 0,
-		double t1 = 0
+		double t1 = 0,
+		shared_ptr<Film> _film = nullptr
 	)
 	{
 		auto theta = degrees_to_radians(vfov);
@@ -47,6 +50,8 @@ public:
 
 		time0 = t0;
 		time1 = t1;
+
+		film = _film;
 	}
 
 	ray get_ray(double s, double t) const {
@@ -60,6 +65,10 @@ public:
 		);
 	}
 
+	virtual Spectrum we(const ray& ray, Point2f* pRaster2 = nullptr) const;
+
+	shared_ptr<Film> film;
+
 private:
 	double time0;
 	double time1;
@@ -71,4 +80,9 @@ private:
 
 	vec3 w, u, v;
 };
+
+inline Spectrum camera::we(const ray& ray, Point2f* pRaster2) const
+{
+	return Spectrum();
+}
 #endif

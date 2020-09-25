@@ -12,7 +12,7 @@ public:
         const ray& r_in, const surface_hit_record& rec, scatter_record& srec
     ) const override {
         srec.is_specular = false;
-        srec.attenuation = albedo->value(rec.u, rec.v, rec.p);
+        srec.attenuation = albedo->value(rec.uv, rec.p);
         srec.update();
         srec.pdf_ptr = make_shared< cosine_pdf>(rec.normal);
         return true;

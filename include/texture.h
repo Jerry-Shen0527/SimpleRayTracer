@@ -5,10 +5,9 @@
 
 #include "Tools/Math/vec3.h"
 
-
 class texture {
 public:
-	virtual color value(double u, double v, const point3& p) const = 0;
+	virtual color value(const vec2& uv, const point3& p) const = 0;
 };
 
 class solid_color : public texture {
@@ -19,7 +18,7 @@ public:
 	solid_color(double red, double green, double blue)
 		: solid_color(color(red, green, blue)) {}
 
-	virtual color value(double u, double v, const vec3& p) const override {
+	virtual color value(const vec2& uv, const vec3& p) const override {
 		return color_value;
 	}
 
@@ -37,7 +36,7 @@ public:
 	checker_texture(color c1, color c2)
 		: even(make_shared<solid_color>(c1)), odd(make_shared<solid_color>(c2)) {}
 
-	virtual color value(double u, double v, const point3& p) const override;
+	virtual color value(const vec2& uv, const point3& p) const override;
 
 public:
 	std::shared_ptr<texture> odd;
@@ -50,7 +49,7 @@ public:
 
 	noise_texture(double sc) : scale(sc) {}
 
-	virtual color value(double u, double v, const point3& p) const override;
+	virtual color value(const vec2& uv, const point3& p) const override;
 
 public:
 	perlin noise;
@@ -70,7 +69,7 @@ public:
 		delete data;
 	}
 
-	virtual color value(double u, double v, const vec3& p) const override;
+	virtual color value(const vec2& uv, const vec3& p) const override;
 
 private:
 	unsigned char* data;

@@ -5,7 +5,7 @@
 #include "pdf/scatter_record.h"
 #include "Tools/camera.h"
 
-void SpectrumIntegrator::integrate(camera& cam, Film& film, hittable_list& world, color background)
+void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, color background)
 {
 	auto lights = make_shared<hittable_list>(world);
 
@@ -14,20 +14,20 @@ void SpectrumIntegrator::integrate(camera& cam, Film& film, hittable_list& world
 
 	//std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-	auto worker = [MAX_THREAD, &world, &cam, background, &lights, &film, this](int arg)
+	auto worker = [MAX_THREAD, &world, &cam, background, &lights, this](int arg)
 	{
 		int i, j, old_j;
 
-		for (int idx = 0; idx < film.pixelcount; idx += MAX_THREAD)
+		for (int idx = 0; idx < cam.film->pixelcount; idx += MAX_THREAD)
 		{
-			idx_to_ij(idx + arg, i, j, film.width);
+			idx_to_ij(idx + arg, i, j, cam.film->width);
 			if (arg == 0 && j % 10 == 0 && old_j != j)
 			{
 				std::cerr << "\r[ ";
 
 				for (int i = 0; i < 50; ++i)
 				{
-					if (i<double(j) / film.height * 50)
+					if (i<double(j) / cam.film->height * 50)
 					{
 						std::cerr << "-";
 					}
@@ -36,19 +36,19 @@ void SpectrumIntegrator::integrate(camera& cam, Film& film, hittable_list& world
 						std::cerr << " ";
 					}
 				}
-				std::cerr << int(double(j) / film.height * 100) << '%' << "]" << std::flush;
+				std::cerr << int(double(j) / cam.film->height * 100) << '%' << "]" << std::flush;
 			}
 			old_j = j;
 			color pixel_color(0, 0, 0);
 			for (int s = 0; s < sample_per_pixel; ++s) {
-				auto u = (i + random_double()) / (film.width - 1);
-				auto v = (j + random_double()) / (film.height - 1);
+				auto u = (i + random_double()) / (cam.film->width - 1);
+				auto v = (j + random_double()) / (cam.film->height - 1);
 				ray r = cam.get_ray(u, 1 - v);
 				color c;
 				ray_color(r, background, world, lights, max_depth).ToRGB(c);
 				pixel_color += c;
 			}
-			film.write_color(i, j, pixel_color, sample_per_pixel);
+			cam.film->write_color(i, j, pixel_color, sample_per_pixel);
 		}
 	};
 
@@ -67,23 +67,23 @@ void SpectrumIntegrator::integrate(camera& cam, Film& film, hittable_list& world
 
 	int i, j, old_j = 0;
 
-	for (int idx = 0; idx < film.pixelcount; idx++)
+	for (int idx = 0; idx < cam.film->pixelcount; idx++)
 	{
-		idx_to_ij(idx, i, j, film.width);
+		idx_to_ij(idx, i, j, cam.film->width);
 		if (j != old_j)
 		{
-			std::cerr << "\rAlready finishd: " << double(j) / film.height * 100 << '%' << std::flush;
+			std::cerr << "\rAlready finishd: " << double(j) / cam.film->height * 100 << '%' << std::flush;
 		}
 		color pixel_color(0, 0, 0);
 		for (int s = 0; s < sample_per_pixel; ++s) {
-			auto u = (i + random_double()) / (film.width - 1);
-			auto v = (j + random_double()) / (film.height - 1);
+			auto u = (i + random_double()) / (cam.film->width - 1);
+			auto v = (j + random_double()) / (cam.film->height - 1);
 			ray r = cam.get_ray(u, 1 - v);
 			color c;
 			ray_color(r, background, world, lights, max_depth).ToRGB(c);
 			pixel_color += c;
 		}
-		film.write_color(i, j, pixel_color, sample_per_pixel);
+		cam.film->write_color(i, j, pixel_color, sample_per_pixel);
 		old_j = j;
 	}
 
@@ -102,7 +102,7 @@ Spectrum SpectrumIntegrator::ray_color(const ray& r, const color& background, co
 		return Spectrum::FromRGB(background);
 
 	spectrum_scatter_record srec;
-	Spectrum emitted = Spectrum::FromRGB(rec.mat_ptr->emitted(r, rec, rec.u, rec.v, rec.p));
+	Spectrum emitted = Spectrum::FromRGB(rec.mat_ptr->emitted(r, rec, rec.uv, rec.p));
 	if (!rec.mat_ptr->scatter(r, rec, srec))
 		return emitted;
 	if (srec.is_specular) {

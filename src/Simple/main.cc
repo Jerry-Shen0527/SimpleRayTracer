@@ -21,11 +21,12 @@ int main(int argc, char** argv) {
 
 	//World
 	hittable_list world;
+
 	camera cam;
 	WorldFactory world_factory;
 	color background;
 
-	world_factory.get_world(7, aspect_ratio, world, cam, background);
+	world_factory.get_world(6, aspect_ratio, world, cam, background);
 
 	if (argc < 2)
 	{
@@ -38,20 +39,20 @@ int main(int argc, char** argv) {
 	Spectrum::Init();
 
 	// Render
-	start = clock();
+	cam.film = make_shared<Film>(image_width,image_height);
 
+	start = clock();
 
 	SpectrumIntegrator spectrum_integrator(samples_per_pixel, max_depth);
 	SimpleIntegrator simple_integrator(samples_per_pixel, max_depth);
 
-	Film film(image_width, image_height);
-	spectrum_integrator.integrate(cam, film, world, background);
-	//simple_integrator.integrate(cam, film, world, background);
+	spectrum_integrator.integrate(cam, world, background);
+	//simple_integrator.integrate(cam, world, background);
 
 	finish = clock();
 
 	//film_to_file("out", film);
-	film_to_file(std::string(argv[1]), film);
+	film_to_file(std::string(argv[1]), *(cam.film));
 
 	std::cerr << "time = " << double(finish - start) / CLOCKS_PER_SEC << "s" << std::endl;  //输出时间（单位：ｓ）
 

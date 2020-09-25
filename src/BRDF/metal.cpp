@@ -1,7 +1,7 @@
 #include <BRDF/metal.h>
 
 #include "Tools/Math/Sampling.h"
-#include <Geometry/surface_hit_record.h>
+#include <Geometry/hit_record.h>
 
 vec3 reflect(const vec3& v, const vec3& n) {
 	return v - 2 * dot(v, n) * n;

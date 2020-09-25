@@ -1,6 +1,6 @@
 #pragma once
 #include <ray.h>
-#include "surface_hit_record.h"
+#include "hit_record.h"
 
 class aabb;
 class material;

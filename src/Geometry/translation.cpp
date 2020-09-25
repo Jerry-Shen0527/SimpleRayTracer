@@ -8,7 +8,7 @@ bool translate::hit(const ray& r, double t_min, double t_max, surface_hit_record
 		return false;
 
 	rec.p += offset;
-	rec.set_face_normal(moved_r, rec.normal);
+	rec.set_face_normal(moved_r.direction(), rec.normal);
 
 	return true;
 }
@@ -79,7 +79,7 @@ bool rotate_y::hit(const ray& r, double t_min, double t_max, surface_hit_record&
 	normal[2] = -sin_theta * rec.normal[0] + cos_theta * rec.normal[2];
 
 	rec.p = p;
-	rec.set_face_normal(rotated_r, normal);
+	rec.set_face_normal(rotated_r.direction(), normal);
 
 	return true;
 }

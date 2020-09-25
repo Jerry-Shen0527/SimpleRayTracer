@@ -20,8 +20,8 @@ bool sphere::hit(const ray& r, double t_min, double t_max, surface_hit_record& r
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
 			vec3 outward_normal = (rec.p - center) / radius;
-			rec.set_face_normal(r, outward_normal);
-			get_sphere_uv((rec.p - center) / radius, rec.u, rec.v);
+			rec.set_face_normal(r.direction(), outward_normal);
+			get_sphere_uv((rec.p - center) / radius, rec.uv);
 			rec.mat_ptr = mat_ptr;
 			return true;
 		}
@@ -32,8 +32,8 @@ bool sphere::hit(const ray& r, double t_min, double t_max, surface_hit_record& r
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
 			vec3 outward_normal = (rec.p - center) / radius;
-			rec.set_face_normal(r, outward_normal);
-			get_sphere_uv((rec.p - center) / radius, rec.u, rec.v);
+			rec.set_face_normal(r.direction(), outward_normal);
+			get_sphere_uv((rec.p - center) / radius, rec.uv);
 			rec.mat_ptr = mat_ptr;
 			return true;
 		}
@@ -48,12 +48,12 @@ bool sphere::bounding_box(double t0, double t1, aabb& output_box) const
 	return true;
 }
 
-void sphere::get_sphere_uv(const vec3& p, double& u, double& v) const
+void sphere::get_sphere_uv(const vec3& p, vec2& uv) const
 {
 	auto phi = atan2(p.z(), p.x());
 	auto theta = asin(p.y());
-	u = 1 - (phi + pi) / (2 * pi);
-	v = (theta + pi / 2) / pi;
+	uv.x() = 1 - (phi + pi) / (2 * pi);
+	uv.y() = (theta + pi / 2) / pi;
 }
 
 double sphere::pdf_value(const point3& o, const vec3& v) const {

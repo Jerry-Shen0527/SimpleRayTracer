@@ -131,7 +131,7 @@ bool vec<n>::operator==(const vec& t) const
 template <int n>
 bool vec<n>::operator!=(const vec& t) const
 {
-	return !*this == t;
+	return !(*this == t);
 }
 
 template <int n>

@@ -17,7 +17,7 @@ public:
 
 	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
 
-	void get_sphere_uv(const vec3& p, double& u, double& v) const;
+	void get_sphere_uv(const vec3& p, vec2& uv) const;
 	double pdf_value(const point3& o, const vec3& v) const override;
 	vec3 random(const point3& o) const override;
 

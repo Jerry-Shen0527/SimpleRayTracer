@@ -34,7 +34,7 @@ bool moving_sphere::hit(
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			auto outward_normal = (rec.p - center(r.time())) / radius;
-			rec.set_face_normal(r, outward_normal);
+			rec.set_face_normal(r.direction(), outward_normal);
 			rec.mat_ptr = mat_ptr;
 			return true;
 		}
@@ -44,7 +44,7 @@ bool moving_sphere::hit(
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			auto outward_normal = (rec.p - center(r.time())) / radius;
-			rec.set_face_normal(r, outward_normal);
+			rec.set_face_normal(r.direction(), outward_normal);
 			rec.mat_ptr = mat_ptr;
 			return true;
 		}

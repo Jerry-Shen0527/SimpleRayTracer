@@ -5,16 +5,16 @@
 
 #include "Tools/Math/math_tools.h"
 
-color checker_texture::value(double u, double v, const point3& p) const
+color checker_texture::value(const vec2& uv, const point3& p) const
 {
 	auto sines = sin(10 * p.x()) * sin(10 * p.y()) * sin(10 * p.z());
 	if (sines < 0)
-		return odd->value(u, v, p);
+		return odd->value(uv, p);
 	else
-		return even->value(u, v, p);
+		return even->value(uv, p);
 }
 
-color noise_texture::value(double u, double v, const point3& p) const
+color noise_texture::value(const vec2& uv, const point3& p) const
 {
 	return color(1, 1, 1) * 0.5 * (1 + sin(scale * p.z() + 10 * noise.turb(p)));
 }
@@ -35,18 +35,18 @@ image_texture::image_texture(const std::string& filename)
 	bytes_per_scanline = bytes_per_pixel * width;
 }
 
-color image_texture::value(double u, double v, const vec3& p) const
+color image_texture::value(const vec2& uv, const vec3& p) const
 {
 	// If we have no texture data, then return solid cyan as a debugging aid.
 	if (data == nullptr)
 		return color(0, 1, 1);
 
 	// Clamp input texture coordinates to [0,1] x [1,0]
-	u = clamp(u, 0.0, 1.0);
-	v = 1.0 - clamp(v, 0.0, 1.0); // Flip V to image coordinates
+	auto x = clamp(uv.x(), 0.0, 1.0);
+	auto y = 1.0 - clamp(uv.y(), 0.0, 1.0); // Flip V to image coordinates
 
-	auto i = static_cast<int>(u * width);
-	auto j = static_cast<int>(v * height);
+	auto i = static_cast<int>(x * width);
+	auto j = static_cast<int>(y * height);
 
 	// Clamp integer mapping, since actual coordinates should be less than 1.0
 	if (i >= width) i = width - 1;

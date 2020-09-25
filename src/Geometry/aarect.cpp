@@ -10,11 +10,11 @@ bool xy_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) c
 	auto y = r.origin().y() + t * r.direction().y();
 	if (x < x0 || x > x1 || y < y0 || y > y1)
 		return false;
-	rec.u = (x - x0) / (x1 - x0);
-	rec.v = (y - y0) / (y1 - y0);
+	rec.uv.x() = (x - x0) / (x1 - x0);
+	rec.uv.y() = (y - y0) / (y1 - y0);
 	rec.t = t;
 	auto outward_normal = vec3(0, 0, 1);
-	rec.set_face_normal(r, outward_normal);
+	rec.set_face_normal(r.direction(), outward_normal);
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
 	return true;
@@ -36,11 +36,11 @@ bool xz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) c
 	auto z = r.origin().z() + t * r.direction().z();
 	if (x < x0 || x > x1 || z < z0 || z > z1)
 		return false;
-	rec.u = (x - x0) / (x1 - x0);
-	rec.v = (z - z0) / (z1 - z0);
+	rec.uv.x() = (x - x0) / (x1 - x0);
+	rec.uv.y() = (z - z0) / (z1 - z0);
 	rec.t = t;
 	auto outward_normal = vec3(0, 1, 0);
-	rec.set_face_normal(r, outward_normal);
+	rec.set_face_normal(r.direction(), outward_normal);
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
 	return true;
@@ -73,11 +73,11 @@ bool yz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) c
 	auto z = r.origin().z() + t * r.direction().z();
 	if (y < y0 || y > y1 || z < z0 || z > z1)
 		return false;
-	rec.u = (y - y0) / (y1 - y0);
-	rec.v = (z - z0) / (z1 - z0);
+	rec.uv.x() = (y - y0) / (y1 - y0);
+	rec.uv.y() = (z - z0) / (z1 - z0);
 	rec.t = t;
 	auto outward_normal = vec3(1, 0, 0);
-	rec.set_face_normal(r, outward_normal);
+	rec.set_face_normal(r.direction(), outward_normal);
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
 	return true;

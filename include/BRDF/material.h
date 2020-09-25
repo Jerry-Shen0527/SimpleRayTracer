@@ -19,7 +19,7 @@ public:
 		return false;
 	}
 
-	virtual double scattering_pdf(
+	virtual float scattering_pdf(
 		const ray& r_in, const surface_hit_record& rec, const ray& scattered
 	) const {
 		return 0;

@@ -5,18 +5,18 @@
 #include <BRDF/isotropic.h>
 class constant_medium : public hittable {
 public:
-	constant_medium(std::shared_ptr<hittable> b, double d, std::shared_ptr<texture> a);
+	constant_medium(std::shared_ptr<hittable> b, float d, std::shared_ptr<texture> a);
 
-	constant_medium(std::shared_ptr<hittable> b, double d, color c);
+	constant_medium(std::shared_ptr<hittable> b, float d, color c);
 
-	virtual bool hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const override;
 
-	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
+	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
 public:
 	std::shared_ptr<hittable> boundary;
 	std::shared_ptr<material> phase_function;
-	double neg_inv_density;
+	float neg_inv_density;
 };
 
 #endif

@@ -30,7 +30,7 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color backgr
 
 				for (int i = 0; i < 50; ++i)
 				{
-					if (i<double(j) / cam.film->height * 50)
+					if (i<float(j) / cam.film->height * 50)
 					{
 						std::cerr << "-";
 					}
@@ -39,13 +39,13 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color backgr
 						std::cerr << " ";
 					}
 				}
-				std::cerr << int(double(j) / cam.film->height * 100) << '%' << "]" << std::flush;
+				std::cerr << int(float(j) / cam.film->height * 100) << '%' << "]" << std::flush;
 			}
 			old_j = j;
 			color pixel_color(0, 0, 0);
 			for (int s = 0; s < sample_per_pixel; ++s) {
-				auto u = (i + random_double()) / (cam.film->width - 1);
-				auto v = (j + random_double()) / (cam.film->height - 1);
+				auto u = (i + random_float()) / (cam.film->width - 1);
+				auto v = (j + random_float()) / (cam.film->height - 1);
 				ray r = cam.get_ray(u, 1 - v);
 				pixel_color += ray_color(r, background, world, lights, max_depth);
 			}
@@ -73,12 +73,12 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color backgr
 		idx_to_ij(idx, i, j, cam.film->width);
 		if (j != old_j)
 		{
-			std::cerr << "\rAlready finishd: " << double(j) / cam.film->height * 100 << '%' << std::flush;
+			std::cerr << "\rAlready finishd: " << float(j) / cam.film->height * 100 << '%' << std::flush;
 		}
 		color pixel_color(0, 0, 0);
 		for (int s = 0; s < sample_per_pixel; ++s) {
-			auto u = (i + random_double()) / (cam.film->width - 1);
-			auto v = (j + random_double()) / (cam.film->height - 1);
+			auto u = (i + random_float()) / (cam.film->width - 1);
+			auto v = (j + random_float()) / (cam.film->height - 1);
 			ray r = cam.get_ray(u, 1 - v);
 			pixel_color += ray_color(r, background, world, lights, max_depth);
 		}

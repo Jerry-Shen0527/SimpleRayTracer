@@ -15,11 +15,21 @@ struct hit_record
 		return normal != Normal3f();
 	}
 	Point3f p;
-	double t;
+	float t;
 	Normal3f normal;
 	Vector3f ray_in;
 
 	Vector3f pError;
+
+	ray SpawnRay(const Vector3f& d) const {
+		Point3f o = OffsetRayOrigin(p, pError, normal, d);
+		return ray(o, d, infinity, time, GetMedium(d));
+	}
+	ray SpawnRayTo(const Point3f& p2) const {
+		Point3f origin = OffsetRayOrigin(p, pError, n, p2 - p);
+		Vector3f d = p2 - p;
+		return ray(origin, d, 1 - ShadowEpsilon, time, GetMedium(d));
+	}
 };
 
 struct surface_hit_record :public hit_record {
@@ -61,3 +71,5 @@ inline surface_hit_record::surface_hit_record(const Point3f& p, const Vector3f& 
 	shading.dndu = dndu;
 	shading.dndv = dndv;
 }
+
+using Interaction = hit_record;

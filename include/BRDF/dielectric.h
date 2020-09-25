@@ -6,16 +6,16 @@
 #include <pdf/scatter_record.h>
 #include <Geometry/hit_record.h>
 
-vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat);
-double schlick(double cosine, double ref_idx);
+vec3 refract(const vec3& uv, const vec3& n, float etai_over_etat);
+float schlick(float cosine, float ref_idx);
 
 class dielectric : public material {
 public:
-	dielectric(double ri) : ref_idx(ri) {}
+	dielectric(float ri) : ref_idx(ri) {}
 
 	virtual bool scatter(
 		const ray& r_in, const surface_hit_record& rec, scatter_record& srec
 	) const override;
 
-	double ref_idx;
+	float ref_idx;
 };

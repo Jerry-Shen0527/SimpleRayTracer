@@ -13,39 +13,40 @@ template<int n>
 class vec {
 public:
 	vec() : data{ 0.f } {}
-	vec(std::initializer_list<double> list);
+	vec(std::initializer_list<float> list);
 
 	inline static vec random();
-	inline static vec random(double min, double max);
+	inline static vec random(float min, float max);
 
 	vec operator-() const;
-	double operator[](int i) const { return data[i]; }
-	double& operator[](int i) { return data[i]; }
+	float operator[](int i) const { return data[i]; }
+	float& operator[](int i) { return data[i]; }
 
 	vec& operator+=(const vec<n>& v);
-	vec& operator*=(const double t);
-	vec& operator/=(const double t);
+	vec& operator*=(const float t);
+	vec& operator/=(const float t);
 	bool operator==(const vec& t)const;
 	bool operator!=(const vec& t)const;
 	vec normalize() const;
+	vec abs() const;
 
-	double length() const;
-	double length_squared() const;
+	float length() const;
+	float length_squared() const;
 
-	double x() const;
-	double& x();
-	double y() const;
-	double& y();
-	double z() const;
-	double& z();
-	double w() const;
-	double& w();
+	float x() const;
+	float& x();
+	float y() const;
+	float& y();
+	float z() const;
+	float& z();
+	float w() const;
+	float& w();
 public:
-	double data[n];
+	float data[n];
 };
 
 template <int n>
-vec<n>::vec(std::initializer_list<double> list)
+vec<n>::vec(std::initializer_list<float> list)
 {
 	assert(list.size() == n);
 
@@ -62,18 +63,18 @@ vec<n> vec<n>::random()
 	vec rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst.data[i] = random_double();
+		rst.data[i] = random_float();
 	}
 	return rst;
 }
 
 template <int n>
-vec<n> vec<n>::random(double min, double max)
+vec<n> vec<n>::random(float min, float max)
 {
 	vec rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst.data[i] = random_double(min, max);
+		rst.data[i] = random_float(min, max);
 	}
 	return rst;
 }
@@ -100,7 +101,7 @@ vec<n>& vec<n>::operator+=(const vec<n>& v)
 }
 
 template <int n>
-vec<n>& vec<n>::operator*=(const double t)
+vec<n>& vec<n>::operator*=(const float t)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -110,7 +111,7 @@ vec<n>& vec<n>::operator*=(const double t)
 }
 
 template <int n>
-vec<n>& vec<n>::operator/=(const double t)
+vec<n>& vec<n>::operator/=(const float t)
 {
 	return *this *= 1 / t;
 }
@@ -120,7 +121,7 @@ bool vec<n>::operator==(const vec& t) const
 {
 	for (int i = 0; i < n; ++i)
 	{
-		if (data[i]!=t.data[i])
+		if (data[i] != t.data[i])
 		{
 			return false;
 		}
@@ -141,15 +142,26 @@ vec<n> vec<n>::normalize() const
 }
 
 template <int n>
-double vec<n>::length() const
+vec<n> vec<n>::abs() const
+{
+	vec temp;
+	for (int i = 0; i < n; ++i)
+	{
+		temp.data[i] = abs(data[i]);
+	}
+	return temp;
+}
+
+template <int n>
+float vec<n>::length() const
 {
 	return sqrt(length_squared());
 }
 
 template <int n>
-double vec<n>::length_squared() const
+float vec<n>::length_squared() const
 {
-	double rst = 0.f;
+	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{
 		rst += data[i] * data[i];
@@ -158,56 +170,56 @@ double vec<n>::length_squared() const
 }
 
 template <int n>
-double vec<n>::x() const
+float vec<n>::x() const
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
 template <int n>
-double& vec<n>::x()
+float& vec<n>::x()
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
 template <int n>
-double vec<n>::y() const
+float vec<n>::y() const
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
 template <int n>
-double& vec<n>::y()
+float& vec<n>::y()
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
 template <int n>
-double vec<n>::z() const
+float vec<n>::z() const
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
 template <int n>
-double& vec<n>::z()
+float& vec<n>::z()
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
 template <int n>
-double vec<n>::w() const
+float vec<n>::w() const
 {
 	static_assert(n >= 4);
 	return data[3];
 }
 
 template <int n>
-double& vec<n>::w()
+float& vec<n>::w()
 {
 	static_assert(n >= 4);
 	return data[3];
@@ -253,7 +265,7 @@ inline vec<n> operator*(const vec<n>& u, const vec<n>& v) {
 }
 
 template<int n>
-inline vec<n> operator*(double t, const vec<n>& v) {
+inline vec<n> operator*(float t, const vec<n>& v) {
 	vec<n> rst;
 	for (int i = 0; i < n; ++i)
 	{
@@ -263,18 +275,18 @@ inline vec<n> operator*(double t, const vec<n>& v) {
 }
 
 template<int n>
-inline vec<n> operator*(const vec<n>& v, double t) {
+inline vec<n> operator*(const vec<n>& v, float t) {
 	return t * v;
 }
 
 template<int n>
-inline vec<n> operator/(vec<n> v, double t) {
+inline vec<n> operator/(vec<n> v, float t) {
 	return (1 / t) * v;
 }
 
 template<int n>
-inline double dot(const vec<n>& u, const vec<n>& v) {
-	double rst = 0.f;
+inline float dot(const vec<n>& u, const vec<n>& v) {
+	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{
 		rst += u.data[i] * v.data[i];

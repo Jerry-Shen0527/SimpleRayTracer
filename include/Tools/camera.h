@@ -8,7 +8,7 @@
 
 inline vec3 random_in_unit_disk() {
 	while (true) {
-		auto p = vec3(random_double(-1, 1), random_double(-1, 1), 0);
+		auto p = vec3(random_float(-1, 1), random_float(-1, 1), 0);
 		if (p.length_squared() >= 1) continue;
 		return p;
 	}
@@ -23,12 +23,12 @@ public:
 		point3 lookfrom,
 		point3 lookat,
 		vec3   vup,
-		double vfov, // vertical field-of-view in degrees
-		double aspect_ratio,
-		double aperture,
-		double focus_dist,
-		double t0 = 0,
-		double t1 = 0,
+		float vfov, // vertical field-of-view in degrees
+		float aspect_ratio,
+		float aperture,
+		float focus_dist,
+		float t0 = 0,
+		float t1 = 0,
 		shared_ptr<Film> _film = nullptr
 	)
 	{
@@ -54,14 +54,14 @@ public:
 		film = _film;
 	}
 
-	ray get_ray(double s, double t) const {
+	ray get_ray(float s, float t) const {
 		vec3 rd = lens_radius * random_in_unit_disk();
 		vec3 offset = u * rd.x() + v * rd.y();
 
 		return ray(
 			origin + offset,
 			lower_left_corner + s * horizontal + t * vertical - origin - offset,
-			random_double(time0, time1)
+			random_float(time0, time1)
 		);
 	}
 
@@ -70,13 +70,13 @@ public:
 	shared_ptr<Film> film;
 
 private:
-	double time0;
-	double time1;
+	float time0;
+	float time1;
 	point3 origin;
 	point3 lower_left_corner;
 	vec3 horizontal;
 	vec3 vertical;
-	double lens_radius;
+	float lens_radius;
 
 	vec3 w, u, v;
 };

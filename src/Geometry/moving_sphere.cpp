@@ -2,10 +2,10 @@
 #include <Geometry/MovingSphere.h>
 #include <Geometry/bvh.h>
 
-point3 moving_sphere::center(double time) const {
+point3 moving_sphere::center(float time) const {
 	return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0);
 }
-bool moving_sphere::bounding_box(double t0, double t1, aabb& output_box) const
+bool moving_sphere::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	aabb box0(
 		center(t0) - vec3(radius, radius, radius),
@@ -18,7 +18,7 @@ bool moving_sphere::bounding_box(double t0, double t1, aabb& output_box) const
 }
 
 bool moving_sphere::hit(
-	const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+	const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	vec3 oc = r.origin() - center(r.time());
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());

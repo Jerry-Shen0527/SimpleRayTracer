@@ -19,7 +19,7 @@ public:
 	point3 min() const { return _min; }
 	point3 max() const { return _max; }
 
-	bool hit(const ray& r, double tmin, double tmax) const;
+	bool hit(const ray& r, float tmin, float tmax) const;
 
 	point3 _min;
 	point3 _max;
@@ -31,17 +31,17 @@ class bvh_node : public hittable
 {
 public:
 
-	bvh_node(hittable_list& list, double time0, double time1);
+	bvh_node(hittable_list& list, float time0, float time1);
 
 
 	bvh_node(
 		std::vector<std::shared_ptr<hittable>>& objects,
-		size_t start, size_t end, double time0, double time1);
+		size_t start, size_t end, float time0, float time1);
 
 	virtual bool hit(
-		const ray& r, double tmin, double tmax, surface_hit_record& rec) const override;
+		const ray& r, float tmin, float tmax, surface_hit_record& rec) const override;
 
-	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
+	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
 public:
 	std::shared_ptr<hittable> left;

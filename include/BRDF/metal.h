@@ -10,7 +10,7 @@ class metal : public material {
 public:
 	metal(const color& a) : albedo(a) {}
 
-	metal(const color& a, double f);
+	metal(const color& a, float f);
 
 	virtual bool scatter(
 		const ray& r_in, const surface_hit_record& rec, scatter_record& srec
@@ -18,7 +18,7 @@ public:
 
 public:
 	color albedo;
-	double fuzz;
+	float fuzz;
 };
 
 class MicrofacetReflection : public BxDF {

@@ -4,7 +4,7 @@
 
 aabb surrounding_box(aabb box0, aabb box1);
 using std::shared_ptr;
-bool bvh_node::bounding_box(double t0, double t1, aabb& output_box) const {
+bool bvh_node::bounding_box(float t0, float t1, aabb& output_box) const {
 	output_box = box;
 	return true;
 }
@@ -45,7 +45,7 @@ aabb surrounding_box(aabb box0, aabb box1) {
 
 bvh_node::bvh_node(
 	std::vector<shared_ptr<hittable>>& objects,
-	size_t start, size_t end, double time0, double time1
+	size_t start, size_t end, float time0, float time1
 ) {
 	int axis = random_int(0, 2);//select one axis
 	auto comparator = (axis == 0) ? box_x_compare
@@ -85,11 +85,11 @@ bvh_node::bvh_node(
 	box = surrounding_box(box_left, box_right);
 }
 
-bvh_node::bvh_node(hittable_list& list, double time0, double time1) : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
+bvh_node::bvh_node(hittable_list& list, float time0, float time1) : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
 {}
 
 
-bool bvh_node::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+bool bvh_node::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	if (!box.hit(r, t_min, t_max))
 		return false;
 
@@ -99,7 +99,7 @@ bool bvh_node::hit(const ray& r, double t_min, double t_max, surface_hit_record&
 	return hit_left || hit_right;
 }
 
-inline bool aabb::hit(const ray& r, double tmin, double tmax) const {
+inline bool aabb::hit(const ray& r, float tmin, float tmax) const {
 	for (int a = 0; a < 3; a++) {
 		auto invD = 1.0f / r.direction()[a];
 		auto t0 = (min()[a] - r.origin()[a]) * invD;

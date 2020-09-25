@@ -11,8 +11,8 @@ hittable_list WorldFactory::random_scene() {
 
 	for (int a = -11; a < 11; a++) {
 		for (int b = -11; b < 11; b++) {
-			auto choose_mat = random_double();
-			point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
+			auto choose_mat = random_float();
+			point3 center(a + 0.9 * random_float(), 0.2, b + 0.9 * random_float());
 
 			if ((center - point3(4, 0.2, 0)).length() > 0.9) {
 				shared_ptr<material> sphere_material;
@@ -26,7 +26,7 @@ hittable_list WorldFactory::random_scene() {
 				else if (choose_mat < 0.95) {
 					// metal
 					auto albedo = color::random(0.5, 1);
-					auto fuzz = random_double(0, 0.5);
+					auto fuzz = random_float(0, 0.5);
 					sphere_material = make_shared<metal>(albedo, fuzz);
 					world.add(make_shared<sphere>(center, 0.2, sphere_material));
 				}
@@ -170,7 +170,7 @@ hittable_list WorldFactory::final_scene() {
 			auto z0 = -1000.0 + j * w;
 			auto y0 = 0.0;
 			auto x1 = x0 + w;
-			auto y1 = random_double(1, 101);
+			auto y1 = random_float(1, 101);
 			auto z1 = z0 + w;
 
 			boxes1.add(make_shared<box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
@@ -222,7 +222,7 @@ hittable_list WorldFactory::final_scene() {
 	return objects;
 }
 
-void WorldFactory::get_world(int idx, double aspect_ratio, hittable_list& world, camera& cam, color& background)
+void WorldFactory::get_world(int idx, float aspect_ratio, hittable_list& world, camera& cam, color& background)
 {
 	vec3 vup(0, 1, 0);
 	auto dist_to_focus = 10.0;

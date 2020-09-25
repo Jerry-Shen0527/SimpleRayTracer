@@ -3,7 +3,7 @@
 
 #include <Tools/Math/vec3.h>
 
-inline double trilinear_interp(double c[2][2][2], double u, double v, double w) {
+inline float trilinear_interp(float c[2][2][2], float u, float v, float w) {
 	auto accum = 0.0;
 	for (int i = 0; i < 2; i++)
 		for (int j = 0; j < 2; j++)
@@ -36,11 +36,11 @@ public:
 		delete[] perm_z;
 	}
 
-	double perlin_interp(vec3 c[2][2][2], double u, double v, double w) const;
+	float perlin_interp(vec3 c[2][2][2], float u, float v, float w) const;
 
-	double noise(const point3& p) const;
+	float noise(const point3& p) const;
 
-	double turb(const point3& p, int depth = 7) const;
+	float turb(const point3& p, int depth = 7) const;
 
 private:
 	vec3* ranvec;
@@ -71,7 +71,7 @@ private:
 	}
 };
 
-inline double perlin::perlin_interp(vec3 c[2][2][2], double u, double v, double w) const
+inline float perlin::perlin_interp(vec3 c[2][2][2], float u, float v, float w) const
 {
 	auto uu = u * u * (3 - 2 * u);
 	auto vv = v * v * (3 - 2 * v);
@@ -91,7 +91,7 @@ inline double perlin::perlin_interp(vec3 c[2][2][2], double u, double v, double 
 	return accum;
 }
 
-inline double perlin::noise(const point3& p) const
+inline float perlin::noise(const point3& p) const
 {
 	auto u = p.x() - floor(p.x());
 	auto v = p.y() - floor(p.y());
@@ -118,7 +118,7 @@ inline double perlin::noise(const point3& p) const
 	return perlin_interp(c, u, v, w);
 }
 
-inline double perlin::turb(const point3& p, int depth) const
+inline float perlin::turb(const point3& p, int depth) const
 {
 	auto accum = 0.0;
 	auto temp_p = p;

@@ -15,7 +15,7 @@ public:
 	solid_color() {}
 	solid_color(color c) : color_value(c) {}
 
-	solid_color(double red, double green, double blue)
+	solid_color(float red, float green, float blue)
 		: solid_color(color(red, green, blue)) {}
 
 	virtual color value(const vec2& uv, const vec3& p) const override {
@@ -47,13 +47,13 @@ class noise_texture : public texture {
 public:
 	noise_texture() {}
 
-	noise_texture(double sc) : scale(sc) {}
+	noise_texture(float sc) : scale(sc) {}
 
 	virtual color value(const vec2& uv, const point3& p) const override;
 
 public:
 	perlin noise;
-	double scale;
+	float scale;
 };
 
 class image_texture : public texture {

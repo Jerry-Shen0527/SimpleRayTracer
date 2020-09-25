@@ -18,7 +18,7 @@ public:
         return true;
     }
 
-    double scattering_pdf(
+    float scattering_pdf(
         const ray& r_in, const surface_hit_record& rec, const ray& scattered
     ) const {
         auto cosine = dot(rec.normal, unit_vector(scattered.direction()));
@@ -36,7 +36,7 @@ public:
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), R(R) { }
 
 	Spectrum f(const vec3& wo, const vec3& wi) const override;
-	Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, double& pdf, BxDFType* sampledType) const override;
+	Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
 	Spectrum rho(const vec3& wo, int nSamples, const point2* samples) const override;
 	Spectrum rho(int nSamples, const point2* samples1, const point2* samples2) const override;
 private:

@@ -10,7 +10,7 @@ void hittable_list::add(shared_ptr<hittable> object)
 	}
 }
 
-bool hittable_list::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+bool hittable_list::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	surface_hit_record temp_rec;
 	bool hit_anything = false;
 	auto closest_so_far = t_max;
@@ -26,7 +26,7 @@ bool hittable_list::hit(const ray& r, double t_min, double t_max, surface_hit_re
 	return hit_anything;
 }
 
-bool hittable_list::bounding_box(double t0, double t1, aabb& output_box) const
+bool hittable_list::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	if (objects.empty()) return false;
 
@@ -42,7 +42,7 @@ bool hittable_list::bounding_box(double t0, double t1, aabb& output_box) const
 	return true;
 }
 
-double hittable_list::pdf_value(const point3& o, const vec3& v) const {
+float hittable_list::pdf_value(const point3& o, const vec3& v) const {
 	auto weight = 1.0 / pdf_objects.size();
 	auto sum = 0.0;
 

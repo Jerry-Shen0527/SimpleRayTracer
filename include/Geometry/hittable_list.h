@@ -19,14 +19,16 @@ public:
 	void clear() { objects.clear(); }
 	void add(shared_ptr<hittable> object);
 
-	virtual bool hit(const ray& r, double tmin, double tmax, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, float tmin, float tmax, surface_hit_record& rec) const override;
 
-	virtual bool bounding_box(double t0, double t1, aabb& output_box) const override;
-	double pdf_value(const point3& o, const vec3& v) const override;
+	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
+	float pdf_value(const point3& o, const vec3& v) const override;
 	vec3 random(const vec3& o) const override;
 
 	std::vector<shared_ptr<hittable>> objects;
 	std::vector<shared_ptr<hittable>> pdf_objects;
 };
+
+using Scene = hittable_list;
 
 #endif

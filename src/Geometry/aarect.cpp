@@ -2,7 +2,7 @@
 
 #include "Tools/Math/math_tools.h"
 
-bool xy_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) const {
+bool xy_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) const {
 	auto t = (k - r.origin().z()) / r.direction().z();
 	if (t < t0 || t > t1)
 		return false;
@@ -20,7 +20,7 @@ bool xy_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) c
 	return true;
 }
 
-bool xy_rect::bounding_box(double t0, double t1, aabb& output_box) const
+bool xy_rect::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	// The bounding box must have non-zero width in each dimension, so pad the Z
 	// dimension a small amount.
@@ -28,7 +28,7 @@ bool xy_rect::bounding_box(double t0, double t1, aabb& output_box) const
 	return true;
 }
 
-bool xz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) const {
+bool xz_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) const {
 	auto t = (k - r.origin().y()) / r.direction().y();
 	if (t < t0 || t > t1)
 		return false;
@@ -46,7 +46,7 @@ bool xz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) c
 	return true;
 }
 
-double xz_rect::pdf_value(const point3& origin, const vec3& v) const
+float xz_rect::pdf_value(const point3& origin, const vec3& v) const
 {
 	surface_hit_record rec;
 	if (!this->hit(ray(origin, v), 0.001, infinity, rec))
@@ -61,11 +61,11 @@ double xz_rect::pdf_value(const point3& origin, const vec3& v) const
 
 vec3 xz_rect::random(const point3& origin) const
 {
-	auto random_point = point3(random_double(x0, x1), k, random_double(z0, z1));
+	auto random_point = point3(random_float(x0, x1), k, random_float(z0, z1));
 	return random_point - origin;
 }
 
-bool yz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) const {
+bool yz_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) const {
 	auto t = (k - r.origin().x()) / r.direction().x();
 	if (t < t0 || t > t1)
 		return false;
@@ -83,7 +83,7 @@ bool yz_rect::hit(const ray& r, double t0, double t1, surface_hit_record& rec) c
 	return true;
 }
 
-bool yz_rect::bounding_box(double t0, double t1, aabb& output_box) const
+bool yz_rect::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	// The bounding box must have non-zero width in each dimension, so pad the X
 	// dimension a small amount.
@@ -91,7 +91,7 @@ bool yz_rect::bounding_box(double t0, double t1, aabb& output_box) const
 	return true;
 }
 
-bool flip_face::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const
+bool flip_face::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const
 {
 	if (!ptr->hit(r, t_min, t_max, rec))
 		return false;
@@ -100,7 +100,7 @@ bool flip_face::hit(const ray& r, double t_min, double t_max, surface_hit_record
 	return true;
 }
 
-bool flip_face::bounding_box(double t0, double t1, aabb& output_box) const
+bool flip_face::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	return ptr->bounding_box(t0, t1, output_box);
 }
@@ -109,7 +109,7 @@ bool flip_face::get_pdf_enabled()
 {
 	return ptr->get_pdf_enabled();
 }
-double flip_face::pdf_value(const point3& o, const vec3& v) const
+float flip_face::pdf_value(const point3& o, const vec3& v) const
 {
 	return ptr->pdf_value(o, v);
 }

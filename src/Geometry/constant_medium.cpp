@@ -1,17 +1,17 @@
 #include <Geometry/constant_medium.h>
 
-constant_medium::constant_medium(std::shared_ptr<hittable> b, double d, std::shared_ptr<texture> a) : boundary(b), neg_inv_density(-1 / d), phase_function(make_shared<isotropic>(a))
+constant_medium::constant_medium(std::shared_ptr<hittable> b, float d, std::shared_ptr<texture> a) : boundary(b), neg_inv_density(-1 / d), phase_function(make_shared<isotropic>(a))
 {
 }
 
-constant_medium::constant_medium(std::shared_ptr<hittable> b, double d, color c) : boundary(b), neg_inv_density(-1 / d), phase_function(make_shared<isotropic>(c))
+constant_medium::constant_medium(std::shared_ptr<hittable> b, float d, color c) : boundary(b), neg_inv_density(-1 / d), phase_function(make_shared<isotropic>(c))
 {
 }
 
-bool constant_medium::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+bool constant_medium::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	// Print occasional samples when debugging. To enable, set enableDebug true.
 	const bool enableDebug = false;
-	const bool debugging = enableDebug && random_double() < 0.00001;
+	const bool debugging = enableDebug && random_float() < 0.00001;
 
 	surface_hit_record rec1, rec2;
 
@@ -34,7 +34,7 @@ bool constant_medium::hit(const ray& r, double t_min, double t_max, surface_hit_
 
 	const auto ray_length = r.direction().length();
 	const auto distance_inside_boundary = (rec2.t - rec1.t) * ray_length;
-	const auto hit_distance = neg_inv_density * log(random_double());
+	const auto hit_distance = neg_inv_density * log(random_float());
 
 	if (hit_distance > distance_inside_boundary)
 		return false;
@@ -55,7 +55,7 @@ bool constant_medium::hit(const ray& r, double t_min, double t_max, surface_hit_
 	return true;
 }
 
-bool constant_medium::bounding_box(double t0, double t1, aabb& output_box) const
+bool constant_medium::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	return boundary->bounding_box(t0, t1, output_box);
 }

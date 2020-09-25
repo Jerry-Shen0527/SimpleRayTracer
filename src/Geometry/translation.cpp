@@ -2,7 +2,7 @@
 
 #include "Tools/Math/math_tools.h"
 
-bool translate::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+bool translate::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, t_min, t_max, rec))
 		return false;
@@ -13,7 +13,7 @@ bool translate::hit(const ray& r, double t_min, double t_max, surface_hit_record
 	return true;
 }
 
-bool translate::bounding_box(double t0, double t1, aabb& output_box) const {
+bool translate::bounding_box(float t0, float t1, aabb& output_box) const {
 	if (!ptr->bounding_box(t0, t1, output_box))
 		return false;
 
@@ -22,7 +22,7 @@ bool translate::bounding_box(double t0, double t1, aabb& output_box) const {
 	return true;
 }
 
-rotate_y::rotate_y(std::shared_ptr<hittable> p, double angle) : ptr(p) {
+rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 	auto radians = degrees_to_radians(angle);
 	sin_theta = sin(radians);
 	cos_theta = cos(radians);
@@ -54,7 +54,7 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, double angle) : ptr(p) {
 	bbox = aabb(min, max);
 }
 
-bool rotate_y::hit(const ray& r, double t_min, double t_max, surface_hit_record& rec) const {
+bool rotate_y::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	auto origin = r.origin();
 	auto direction = r.direction();
 

@@ -23,7 +23,7 @@ struct hit_record
 
 	ray SpawnRay(const Vector3f& d) const {
 		Point3f o = OffsetRayOrigin(p, pError, normal, d);
-		return ray(o, d, infinity, time, GetMedium(d));
+		return ray(o, d, infinity, t, GetMedium(d));
 	}
 	ray SpawnRayTo(const Point3f& p2) const {
 		Point3f origin = OffsetRayOrigin(p, pError, n, p2 - p);

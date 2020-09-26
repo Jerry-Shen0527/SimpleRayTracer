@@ -31,8 +31,7 @@ private:
 	const Medium* medium;
 };
 
-inline Point3f OffsetRayOrigin(const Point3f& p, const Vector3f& pError,
-	const Normal3f& n, const Vector3f& w) {
+inline Point3f OffsetRayOrigin(const Point3f& p, const Vector3f& pError, const Normal3f& n, const Vector3f& w) {
 	Float d = dot(n.abs(), pError);
 	Vector3f offset = d * Vector3f(n);
 	if (dot(w, n) < 0)
@@ -43,7 +42,7 @@ inline Point3f OffsetRayOrigin(const Point3f& p, const Vector3f& pError,
 		if (offset[i] > 0) po[i] = NextFloatUp(po[i]);
 		else if (offset[i] < 0) po[i] = NextFloatDown(po[i]);
 	}
-	
+
 	return po;
 }
 

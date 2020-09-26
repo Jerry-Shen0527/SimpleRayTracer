@@ -53,3 +53,10 @@ inline Point2f ConcentricSampleDisk(const Point2f& u) {
 	//	Apply concentric mapping to point 779
 	return u;
 }
+inline vec3 random_in_unit_disk() {
+	while (true) {
+		auto p = vec3(random_float(-1, 1), random_float(-1, 1), 0);
+		if (p.length_squared() >= 1) continue;
+		return p;
+	}
+}

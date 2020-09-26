@@ -9,22 +9,22 @@ using std::make_shared;
 
 using std::sqrt;
 
-template<int n>
+template<typename T, int n>
 class vec {
 public:
 	vec() : data{ 0.f } {}
-	vec(std::initializer_list<float> list);
+	vec(std::initializer_list<T> list);
 
 	inline static vec random();
-	inline static vec random(float min, float max);
+	inline static vec random(T min, T max);
 
 	vec operator-() const;
-	float operator[](int i) const { return data[i]; }
-	float& operator[](int i) { return data[i]; }
+	T operator[](int i) const { return data[i]; }
+	T& operator[](int i) { return data[i]; }
 
-	vec& operator+=(const vec<n>& v);
-	vec& operator*=(const float t);
-	vec& operator/=(const float t);
+	vec& operator+=(const vec& v);
+	vec& operator*=(const T t);
+	vec& operator/=(const T t);
 	bool operator==(const vec& t)const;
 	bool operator!=(const vec& t)const;
 	vec normalize() const;
@@ -33,20 +33,20 @@ public:
 	float length() const;
 	float length_squared() const;
 
-	float x() const;
-	float& x();
-	float y() const;
-	float& y();
-	float z() const;
-	float& z();
-	float w() const;
-	float& w();
+	T x() const;
+	T& x();
+	T y() const;
+	T& y();
+	T z() const;
+	T& z();
+	T w() const;
+	T& w();
 public:
-	float data[n];
+	T data[n];
 };
 
-template <int n>
-vec<n>::vec(std::initializer_list<float> list)
+template<typename T, int n>
+vec<T, n>::vec(std::initializer_list<T> list)
 {
 	assert(list.size() == n);
 
@@ -57,19 +57,19 @@ vec<n>::vec(std::initializer_list<float> list)
 	}
 }
 
-template <int n>
-vec<n> vec<n>::random()
+template<typename T, int n>
+vec<T, n> vec<T, n>::random()
 {
 	vec rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst.data[i] = random_float();
+		rst.data[i] = static_cast<T> (random_float());
 	}
 	return rst;
 }
 
-template <int n>
-vec<n> vec<n>::random(float min, float max)
+template<typename T, int n>
+vec<T, n> vec<T, n>::random(T min, T max)
 {
 	vec rst;
 	for (int i = 0; i < n; ++i)
@@ -79,8 +79,8 @@ vec<n> vec<n>::random(float min, float max)
 	return rst;
 }
 
-template <int n>
-vec<n> vec<n>::operator-() const
+template<typename T, int n>
+vec<T, n> vec<T, n>::operator-() const
 {
 	vec rst;
 	for (int i = 0; i < n; ++i)
@@ -90,8 +90,8 @@ vec<n> vec<n>::operator-() const
 	return rst;
 }
 
-template <int n>
-vec<n>& vec<n>::operator+=(const vec<n>& v)
+template<typename T, int n>
+vec<T, n>& vec<T, n>::operator+=(const vec<T, n>& v)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -100,8 +100,8 @@ vec<n>& vec<n>::operator+=(const vec<n>& v)
 	return *this;
 }
 
-template <int n>
-vec<n>& vec<n>::operator*=(const float t)
+template<typename T, int n>
+vec<T, n>& vec<T, n>::operator*=(const T t)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -110,14 +110,14 @@ vec<n>& vec<n>::operator*=(const float t)
 	return *this;
 }
 
-template <int n>
-vec<n>& vec<n>::operator/=(const float t)
+template<typename T, int n>
+vec<T, n>& vec<T, n>::operator/=(const T t)
 {
 	return *this *= 1 / t;
 }
 
-template <int n>
-bool vec<n>::operator==(const vec& t) const
+template<typename T, int n>
+bool vec<T, n>::operator==(const vec& t) const
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -129,20 +129,20 @@ bool vec<n>::operator==(const vec& t) const
 	return  true;
 }
 
-template <int n>
-bool vec<n>::operator!=(const vec& t) const
+template<typename T, int n>
+bool vec<T, n>::operator!=(const vec& t) const
 {
 	return !(*this == t);
 }
 
-template <int n>
-vec<n> vec<n>::normalize() const
+template<typename T, int n>
+vec<T, n> vec<T, n>::normalize() const
 {
 	return *this / length();
 }
 
-template <int n>
-vec<n> vec<n>::abs() const
+template<typename T, int n>
+vec<T, n> vec<T, n>::abs() const
 {
 	vec temp;
 	for (int i = 0; i < n; ++i)
@@ -152,14 +152,14 @@ vec<n> vec<n>::abs() const
 	return temp;
 }
 
-template <int n>
-float vec<n>::length() const
+template<typename T, int n>
+float vec<T, n>::length() const
 {
 	return sqrt(length_squared());
 }
 
-template <int n>
-float vec<n>::length_squared() const
+template<typename T, int n>
+float vec<T, n>::length_squared() const
 {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
@@ -169,64 +169,64 @@ float vec<n>::length_squared() const
 	return rst;
 }
 
-template <int n>
-float vec<n>::x() const
+template<typename T, int n>
+T vec<T, n>::x() const
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
-template <int n>
-float& vec<n>::x()
+template<typename T, int n>
+T& vec<T, n>::x()
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
-template <int n>
-float vec<n>::y() const
+template<typename T, int n>
+T vec<T, n>::y() const
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
-template <int n>
-float& vec<n>::y()
+template<typename T, int n>
+T& vec<T, n>::y()
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
-template <int n>
-float vec<n>::z() const
+template<typename T, int n>
+T vec<T, n>::z() const
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
-template <int n>
-float& vec<n>::z()
+template<typename T, int n>
+T& vec<T, n>::z()
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
-template <int n>
-float vec<n>::w() const
+template<typename T, int n>
+T vec<T, n>::w() const
 {
 	static_assert(n >= 4);
 	return data[3];
 }
 
-template <int n>
-float& vec<n>::w()
+template<typename T, int n>
+T& vec<T, n>::w()
 {
 	static_assert(n >= 4);
 	return data[3];
 }
 
-template<int n>
-inline std::ostream& operator<<(std::ostream& out, const vec<n>& v) {
+template<typename T,int n>
+inline std::ostream& operator<<(std::ostream& out, const vec<T, n>& v) {
 	for (int i = 0; i < n; ++i)
 	{
 		out << v.data[i] << ' ';
@@ -234,9 +234,9 @@ inline std::ostream& operator<<(std::ostream& out, const vec<n>& v) {
 	return out;
 }
 
-template<int n>
-inline vec<n> operator+(const vec<n>& u, const vec<n>& v) {
-	vec<n> rst;
+template<typename T,int n>
+inline vec<T, n> operator+(const vec<T, n>& u, const vec<T, n>& v) {
+	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = u.data[i] + v.data[i];
@@ -244,9 +244,9 @@ inline vec<n> operator+(const vec<n>& u, const vec<n>& v) {
 	return rst;
 }
 
-template<int n>
-inline vec<n> operator-(const vec<n>& u, const vec<n>& v) {
-	vec<n> rst;
+template<typename T,int n>
+inline vec<T, n> operator-(const vec<T, n>& u, const vec<T, n>& v) {
+	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = u.data[i] - v.data[i];
@@ -254,9 +254,9 @@ inline vec<n> operator-(const vec<n>& u, const vec<n>& v) {
 	return rst;
 }
 
-template<int n>
-inline vec<n> operator*(const vec<n>& u, const vec<n>& v) {
-	vec<n> rst;
+template<typename T,int n>
+inline vec<T, n> operator*(const vec<T, n>& u, const vec<T, n>& v) {
+	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = u.data[i] * v.data[i];
@@ -264,9 +264,9 @@ inline vec<n> operator*(const vec<n>& u, const vec<n>& v) {
 	return rst;
 }
 
-template<int n>
-inline vec<n> operator*(float t, const vec<n>& v) {
-	vec<n> rst;
+template<typename T,int n>
+inline vec<T, n> operator*(float t, const vec<T, n>& v) {
+	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = t * v.data[i];
@@ -274,18 +274,18 @@ inline vec<n> operator*(float t, const vec<n>& v) {
 	return rst;
 }
 
-template<int n>
-inline vec<n> operator*(const vec<n>& v, float t) {
+template<typename T,int n>
+inline vec<T, n> operator*(const vec<T, n>& v, float t) {
 	return t * v;
 }
 
-template<int n>
-inline vec<n> operator/(vec<n> v, float t) {
+template<typename T,int n>
+inline vec<T, n> operator/(vec<T, n> v, float t) {
 	return (1 / t) * v;
 }
 
-template<int n>
-inline float dot(const vec<n>& u, const vec<n>& v) {
+template<typename T,int n>
+inline float dot(const vec<T, n>& u, const vec<T, n>& v) {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{
@@ -294,7 +294,7 @@ inline float dot(const vec<n>& u, const vec<n>& v) {
 	return rst;
 }
 
-template<int n>
-inline vec<n> unit_vector(vec<n> v) {
+template<typename T,int n>
+inline vec<T, n> unit_vector(vec<T, n> v) {
 	return v / v.length();
 }

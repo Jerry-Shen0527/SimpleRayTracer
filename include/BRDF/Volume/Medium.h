@@ -1,6 +1,11 @@
 #pragma once
-#include "common.h"
-#include "ray.h"
+
+#include <common.h>
+#include <ray.h>
+
+
+
+class ray;
 
 // Medium Declarations
 class Medium {

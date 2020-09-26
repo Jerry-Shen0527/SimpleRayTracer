@@ -11,11 +11,11 @@ using std::make_shared;
 
 using std::sqrt;
 
-class vec3 :public vec<3>
+class vec3 :public vec<float, 3>
 {
 public:
-	vec3() : vec<3>() {}
-	vec3(vec<3>& in_vec) :vec<3>(in_vec) {}
+	vec3() : vec<float, 3>() {}
+	vec3(vec<float, 3>& in_vec) :vec<float, 3>(in_vec) {}
 	vec3(float e0, float e1, float e2)
 	{
 		data[0] = e0; data[1] = e1; data[2] = e2;
@@ -30,9 +30,10 @@ inline vec3 cross(const vec3& u, const vec3& v) {
 
 using color = vec3;
 using point3 = vec3;   // 3D point
-using vec2 = vec<2>;
+using vec2 = vec<float, 2>;
 using point2 = vec2;
 using normal3 = vec3;
+using Point2i = vec<int, 2>;
 
 void vec3_test();
 

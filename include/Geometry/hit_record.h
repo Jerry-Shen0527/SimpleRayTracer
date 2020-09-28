@@ -21,15 +21,15 @@ struct hit_record
 
 	Vector3f pError;
 
-	ray SpawnRay(const Vector3f& d) const {
-		Point3f o = OffsetRayOrigin(p, pError, normal, d);
-		return ray(o, d, infinity, t, GetMedium(d));
-	}
-	ray SpawnRayTo(const Point3f& p2) const {
-		Point3f origin = OffsetRayOrigin(p, pError, n, p2 - p);
-		Vector3f d = p2 - p;
-		return ray(origin, d, 1 - ShadowEpsilon, time, GetMedium(d));
-	}
+	//ray SpawnRay(const Vector3f& d) const {
+	//	Point3f o = OffsetRayOrigin(p, pError, normal, d);
+	//	return ray(o, d, infinity, t, GetMedium(d));
+	//}
+	//ray SpawnRayTo(const Point3f& p2) const {
+	//	Point3f origin = OffsetRayOrigin(p, pError, n, p2 - p);
+	//	Vector3f d = p2 - p;
+	//	return ray(origin, d, 1 - ShadowEpsilon, t, GetMedium(d));
+	//}
 };
 
 struct surface_hit_record :public hit_record {

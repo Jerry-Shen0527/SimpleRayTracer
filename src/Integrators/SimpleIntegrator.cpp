@@ -10,14 +10,12 @@
 
 void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color background)
 {
-	auto lights = make_shared<hittable_list>(world);
-
 #ifndef _DEBUG
 	int MAX_THREAD = std::thread::hardware_concurrency() - 2;
 
 	//std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-	auto worker = [MAX_THREAD, &world, &cam, background, &lights, this](int arg)
+	auto worker = [MAX_THREAD, &world, &cam, background, this](int arg)
 	{
 		int i, j, old_j;
 

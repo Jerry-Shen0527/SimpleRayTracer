@@ -12,7 +12,7 @@ using std::sqrt;
 template<typename T, int n>
 class vec {
 public:
-	vec() : data{ 0.f } {}
+	vec() : data{ 0 } {}
 	vec(std::initializer_list<T> list);
 
 	inline static vec random();
@@ -147,7 +147,7 @@ vec<T, n> vec<T, n>::abs() const
 	vec temp;
 	for (int i = 0; i < n; ++i)
 	{
-		temp.data[i] = abs(data[i]);
+		temp.data[i] = std::abs(data[i]);
 	}
 	return temp;
 }

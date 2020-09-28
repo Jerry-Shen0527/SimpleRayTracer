@@ -4,7 +4,8 @@
 #include <Tools/Math/vec3.h>
 
 #include "BRDF/BxDF_Utility.h"
-#include "BRDF/Medium.h"
+
+class Medium;
 
 class ray {
 public:

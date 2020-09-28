@@ -2,6 +2,19 @@
 
 #include "Tools/Math/math_tools.h"
 
+Transform::Transform(const Float mat[4][4])
+{
+	m = Matrix4x4(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+	              mat[1][0], mat[1][1], mat[1][2], mat[1][3],
+	              mat[2][0], mat[2][1], mat[2][2], mat[2][3],
+	              mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+	mInv = Inverse(m);
+}
+
+Transform::Transform(const Matrix4x4& m, const Matrix4x4& mInv): m(m), mInv(mInv)
+{
+}
+
 bool translate::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
 	ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, t_min, t_max, rec))

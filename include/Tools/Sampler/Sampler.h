@@ -40,7 +40,6 @@ protected:
 	std::vector<std::vector<Float>> sampleArray1D;
 	std::vector<std::vector<Point2f>> sampleArray2D;
 
-private:
 	size_t array1DOffset, array2DOffset;
 };
 
@@ -75,6 +74,11 @@ inline const Point2f* Sampler::Get2DArray(int n)
 	if (array2DOffset == sampleArray2D.size())
 		return nullptr;
 	return &sampleArray2D[array2DOffset++][currentPixelSampleIndex * n];
+}
+
+inline bool Sampler::StartNextSample()
+{
+	
 }
 
 inline bool Sampler::SetSampleNumber(int64_t sampleNum)

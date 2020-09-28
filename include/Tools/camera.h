@@ -5,8 +5,6 @@
 
 #include "Film.h"
 
-
-
 class camera {
 public:
 
@@ -58,8 +56,6 @@ public:
 		);
 	}
 
-	virtual Spectrum we(const ray& ray, Point2f* pRaster2 = nullptr) const;
-
 	shared_ptr<Film> film;
 
 private:
@@ -74,8 +70,4 @@ private:
 	vec3 w, u, v;
 };
 
-inline Spectrum camera::we(const ray& ray, Point2f* pRaster2) const
-{
-	return Spectrum();
-}
 #endif

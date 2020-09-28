@@ -10,29 +10,25 @@
 class Transform
 {
 public:
-	Transform(const Float mat[4][4]) {
-		m = Matrix4x4(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
-			mat[1][0], mat[1][1], mat[1][2], mat[1][3],
-			mat[2][0], mat[2][1], mat[2][2], mat[2][3],
-			mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
-		mInv = Inverse(m);
-	}
+	Transform(const Float mat[4][4]);
 
-	Transform(const Matrix4x4& m, const Matrix4x4& mInv)
-		: m(m), mInv(mInv) {
-	}
+	Transform(const Matrix4x4& m, const Matrix4x4& mInv);
 
-	friend Transform Inverse(const Transform& t) {
-		return Transform(t.mInv, t.m);
-	}
+	friend Transform Inverse(const Transform& t);
 
-	friend Transform Transpose(const Transform& t) {
-		return Transform(Transpose(t.m), Transpose(t.mInv));
-	}
+	friend Transform Transpose(const Transform& t);
 
 private:
 	Matrix4x4 m, mInv;
 };
+
+inline Transform Inverse(const Transform& t) {
+	return Transform(t.mInv, t.m);
+}
+
+inline Transform Transpose(const Transform& t) {
+	return Transform(Transpose(t.m), Transpose(t.mInv));
+}
 
 class translate : public hittable {
 public:

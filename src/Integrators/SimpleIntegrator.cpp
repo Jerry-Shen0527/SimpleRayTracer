@@ -11,6 +11,7 @@
 void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color background)
 {
 #ifndef _DEBUG
+	//int MAX_THREAD = 3;
 	int MAX_THREAD = std::thread::hardware_concurrency() - 2;
 
 	//std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
@@ -19,9 +20,15 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color backgr
 	{
 		int i, j, old_j;
 
+		auto _thread_sampler = sampler->Clone(0);
+
+		//_thread_sampler->StartPixel(Point2i{ 0,0 });
+
 		for (int idx = 0; idx < cam.film->pixelcount; idx += MAX_THREAD)
 		{
 			idx_to_ij(idx + arg, i, j, cam.film->width);
+			_thread_sampler->StartPixel(Point2i{ i,j });
+
 			if (arg == 0 && j % 10 == 0 && old_j != j)
 			{
 				std::cerr << "\r[ ";
@@ -41,11 +48,16 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color backgr
 			}
 			old_j = j;
 			color pixel_color(0, 0, 0);
+
 			for (int s = 0; s < sample_per_pixel; ++s) {
 				auto u = (i + random_float()) / (cam.film->width - 1);
 				auto v = (j + random_float()) / (cam.film->height - 1);
-				ray r = cam.get_ray(u, 1 - v);
+				//auto a = _thread_sampler->Get2D();
+				//auto u = (i + a.x()) / (cam.film->width - 1);
+				//auto v = (j + a.y()) / (cam.film->height - 1);
+				ray r = cam.get_ray(u, 1.0f - v);
 				pixel_color += ray_color(r, background, world, lights, max_depth);
+				_thread_sampler->StartNextSample();
 			}
 			cam.film->write_color(i, j, pixel_color, sample_per_pixel);
 		}
@@ -74,11 +86,16 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color backgr
 			std::cerr << "\rAlready finishd: " << float(j) / cam.film->height * 100 << '%' << std::flush;
 		}
 		color pixel_color(0, 0, 0);
+		sampler->StartPixel(Point2i{ i,j });
 		for (int s = 0; s < sample_per_pixel; ++s) {
-			auto u = (i + random_float()) / (cam.film->width - 1);
-			auto v = (j + random_float()) / (cam.film->height - 1);
+			//auto u = (i + random_float()) / (cam.film->width - 1);
+			//auto v = (j + random_float()) / (cam.film->height - 1);
+			auto a = sampler->Get2D();
+			auto u = (i + a.x()) / (cam.film->width - 1);
+			auto v = (j + a.y()) / (cam.film->height - 1);
 			ray r = cam.get_ray(u, 1 - v);
 			pixel_color += ray_color(r, background, world, lights, max_depth);
+			sampler->StartNextSample();
 		}
 		cam.film->write_color(i, j, pixel_color, sample_per_pixel);
 		old_j = j;

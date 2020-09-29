@@ -36,7 +36,7 @@ void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, color back
 						std::cerr << " ";
 					}
 				}
-				std::cerr << int(double(j) / cam.film->height * 100) << '%' << "]" << std::flush;
+				std::cerr << int(float(j) / cam.film->height * 100) << '%' << "]" << std::flush;
 			}
 			old_j = j;
 			color pixel_color(0, 0, 0);

@@ -222,7 +222,7 @@ hittable_list WorldFactory::final_scene() {
 	return objects;
 }
 
-void WorldFactory::get_world(int idx, float aspect_ratio, hittable_list& world, camera& cam, color& background)
+void WorldFactory::get_world(int idx, hittable_list& world, camera& cam, color& background)
 {
 	vec3 vup(0, 1, 0);
 	auto dist_to_focus = 10.0;
@@ -230,6 +230,8 @@ void WorldFactory::get_world(int idx, float aspect_ratio, hittable_list& world, 
 	point3 lookat;
 	auto vfov = 40.0;
 	auto aperture = 0.0;
+
+	float aspect_ratio = 1.0;
 
 	switch (idx) {
 	case 1:
@@ -296,8 +298,12 @@ void WorldFactory::get_world(int idx, float aspect_ratio, hittable_list& world, 
 		lookfrom = point3(478, 278, -600);
 		lookat = point3(278, 278, 0);
 		vfov = 40.0;
+		aspect_ratio = 1.6;
 		break;
 	}
 
 	cam = camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0, 1.0);
+	int image_height = 1024;
+	int image_width = static_cast<int>(image_height * aspect_ratio);
+	cam.film = make_shared<Film>(image_width, image_height);
 }

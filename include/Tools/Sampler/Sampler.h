@@ -5,6 +5,12 @@
 
 static const Float OneMinusEpsilon = 0x1.fffffep-1;
 
+struct CameraSample {
+	Point2f pFilm;
+	Point2f pLens;
+	Float time;
+};
+
 class Sampler
 {
 public:
@@ -30,6 +36,15 @@ public:
 	virtual std::unique_ptr<Sampler> Clone(int seed) = 0;
 
 	virtual bool SetSampleNumber(int64_t sampleNum);
+
+	CameraSample Sampler::GetCameraSample(const Point2i& pRaster) {
+		CameraSample cs;
+		auto p = Get2D();
+		cs.pFilm = Point2f{ p.x() + pRaster.x(),p.y() + pRaster.y() };
+		cs.time = Get1D();
+		cs.pLens = Get2D();
+		return cs;
+	}
 
 protected:
 	const int64_t samplesPerPixel;
@@ -78,7 +93,8 @@ inline const Point2f* Sampler::Get2DArray(int n)
 
 inline bool Sampler::StartNextSample()
 {
-	
+	array1DOffset = array2DOffset = 0;
+	return ++currentPixelSampleIndex < samplesPerPixel;
 }
 
 inline bool Sampler::SetSampleNumber(int64_t sampleNum)

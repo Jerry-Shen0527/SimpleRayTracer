@@ -33,6 +33,8 @@ public:
 	float length() const;
 	float length_squared() const;
 
+	
+
 	T x() const;
 	T& x();
 	T y() const;

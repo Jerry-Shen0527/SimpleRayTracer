@@ -28,7 +28,7 @@ public:
 	hittable_list cornell_box();
 	hittable_list cornell_smoke();
 	hittable_list final_scene();
-	void get_world(int idx, float aspect_ratio, hittable_list& world, camera& cam, color& background);
+	void get_world(int idx, hittable_list& world, camera& cam, color& background);
 
 private:
 };

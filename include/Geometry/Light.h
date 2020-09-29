@@ -3,7 +3,8 @@
 
 #include "hittable_list.h"
 #include "translation.h"
-#include "BRDF/Medium.h"
+#include "BRDF/Volume/Medium.h"
+#include "Tools/Sampler/Sampler.h"
 
 class VisibilityTester;
 

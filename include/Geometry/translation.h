@@ -7,6 +7,8 @@
 #undef min
 #undef max
 
+
+
 class Transform
 {
 public:
@@ -17,10 +19,22 @@ public:
 	friend Transform Inverse(const Transform& t);
 
 	friend Transform Transpose(const Transform& t);
+	template <typename T>
+	inline vec<T,3> operator()(const vec<T,3>& v) const;
+
 
 private:
 	Matrix4x4 m, mInv;
 };
+
+template <typename T>
+vec<T, 3> Transform::operator()(const vec<T, 3>& v) const
+{
+	T x = v.x, y = v.y, z = v.z;
+	return Vector3<T>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
+		m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
+		m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
+}
 
 inline Transform Inverse(const Transform& t) {
 	return Transform(t.mInv, t.m);
@@ -49,7 +63,7 @@ class rotate_y : public hittable {
 public:
 	rotate_y(std::shared_ptr<hittable> p, float angle);
 
-	virtual bool hit(const ray& r,  surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
 		output_box = bbox;
@@ -63,3 +77,16 @@ public:
 	bool hasbox;
 	aabb bbox;
 };
+
+
+Transform Translate(const Vector3f& delta) {
+	Matrix4x4 m(1, 0, 0, delta.x(),
+		0, 1, 0, delta.y(),
+		0, 0, 1, delta.z(),
+		0, 0, 0, 1);
+	Matrix4x4 minv(1, 0, 0, -delta.x(),
+		0, 1, 0, -delta.y(),
+		0, 0, 1, -delta.z(),
+		0, 0, 0, 1);
+	return Transform(m, minv);
+}

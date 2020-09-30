@@ -30,7 +30,7 @@ bool moving_sphere::hit(
 		auto root = sqrt(discriminant);
 
 		auto temp = (-half_b - root) / a;
-		if (temp < r.tMax) {
+		if (temp < r.tMax && temp > 0.0001) {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			auto outward_normal = (rec.p - center(r.time())) / radius;
@@ -40,7 +40,7 @@ bool moving_sphere::hit(
 		}
 
 		temp = (-half_b + root) / a;
-		if (temp < r.tMax ) {
+		if (temp < r.tMax && temp > 0.0001) {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			auto outward_normal = (rec.p - center(r.time())) / radius;

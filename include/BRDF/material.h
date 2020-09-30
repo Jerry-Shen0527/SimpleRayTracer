@@ -4,8 +4,9 @@
 #include <ray.h>
 #include <pdf/scatter_record.h>
 
-#include "common.h"
 class surface_hit_record;
+class AreaLight;
+
 
 class material {
 public:
@@ -24,6 +25,8 @@ public:
 	) const {
 		return 0;
 	}
+
+	virtual  AreaLight* GetAreaLight() { return  nullptr; }
 };
 
 #endif

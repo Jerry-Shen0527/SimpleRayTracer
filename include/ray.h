@@ -11,7 +11,7 @@ class ray {
 public:
 	ray() {}
 
-	ray(const Point3f& o, const Vector3f& d, Float time = 0.f, Float tMax = infinity, const Medium* medium = nullptr)
+	ray(const Point3f& o, const Vector3f& d, Float tMax = infinity, Float time = 0.f, const Medium* medium = nullptr)
 		: orig(o), dir(d), tMax(tMax), tm(time), medium(medium) { }
 
 	point3 origin() const { return orig; }
@@ -27,7 +27,6 @@ public:
 	point3 orig;
 	float tm;
 	float tMax;
-private:
 	vec3 dir;
 	const Medium* medium;
 };

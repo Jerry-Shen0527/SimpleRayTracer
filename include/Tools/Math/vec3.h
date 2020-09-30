@@ -15,7 +15,7 @@ class vec3 :public vec<float, 3>
 {
 public:
 	vec3() : vec<float, 3>() {}
-	vec3(vec<float, 3>& in_vec) :vec<float, 3>(in_vec) {}
+	vec3(const vec<float, 3>& in_vec) :vec<float, 3>(in_vec) {}
 	vec3(float e0, float e1, float e2)
 	{
 		data[0] = e0; data[1] = e1; data[2] = e2;

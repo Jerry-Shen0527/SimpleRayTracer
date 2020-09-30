@@ -26,6 +26,11 @@ bool hittable_list::hit(const ray& r, surface_hit_record& rec) const {
 	return hit_anything;
 }
 
+bool hittable_list::hit(const ray& r) const
+{
+	return hit(r, surface_hit_record());
+}
+
 bool hittable_list::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	if (objects.empty()) return false;

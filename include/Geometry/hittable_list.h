@@ -19,6 +19,7 @@ public:
 	void add(shared_ptr<hittable> object);
 
 	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
+	bool hit(const ray& r) const;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 	float pdf_value(const point3& o, const vec3& v) const override;

@@ -5,7 +5,6 @@
 
 #include <Geometry/hittable.h>
 
-
 using std::shared_ptr;
 using std::make_shared;
 
@@ -19,7 +18,7 @@ public:
 	void clear() { objects.clear(); }
 	void add(shared_ptr<hittable> object);
 
-	virtual bool hit(const ray& r, float tmin, float tmax, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 	float pdf_value(const point3& o, const vec3& v) const override;

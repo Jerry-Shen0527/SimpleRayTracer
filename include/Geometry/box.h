@@ -10,7 +10,7 @@ public:
 	box() {}
 	box(const point3& p0, const point3& p1, shared_ptr<material> ptr);
 
-	virtual bool hit(const ray& r, float t0, float t1, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r,  surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
 		output_box = aabb(box_min, box_max);

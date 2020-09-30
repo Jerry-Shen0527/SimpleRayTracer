@@ -18,7 +18,7 @@ bool moving_sphere::bounding_box(float t0, float t1, aabb& output_box) const
 }
 
 bool moving_sphere::hit(
-	const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
+	const ray& r, surface_hit_record& rec) const {
 	vec3 oc = r.origin() - center(r.time());
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());
@@ -30,7 +30,7 @@ bool moving_sphere::hit(
 		auto root = sqrt(discriminant);
 
 		auto temp = (-half_b - root) / a;
-		if (temp < t_max && temp > t_min) {
+		if (temp < r.tMax) {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			auto outward_normal = (rec.p - center(r.time())) / radius;
@@ -40,7 +40,7 @@ bool moving_sphere::hit(
 		}
 
 		temp = (-half_b + root) / a;
-		if (temp < t_max && temp > t_min) {
+		if (temp < r.tMax ) {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			auto outward_normal = (rec.p - center(r.time())) / radius;

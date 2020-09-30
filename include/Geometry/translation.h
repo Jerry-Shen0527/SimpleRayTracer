@@ -36,7 +36,7 @@ public:
 		: ptr(p), offset(displacement) {}
 
 	virtual bool hit(
-		const ray& r, float t_min, float t_max, surface_hit_record& rec) const override;
+		const ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
@@ -49,8 +49,7 @@ class rotate_y : public hittable {
 public:
 	rotate_y(std::shared_ptr<hittable> p, float angle);
 
-	virtual bool hit(
-		const ray& r, float t_min, float t_max, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r,  surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
 		output_box = bbox;

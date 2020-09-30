@@ -2,9 +2,9 @@
 
 #include "Tools/Math/math_tools.h"
 
-bool xy_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) const {
+bool xy_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().z()) / r.direction().z();
-	if (t < t0 || t > t1)
+	if (t > r.tMax)
 		return false;
 	auto x = r.origin().x() + t * r.direction().x();
 	auto y = r.origin().y() + t * r.direction().y();
@@ -28,9 +28,9 @@ bool xy_rect::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-bool xz_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) const {
+bool xz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().y()) / r.direction().y();
-	if (t < t0 || t > t1)
+	if (t > r.tMax)
 		return false;
 	auto x = r.origin().x() + t * r.direction().x();
 	auto z = r.origin().z() + t * r.direction().z();
@@ -49,7 +49,7 @@ bool xz_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) con
 float xz_rect::pdf_value(const point3& origin, const vec3& v) const
 {
 	surface_hit_record rec;
-	if (!this->hit(ray(origin, v), 0.001, infinity, rec))
+	if (!this->hit(ray(origin, v), rec))
 		return 0;
 
 	auto area = (x1 - x0) * (z1 - z0);
@@ -65,9 +65,9 @@ vec3 xz_rect::random(const point3& origin) const
 	return random_point - origin;
 }
 
-bool yz_rect::hit(const ray& r, float t0, float t1, surface_hit_record& rec) const {
+bool yz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().x()) / r.direction().x();
-	if (t < t0 || t > t1)
+	if (t > r.tMax)
 		return false;
 	auto y = r.origin().y() + t * r.direction().y();
 	auto z = r.origin().z() + t * r.direction().z();
@@ -91,9 +91,9 @@ bool yz_rect::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-bool flip_face::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const
+bool flip_face::hit(const ray& r, surface_hit_record& rec) const
 {
-	if (!ptr->hit(r, t_min, t_max, rec))
+	if (!ptr->hit(r, rec))
 		return false;
 
 	rec.front_face = !rec.front_face;

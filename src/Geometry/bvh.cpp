@@ -43,10 +43,7 @@ aabb surrounding_box(aabb box0, aabb box1) {
 	return aabb(small, big);
 }
 
-bvh_node::bvh_node(
-	std::vector<shared_ptr<hittable>>& objects,
-	size_t start, size_t end, float time0, float time1
-) {
+bvh_node::bvh_node(std::vector<shared_ptr<hittable>>& objects, size_t start, size_t end, float time0, float time1) {
 	int axis = random_int(0, 2);//select one axis
 	auto comparator = (axis == 0) ? box_x_compare
 		: (axis == 1) ? box_y_compare
@@ -77,9 +74,7 @@ bvh_node::bvh_node(
 
 	aabb box_left, box_right;
 
-	if (!left->bounding_box(time0, time1, box_left)
-		|| !right->bounding_box(time0, time1, box_right)
-		)
+	if (!left->bounding_box(time0, time1, box_left) || !right->bounding_box(time0, time1, box_right))
 		std::cerr << "No bounding box in bvh_node constructor.\n";
 
 	box = surrounding_box(box_left, box_right);
@@ -88,26 +83,35 @@ bvh_node::bvh_node(
 bvh_node::bvh_node(hittable_list& list, float time0, float time1) : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
 {}
 
-
-bool bvh_node::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
-	if (!box.hit(r, t_min, t_max))
+bool bvh_node::hit(const ray& r, surface_hit_record& rec) const {
+	if (!box.hit(r))
 		return false;
 
-	bool hit_left = left->hit(r, t_min, t_max, rec);
-	bool hit_right = right->hit(r, t_min, hit_left ? rec.t : t_max, rec);
+	bool hit_left = left->hit(r, rec);
+	bool hit_right;
+	if (hit_left)
+	{
+		auto r_temp = r;
+		r_temp.orig = r.at(rec.t);
+		hit_right = right->hit(r_temp, rec);
+	}
+	else
+	{
+		hit_right = right->hit(r, rec);
+	}
 
 	return hit_left || hit_right;
 }
 
-inline bool aabb::hit(const ray& r, float tmin, float tmax) const {
+inline bool aabb::hit(const ray& r) const {
 	for (int a = 0; a < 3; a++) {
 		auto invD = 1.0f / r.direction()[a];
 		auto t0 = (min()[a] - r.origin()[a]) * invD;
 		auto t1 = (max()[a] - r.origin()[a]) * invD;
 		if (invD < 0.0f)
 			std::swap(t0, t1);
-		tmin = t0 > tmin ? t0 : tmin;
-		tmax = t1 < tmax ? t1 : tmax;
+		auto tmin = t0;
+		auto tmax = t1 < r.tMax ? t1 : r.tMax;
 		if (tmax <= tmin)
 			return false;
 	}

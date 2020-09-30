@@ -98,7 +98,7 @@ Spectrum SpectrumIntegrator::ray_color(const ray& r, const color& background, co
 	if (depth <= 0)
 		return Spectrum(0);
 
-	if (!world.hit(r, 0.001, infinity, rec))
+	if (!world.hit(r, rec))
 		return Spectrum::FromRGB(background);
 
 	spectrum_scatter_record srec;

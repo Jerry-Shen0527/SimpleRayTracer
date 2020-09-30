@@ -12,7 +12,7 @@ public:
 	{};
 
 	virtual bool hit(
-		const ray& r, float tmin, float tmax, surface_hit_record& rec) const override;
+		const ray& r,  surface_hit_record& rec) const override;
 
 	point3 center(float time) const;
 

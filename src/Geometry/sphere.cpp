@@ -4,7 +4,7 @@
 #include "Tools/Math/math_tools.h"
 #include "Tools/Math/Sampling.h"
 
-bool sphere::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
+bool sphere::hit(const ray& r, surface_hit_record& rec) const {
 	vec3 oc = r.origin() - center;
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());
@@ -15,7 +15,8 @@ bool sphere::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec
 		auto root = sqrt(discriminant);
 
 		auto temp = (-half_b - root) / a;
-		if (temp < t_max && temp > t_min) {
+		if (temp < r.tMax) {
+			//if (temp < r.tMax && temp > t_min) {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
@@ -27,7 +28,7 @@ bool sphere::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec
 		}
 
 		temp = (-half_b + root) / a;
-		if (temp < t_max && temp > t_min) {
+		if (temp < r.tMax) {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
@@ -58,7 +59,7 @@ void sphere::get_sphere_uv(const vec3& p, vec2& uv) const
 
 float sphere::pdf_value(const point3& o, const vec3& v) const {
 	surface_hit_record rec;
-	if (!this->hit(ray(o, v), 0.001, infinity, rec))
+	if (!this->hit(ray(o, v), rec))
 		return 0;
 
 	auto cos_theta_max = sqrt(1 - radius * radius / (center - o).length_squared());

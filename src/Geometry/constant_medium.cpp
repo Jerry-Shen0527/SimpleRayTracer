@@ -8,23 +8,25 @@ constant_medium::constant_medium(std::shared_ptr<hittable> b, float d, color c) 
 {
 }
 
-bool constant_medium::hit(const ray& r, float t_min, float t_max, surface_hit_record& rec) const {
+bool constant_medium::hit(const ray& r, surface_hit_record& rec) const {
 	// Print occasional samples when debugging. To enable, set enableDebug true.
 	const bool enableDebug = false;
 	const bool debugging = enableDebug && random_float() < 0.00001;
 
 	surface_hit_record rec1, rec2;
 
-	if (!boundary->hit(r, -infinity, infinity, rec1))
+	if (!boundary->hit(r, rec1))
 		return false;
 
-	if (!boundary->hit(r, rec1.t + 0.0001, infinity, rec2))
+	auto r_temp = r;
+	r_temp.orig = r.at(rec1.t);
+	if (!boundary->hit(r_temp, rec2))
 		return false;
 
 	if (debugging) std::cerr << "\nt0=" << rec1.t << ", t1=" << rec2.t << '\n';
 
-	if (rec1.t < t_min) rec1.t = t_min;
-	if (rec2.t > t_max) rec2.t = t_max;
+	//if (rec1.t < t_min) rec1.t = t_min;
+	//if (rec2.t > t_max) rec2.t = t_max;
 
 	if (rec1.t >= rec2.t)
 		return false;

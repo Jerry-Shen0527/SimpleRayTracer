@@ -12,8 +12,7 @@ public:
 		pdf_enabled = pdf;
 	}
 
-	virtual bool hit(
-		const ray& r, float tmin, float tmax, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 

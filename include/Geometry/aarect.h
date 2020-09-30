@@ -12,7 +12,7 @@ public:
 		std::shared_ptr<material> mat)
 		: x0(_x0), x1(_x1), y0(_y0), y1(_y1), k(_k), mp(mat) {};
 
-	virtual bool hit(const ray& r, float t0, float t1, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
 public:
@@ -30,7 +30,7 @@ public:
 		pdf_enabled = pdf_;
 	}
 
-	virtual bool hit(const ray& r, float t0, float t1, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r,  surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
 		// The bounding box must have non-zero width in each dimension, so pad the Y
@@ -56,7 +56,7 @@ public:
 		std::shared_ptr<material> mat)
 		: y0(_y0), y1(_y1), z0(_z0), z1(_z1), k(_k), mp(mat) {};
 
-	virtual bool hit(const ray& r, float t0, float t1, surface_hit_record& rec) const override;
+	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
 public:
@@ -68,8 +68,7 @@ class flip_face : public hittable {
 public:
 	flip_face(std::shared_ptr<hittable> p) : ptr(p) {}
 
-	virtual bool hit(
-		const ray& r, float t_min, float t_max, surface_hit_record& rec) const override;
+	virtual bool hit(		const ray& r,  surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 

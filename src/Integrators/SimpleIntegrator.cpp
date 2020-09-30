@@ -112,7 +112,7 @@ color SimpleIntegrator::ray_color(const ray& r, const color& background, const h
 	if (depth <= 0)
 		return color(0, 0, 0);
 
-	if (!world.hit(r, 0.001, infinity, rec))
+	if (!world.hit(r, rec))
 		return background;
 
 	scatter_record srec;
@@ -120,8 +120,7 @@ color SimpleIntegrator::ray_color(const ray& r, const color& background, const h
 	if (!rec.mat_ptr->scatter(r, rec, srec))
 		return emitted;
 	if (srec.is_specular) {
-		return srec.attenuation
-			* ray_color(srec.specular_ray, background, world, lights, depth - 1);
+		return srec.attenuation			* ray_color(srec.specular_ray, background, world, lights, depth - 1);
 	}
 
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);

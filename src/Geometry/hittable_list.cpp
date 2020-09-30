@@ -13,7 +13,7 @@ void hittable_list::add(shared_ptr<hittable> object)
 bool hittable_list::hit(const ray& r, surface_hit_record& rec) const {
 	surface_hit_record temp_rec;
 	bool hit_anything = false;
-	auto r_temp = r;
+	ray r_temp = r;
 
 	for (const auto& object : objects) {
 		if (object->hit(r_temp, temp_rec)) {

@@ -4,7 +4,7 @@
 
 bool xy_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().z()) / r.direction().z();
-	if (t > r.tMax)
+	if (t<0.0001 || t > r.tMax)
 		return false;
 	auto x = r.origin().x() + t * r.direction().x();
 	auto y = r.origin().y() + t * r.direction().y();
@@ -30,7 +30,7 @@ bool xy_rect::bounding_box(float t0, float t1, aabb& output_box) const
 
 bool xz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().y()) / r.direction().y();
-	if (t > r.tMax)
+	if (t<0.0001 || t > r.tMax)
 		return false;
 	auto x = r.origin().x() + t * r.direction().x();
 	auto z = r.origin().z() + t * r.direction().z();
@@ -67,7 +67,7 @@ vec3 xz_rect::random(const point3& origin) const
 
 bool yz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().x()) / r.direction().x();
-	if (t > r.tMax)
+	if (t<0.0001 || t > r.tMax)
 		return false;
 	auto y = r.origin().y() + t * r.direction().y();
 	auto z = r.origin().z() + t * r.direction().z();

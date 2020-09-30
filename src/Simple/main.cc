@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 	// Image
 
 	const int max_depth = 50;
-	int samples_per_pixel = 16;
+	int samples_per_pixel = 1;
 
 	clock_t start, finish;
 

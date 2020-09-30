@@ -15,8 +15,8 @@ bool sphere::hit(const ray& r, surface_hit_record& rec) const {
 		auto root = sqrt(discriminant);
 
 		auto temp = (-half_b - root) / a;
-		if (temp < r.tMax) {
-			//if (temp < r.tMax && temp > t_min) {
+		if (temp < r.tMax && temp > 0.0001)
+		{
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
@@ -28,7 +28,8 @@ bool sphere::hit(const ray& r, surface_hit_record& rec) const {
 		}
 
 		temp = (-half_b + root) / a;
-		if (temp < r.tMax) {
+		if (temp < r.tMax && temp > 0.0001)
+		{
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;

@@ -120,7 +120,7 @@ color SimpleIntegrator::ray_color(const ray& r, const color& background, const h
 	if (!rec.mat_ptr->scatter(r, rec, srec))
 		return emitted;
 	if (srec.is_specular) {
-		return srec.attenuation			* ray_color(srec.specular_ray, background, world, lights, depth - 1);
+		return srec.attenuation * ray_color(srec.specular_ray, background, world, lights, depth - 1);
 	}
 
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
@@ -128,7 +128,7 @@ color SimpleIntegrator::ray_color(const ray& r, const color& background, const h
 
 	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
-	ray scattered = ray(rec.p, p.generate(), r.time());
+	ray scattered = ray(rec.p, p.generate(), infinity, r.time());
 	auto pdf_val = p.value(scattered.direction());
 
 	return emitted + srec.attenuation

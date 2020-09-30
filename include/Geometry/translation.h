@@ -22,7 +22,7 @@ public:
 	template <typename T>
 	inline vec<T,3> operator()(const vec<T,3>& v) const;
 
-
+	bool SwapsHandedness() const;
 private:
 	Matrix4x4 m, mInv;
 };
@@ -79,7 +79,7 @@ public:
 };
 
 
-Transform Translate(const Vector3f& delta) {
+inline Transform Translate(const Vector3f& delta) {
 	Matrix4x4 m(1, 0, 0, delta.x(),
 		0, 1, 0, delta.y(),
 		0, 0, 1, delta.z(),

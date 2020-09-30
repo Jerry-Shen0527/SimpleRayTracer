@@ -15,6 +15,15 @@ Transform::Transform(const Matrix4x4& m, const Matrix4x4& mInv) : m(m), mInv(mIn
 {
 }
 
+bool Transform::SwapsHandedness() const
+{
+	Float det =
+		m.m[0][0] * (m.m[1][1] * m.m[2][2] - m.m[1][2] * m.m[2][1]) -
+		m.m[0][1] * (m.m[1][0] * m.m[2][2] - m.m[1][2] * m.m[2][0]) +
+		m.m[0][2] * (m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0]);
+	return det < 0;
+}
+
 bool translate::hit(const ray& r, surface_hit_record& rec) const {
 	ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, rec))
@@ -77,7 +86,7 @@ bool rotate_y::hit(const ray& r,  surface_hit_record& rec) const {
 	direction[0] = cos_theta * r.direction()[0] - sin_theta * r.direction()[2];
 	direction[2] = sin_theta * r.direction()[0] + cos_theta * r.direction()[2];
 
-	ray rotated_r(origin, direction, r.time());
+	ray rotated_r(origin, direction,infinity, r.time());
 
 	if (!ptr->hit(rotated_r, rec))
 		return false;

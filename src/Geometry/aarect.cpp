@@ -1,7 +1,5 @@
 #include <Geometry/aarect.h>
 
-#include "Tools/Math/math_tools.h"
-
 bool xy_rect::hit(const ray& r, surface_hit_record& rec) const {
 	auto t = (k - r.origin().z()) / r.direction().z();
 	if (t<0.0001 || t > r.tMax)

@@ -1,4 +1,5 @@
 #include <Geometry/hit_record.h>
+#include <Tools/Light/AreaLight.h>
 
 Spectrum surface_hit_record::Le(const Vector3f& w) const
 {
@@ -25,13 +26,13 @@ ray hit_record::SpawnRayTo(const Point3f& p2) const
 }
 
 
-inline void surface_hit_record::set_face_normal(const vec3& r_in, const vec3& outward_normal)
+void surface_hit_record::set_face_normal(const vec3& r_in, const vec3& outward_normal)
 {
 	front_face = dot(r_in, outward_normal) < 0;
 	normal = front_face ? outward_normal : -outward_normal;
 }
 
-inline surface_hit_record::surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time) : hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
+surface_hit_record::surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time) : hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
 {
 	set_face_normal(wo, normal);
 

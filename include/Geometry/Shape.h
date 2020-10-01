@@ -13,6 +13,9 @@ public:
 
 	virtual Float Area() const = 0;
 	virtual Bounds3f ObjectBound() const = 0;
+	Bounds3f Shape::WorldBound() const {
+		return (*ObjectToWorld)(ObjectBound());
+	}
 
 	const Transform* ObjectToWorld, * WorldToObject;
 	const bool reverseOrientation;

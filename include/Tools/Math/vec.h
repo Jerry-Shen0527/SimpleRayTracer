@@ -33,7 +33,8 @@ public:
 	float length() const;
 	float length_squared() const;
 
-	
+	T min();
+	T max();
 
 	T x() const;
 	T& x();
@@ -171,6 +172,28 @@ float vec<T, n>::length_squared() const
 	return rst;
 }
 
+template <typename T, int n>
+T vec<T, n>::min()
+{
+	T temp = data[0];
+	for (int i = 0; i < n; ++i)
+	{
+		if (data[i] < temp) temp = data[i];
+	}
+	return  temp;
+}
+
+template <typename T, int n>
+T vec<T, n>::max()
+{
+	T temp = data[0];
+	for (int i = 0; i < n; ++i)
+	{
+		if (data[i] > temp) temp = data[i];
+	}
+	return  temp;
+}
+
 template<typename T, int n>
 T vec<T, n>::x() const
 {
@@ -227,7 +250,7 @@ T& vec<T, n>::w()
 	return data[3];
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline std::ostream& operator<<(std::ostream& out, const vec<T, n>& v) {
 	for (int i = 0; i < n; ++i)
 	{
@@ -236,7 +259,7 @@ inline std::ostream& operator<<(std::ostream& out, const vec<T, n>& v) {
 	return out;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> operator+(const vec<T, n>& u, const vec<T, n>& v) {
 	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
@@ -246,7 +269,7 @@ inline vec<T, n> operator+(const vec<T, n>& u, const vec<T, n>& v) {
 	return rst;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> operator-(const vec<T, n>& u, const vec<T, n>& v) {
 	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
@@ -256,7 +279,7 @@ inline vec<T, n> operator-(const vec<T, n>& u, const vec<T, n>& v) {
 	return rst;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> operator*(const vec<T, n>& u, const vec<T, n>& v) {
 	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
@@ -266,7 +289,7 @@ inline vec<T, n> operator*(const vec<T, n>& u, const vec<T, n>& v) {
 	return rst;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> operator*(float t, const vec<T, n>& v) {
 	vec<T, n> rst;
 	for (int i = 0; i < n; ++i)
@@ -276,17 +299,17 @@ inline vec<T, n> operator*(float t, const vec<T, n>& v) {
 	return rst;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> operator*(const vec<T, n>& v, float t) {
 	return t * v;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> operator/(vec<T, n> v, float t) {
 	return (1 / t) * v;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline float dot(const vec<T, n>& u, const vec<T, n>& v) {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
@@ -296,7 +319,29 @@ inline float dot(const vec<T, n>& u, const vec<T, n>& v) {
 	return rst;
 }
 
-template<typename T,int n>
+template<typename T, int n>
 inline vec<T, n> unit_vector(vec<T, n> v) {
 	return v / v.length();
+}
+
+template<typename T, int n>
+inline vec<T, n> minimum(const vec<T, n>& v1, const vec<T, n>& v2)
+{
+	vec<T, n> rst;
+	for (int i = 0; i < n; ++i)
+	{
+		rst = v1[i] < v2[i] ? v1[i] : v2[i];
+	}
+	return  rst;
+}
+
+template<typename T, int n>
+inline vec<T, n> maximum(const vec<T, n>& v1, const vec<T, n>& v2)
+{
+	vec<T, n> rst;
+	for (int i = 0; i < n; ++i)
+	{
+		rst = v1[i] < v2[i] ? v1[i] : v2[i];
+	}
+	return  rst;
 }

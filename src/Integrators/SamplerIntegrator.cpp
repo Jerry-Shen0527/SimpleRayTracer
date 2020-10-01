@@ -1,5 +1,5 @@
 #include <thread>
-#include <Integrators/SamplerIntegrator.h>
+#include <Integrators/SimpleIntegrator.h>
 #include <pdf/hittable_pdf.h>
 #include <pdf/scatter_record.h>
 #include <BRDF/material.h>
@@ -8,7 +8,7 @@
 #include "Tools/camera.h"
 #include <Tools/Film.h>
 
-void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color background)
+void SimpleIntegrator::integrate(camera& cam, hittable_list& world, color background)
 {
 #ifndef _DEBUG
 	//int MAX_THREAD = 3;
@@ -104,7 +104,7 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color backg
 #endif
 }
 
-color SamplerIntegrator::ray_color(const ray& r, const color& background, const hittable& world,
+color SimpleIntegrator::ray_color(const ray& r, const color& background, const hittable& world,
 	std::shared_ptr<hittable> lights, int depth)
 {
 	surface_hit_record rec;

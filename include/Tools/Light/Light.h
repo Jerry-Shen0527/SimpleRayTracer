@@ -56,9 +56,7 @@ Spectrum VisibilityTester::Tr(const Scene& scene, Sampler& sampler) const {
 	Spectrum Tr(1.f);
 	while (true) {
 		SurfaceInteraction isect;
-		bool hitSurface = scene.hit(
-			
-			, isect);
+		bool hitSurface = scene.hit(ray, isect);
 		//Handle opaque surface along ray¡¯s path 718
 		if (hitSurface && isect.mat_ptr != nullptr)
 			return Spectrum(0.0f);

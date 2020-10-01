@@ -42,10 +42,10 @@ inline float CosDPhi(const vec3& wa, const vec3& wb) {
 	return clamp((wa.x() * wb.x() + wa.y() * wb.y()) / std::sqrt((wa.x() * wa.x() + wa.y() * wa.y()) * (wb.x() * wb.x() + wb.y() * wb.y())), -1, 1);
 }
 
-typedef float Float;
-typedef vec3 Vector3f;
-typedef vec3 Point3f;
-typedef vec3 Normal3f;
+using Float = float;
+using Vector3f = vec3;
+using Point3f = vec3;
+using Normal3f = vec3;
 
 inline normal3
 Faceforward(const normal3& n, const vec3& v) {

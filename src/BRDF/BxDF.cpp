@@ -13,6 +13,8 @@ float BxDF::pdf(const vec3& wo, const vec3& wi)
 	return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * inv_pi : 0;
 }
 
+
+
 bool BxDF::MatchesFlags(BxDFType t) const
 {
 	return (type & t) == type;

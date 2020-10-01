@@ -4,10 +4,10 @@
 #include "Tools/Sampler/Sampler.h"
 #include "Tools/Sampler/StratifiedSampler.h"
 
-class SimpleIntegrator :public Integrator
+class SamplerIntegrator :public Integrator
 {
 public:
-	SimpleIntegrator(Scene scene, int spp, int max_depth) :Integrator(spp, max_depth)
+	SamplerIntegrator(Scene scene, int spp, int max_depth) :Integrator(spp, max_depth)
 	{
 		auto a = static_cast<int>(sqrtf(spp));
 		if (a * a < spp) a++;

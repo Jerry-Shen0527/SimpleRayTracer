@@ -1,7 +1,7 @@
 #include <ctime>
 #include <thread>
 
-#include <Integrators/SimpleIntegrator.h>
+#include <Integrators/SamplerIntegrator.h>
 #include <Scene/WorldFactory.h>
 #include <Tools/Files/FileWrite.h>
 
@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 	// Render
 
 	SpectrumIntegrator spectrum_integrator(samples_per_pixel, max_depth);
-	SimpleIntegrator simple_integrator(world, samples_per_pixel, max_depth);
+	SamplerIntegrator simple_integrator(world, samples_per_pixel, max_depth);
 
 	start = clock();
 

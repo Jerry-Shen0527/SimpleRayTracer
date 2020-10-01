@@ -1,12 +1,12 @@
 #pragma once
 #include "BxDF.h"
-#include "material.h"
+#include "Material.h"
 #include "MicrofacetDistribution.h"
 #include "Fresnel/Fresnel.h"
 
 vec3 reflect(const vec3& v, const vec3& n);
 
-class metal : public material {
+class metal : public Material {
 public:
 	metal(const color& a) : albedo(a) {}
 

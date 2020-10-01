@@ -2,7 +2,7 @@
 #include <Integrators/SimpleIntegrator.h>
 #include <pdf/hittable_pdf.h>
 #include <pdf/scatter_record.h>
-#include <BRDF/material.h>
+#include <BRDF/Material.h>
 #include <Geometry/hit_record.h>
 
 #include "Tools/camera.h"

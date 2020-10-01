@@ -4,7 +4,7 @@
 
 #include "pdf/pdf.h"
 
-class lambertian : public material {
+class lambertian : public Material {
 public:
 	lambertian(const color& a) : albedo(make_shared<solid_color>(a)) {}
 	lambertian(shared_ptr<texture> a) : albedo(a) {}

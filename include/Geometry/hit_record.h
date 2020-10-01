@@ -1,6 +1,7 @@
 #pragma once
-#include <BRDF/material.h>
+#include <BRDF/Material.h>
 #include <BRDF/Volume/Medium.h>
+class Primitive;
 const Float ShadowEpsilon = 0.0001f;
 
 struct hit_record
@@ -40,12 +41,16 @@ struct hit_record
 
 public:
 	MediumInterface mediumInterface;
+
+	BSDF* bsdf = nullptr;
+	BSSRDF* bssrdf = nullptr;
+
 };
 
 struct surface_hit_record :public hit_record {
 	surface_hit_record() {}
 
-	std::shared_ptr<material> mat_ptr;
+	std::shared_ptr<Material> mat_ptr;
 
 	surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, r_in, time) {}
 
@@ -66,6 +71,7 @@ struct surface_hit_record :public hit_record {
 	} shading;
 
 	Spectrum Le(const Vector3f& w) const;
+	const Primitive* primitive = nullptr;
 };
 
 using Interaction = hit_record;

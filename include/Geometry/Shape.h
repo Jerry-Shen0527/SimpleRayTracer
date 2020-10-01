@@ -1,5 +1,6 @@
 #pragma once
 #include "translation.h"
+#include "Tools/Bound.h"
 
 class Shape {
 public:
@@ -11,6 +12,7 @@ public:
 	}
 
 	virtual Float Area() const = 0;
+	virtual Bounds3f ObjectBound() const = 0;
 
 	const Transform* ObjectToWorld, * WorldToObject;
 	const bool reverseOrientation;

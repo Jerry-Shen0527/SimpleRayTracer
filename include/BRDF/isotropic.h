@@ -1,11 +1,11 @@
 #pragma once
 
-#include <BRDF/material.h>
+#include <BRDF/Material.h>
 
 #include "texture.h"
 #include "Tools/Math/Sampling.h"
 
-class isotropic : public material {
+class isotropic : public Material {
 public:
 	isotropic(color c) : albedo(make_shared<solid_color>(c)) {}
 	isotropic(std::shared_ptr<texture> a) : albedo(a) {}

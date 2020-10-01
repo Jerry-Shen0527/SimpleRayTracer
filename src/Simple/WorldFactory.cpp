@@ -15,7 +15,7 @@ hittable_list WorldFactory::random_scene() {
 			point3 center(a + 0.9 * random_float(), 0.2, b + 0.9 * random_float());
 
 			if ((center - point3(4, 0.2, 0)).length() > 0.9) {
-				shared_ptr<material> sphere_material;
+				shared_ptr<Material> sphere_material;
 
 				if (choose_mat < 0.8) {
 					// diffuse
@@ -121,7 +121,7 @@ hittable_list WorldFactory::cornell_box() {
 	//box2 = make_shared<rotate_y>(box2, -18);
 	//box2 = make_shared<translate>(box2, vec3(130, 0, 65));
 	//world.add(box2);
-	shared_ptr<material> glass = make_shared<dielectric>(1.5);
+	shared_ptr<Material> glass = make_shared<dielectric>(1.5);
 	shared_ptr<hittable> glass_sphere = make_shared<sphere>(point3(190, 90, 190), 90.0, glass);
 
 	world.add(glass_sphere);

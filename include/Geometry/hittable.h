@@ -3,7 +3,7 @@
 #include "hit_record.h"
 
 class aabb;
-class material;
+class Material;
 
 class hittable {
 public:

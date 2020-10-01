@@ -7,7 +7,7 @@
 class sphere : public hittable {
 public:
 	sphere() {}
-	sphere(point3 cen, float r, std::shared_ptr<material> m, bool pdf = false)
+	sphere(point3 cen, float r, std::shared_ptr<Material> m, bool pdf = false)
 		: center(cen), radius(r), mat_ptr(m) {
 		pdf_enabled = pdf;
 	}
@@ -24,7 +24,7 @@ public:
 
 	point3 center;
 	float radius;
-	std::shared_ptr<material> mat_ptr;
+	std::shared_ptr<Material> mat_ptr;
 };
 
 #endif

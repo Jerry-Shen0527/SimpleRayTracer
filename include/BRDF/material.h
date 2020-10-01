@@ -8,9 +8,9 @@ class surface_hit_record;
 class AreaLight;
 
 
-class material {
+class Material {
 public:
-	virtual ~material() = default;
+	virtual ~Material() = default;
 
 	virtual color emitted(const ray& r_in, const surface_hit_record& rec,const point2& uv, const point3& p) const {
 		return color(0, 0, 0);

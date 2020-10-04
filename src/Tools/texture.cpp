@@ -42,8 +42,8 @@ color image_texture::value(const vec2& uv, const vec3& p) const
 		return color(0, 1, 1);
 
 	// Clamp input texture coordinates to [0,1] x [1,0]
-	auto x = clamp(uv.x(), 0.0, 1.0);
-	auto y = 1.0 - clamp(uv.y(), 0.0, 1.0); // Flip V to image coordinates
+	auto x = Clamp(uv.x(), 0.0, 1.0);
+	auto y = 1.0 - Clamp(uv.y(), 0.0, 1.0); // Flip V to image coordinates
 
 	auto i = static_cast<int>(x * width);
 	auto j = static_cast<int>(y * height);

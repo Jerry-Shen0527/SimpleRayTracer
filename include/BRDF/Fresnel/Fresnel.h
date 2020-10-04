@@ -4,7 +4,7 @@
 #include "Tools/Spectrum/SampledSpectrum.h"
 
 inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
-	cosThetaI = clamp(cosThetaI, -1, 1);
+	cosThetaI = Clamp(cosThetaI, -1, 1);
 
 	bool entering = cosThetaI > 0.f;
 	if (!entering) {
@@ -33,7 +33,7 @@ inline Vector3f Reflect(const Vector3f& wo, const Vector3f& n) {
 
 inline Spectrum FrConductor(Float cosThetaI, const Spectrum& etaI, const Spectrum& etaT, const Spectrum& k)
 {
-	cosThetaI = clamp(cosThetaI, -1, 1);
+	cosThetaI = Clamp(cosThetaI, -1, 1);
 	Spectrum eta = etaT / etaI;
 	Spectrum etak = k / etaI;
 

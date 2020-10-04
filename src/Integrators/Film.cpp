@@ -28,7 +28,7 @@ void Film::write_color(int i, int j, color pixel_color, int samples_per_pixel)
 	b = sqrt(scale * b);
 
 	// Write the translated [0,255] value of each color component.
-	image[j * 3 * width + i * 3 + 0] = static_cast<unsigned char>(256 * clamp(r, 0.0, 0.999));
-	image[j * 3 * width + i * 3 + 1] = static_cast<unsigned char>(256 * clamp(g, 0.0, 0.999));
-	image[j * 3 * width + i * 3 + 2] = static_cast<unsigned char>(256 * clamp(b, 0.0, 0.999));
+	image[j * 3 * width + i * 3 + 0] = static_cast<unsigned char>(256 * Clamp(r, 0.0, 0.999));
+	image[j * 3 * width + i * 3 + 1] = static_cast<unsigned char>(256 * Clamp(g, 0.0, 0.999));
+	image[j * 3 * width + i * 3 + 2] = static_cast<unsigned char>(256 * Clamp(b, 0.0, 0.999));
 }

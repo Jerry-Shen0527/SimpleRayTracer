@@ -7,8 +7,6 @@
 #undef min
 #undef max
 
-
-
 class Transform
 {
 public:
@@ -20,7 +18,7 @@ public:
 
 	friend Transform Transpose(const Transform& t);
 	template <typename T>
-	inline vec<T,3> operator()(const vec<T,3>& v) const;
+	inline vec<T, 3> operator()(const vec<T, 3>& v) const;
 
 	bool SwapsHandedness() const;
 private:
@@ -77,7 +75,6 @@ public:
 	bool hasbox;
 	aabb bbox;
 };
-
 
 inline Transform Translate(const Vector3f& delta) {
 	Matrix4x4 m(1, 0, 0, delta.x(),

@@ -23,11 +23,11 @@ inline float Tan2Theta(const vec3& w) {
 
 inline float CosPhi(const vec3& w) {
 	float sinTheta = SinTheta(w);
-	return (sinTheta == 0) ? 1 : clamp(w.x() / sinTheta, -1, 1);
+	return (sinTheta == 0) ? 1 : Clamp(w.x() / sinTheta, -1, 1);
 }
 inline float SinPhi(const vec3& w) {
 	float sinTheta = SinTheta(w);
-	return (sinTheta == 0) ? 0 : clamp(w.y() / sinTheta, -1, 1);
+	return (sinTheta == 0) ? 0 : Clamp(w.y() / sinTheta, -1, 1);
 }
 
 inline float Cos2Phi(const vec3& w) {
@@ -39,7 +39,7 @@ inline float Sin2Phi(const vec3& w) {
 
 //Calculate different phi between two vectors
 inline float CosDPhi(const vec3& wa, const vec3& wb) {
-	return clamp((wa.x() * wb.x() + wa.y() * wb.y()) / std::sqrt((wa.x() * wa.x() + wa.y() * wa.y()) * (wb.x() * wb.x() + wb.y() * wb.y())), -1, 1);
+	return Clamp((wa.x() * wb.x() + wa.y() * wb.y()) / std::sqrt((wa.x() * wa.x() + wa.y() * wa.y()) * (wb.x() * wb.x() + wb.y() * wb.y())), -1, 1);
 }
 
 using Float = float;

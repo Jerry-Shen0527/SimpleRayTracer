@@ -157,7 +157,7 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::Clamp(float low, fl
 {
 	CoefficientSpectrum ret;
 	for (int i = 0; i < nSamples; ++i)
-		ret.c[i] = clamp(c[i], low, high);
+		ret.c[i] = Clamp(c[i], low, high);
 	return ret;
 }
 

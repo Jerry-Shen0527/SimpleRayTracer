@@ -1,6 +1,8 @@
 # Simple Ray Tracer
 Based on [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html). Try to learn raytracing fast.
 
+Replacing each component referencing to book  [Physically Based Rendering](http://www.pbr-book.org/). Also some code from [pbrt-v3](https://github.com/mmp/pbrt-v3). 
+
 ### 性能对比
 
 目标图片参数：
@@ -27,7 +29,7 @@ CPU:10710U 35W
 
 ### 添加一些元素
 
-![final 8_3 8_32_32](README.assets/final 8_3 8_32_32-1597295135598.png)
+![final 8_3 8_32_32](README.assets/final.png)
 
 ### 重要性采样
 
@@ -37,19 +39,19 @@ CPU:10710U 35W
 
 #### 完全lambertian
 
-![out 8_13 15_55_48](README.assets/out 8_13 15_55_48.png)
+![out 8_13 15_55_48](README.assets/out8_13 15_55_48.png)
 
 #### 0.5*Importance Sampling
 
-![out 8_13 15_53_42](README.assets/out 8_13 15_53_42.png)
+![out 8_13 15_53_42](README.assets/out8_13 15_53_42.png)
 
 #### 0.8*Importance Sampling
 
-![out 8_13 15_58_38](README.assets/out 8_13 15_58_38.png)
+![out 8_13 15_58_38](README.assets/0_8.png)
 
 #### 1.0*Importance Sampling
 
-![out 8_13 15_57_12](README.assets/out 8_13 15_57_12.png)
+![out 8_13 15_57_12](README.assets/out8_1315_57_12.png)
 
 ### 下一步计划
 
@@ -60,8 +62,6 @@ CPU:10710U 35W
 
 
 - [ ] CUDA支持。
-- [ ] 阅读mitsuba2和pbrt源码，融入部分功能。
-- [ ] Spectrum rendering
-
+- [x] Spectrum rendering
 - [ ] Stokes矢量和Muller矩阵
-- [ ] Volume Rendering and atomsphere 
+- [ ] Volume Rendering and atmosphere 

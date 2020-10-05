@@ -20,6 +20,7 @@ public:
 		Float tHit = ray.tMax;
 		SurfaceInteraction isect;
 		return Intersect(ray, &tHit, &isect, testAlphaTexture);
+
 	}
 
 	const Transform* ObjectToWorld, * WorldToObject;

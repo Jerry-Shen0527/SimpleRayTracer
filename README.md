@@ -39,11 +39,11 @@ CPU:10710U 35W
 
 #### 完全lambertian
 
-![out 8_13 15_55_48](README.assets/out8_13 15_55_48.png)
+![out 8_13 15_55_48](README.assets/lambertian.png)
 
 #### 0.5*Importance Sampling
 
-![out 8_13 15_53_42](README.assets/out8_13 15_53_42.png)
+![out 8_13 15_53_42](README.assets/0_5importance.png)
 
 #### 0.8*Importance Sampling
 

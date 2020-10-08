@@ -7,7 +7,7 @@ class constant_medium : public hittable {
 public:
 	constant_medium(std::shared_ptr<hittable> b, float d, std::shared_ptr<texture> a);
 
-	constant_medium(std::shared_ptr<hittable> b, float d, color c);
+	constant_medium(std::shared_ptr<hittable> b, float d, Color c);
 
 	virtual bool hit(const ray& r,  surface_hit_record& rec) const override;
 

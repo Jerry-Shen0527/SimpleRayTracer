@@ -164,7 +164,7 @@ bool Bounds<T, n>::IntersectP(const ray& ray, const Vector3f& invDir, const int 
 }
 
 template <typename T, int n>
-Bounds<T, n> Union(const Bounds<T, n>& b, const Vector<T, n>& p)
+Bounds<T, n> Union(const Bounds<T, n>& b, const Point<T, n>& p)
 {
 	return Bounds<T, n>(minimum(b.pMin, p), maximum(b.pMax, p));
 }

@@ -13,15 +13,15 @@ struct surface_hit_record;
 class aabb {
 public:
 	aabb() {}
-	aabb(const point3& a, const point3& b) { _min = a; _max = b; }
+	aabb(const Point3f& a, const Point3f& b) { _min = a; _max = b; }
 
-	point3 min() const { return _min; }
-	point3 max() const { return _max; }
+	Point3f min() const { return _min; }
+	Point3f max() const { return _max; }
 
 	bool hit(const ray& r) const;
 
-	point3 _min;
-	point3 _max;
+	Point3f _min;
+	Point3f _max;
 };
 
 class hittable_list;

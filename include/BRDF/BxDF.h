@@ -18,11 +18,11 @@ public:
 	BxDF(BxDFType type) : type(type) { }
 	virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const = 0;
 
-	virtual Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType = nullptr) const;
+	virtual Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf, BxDFType* sampledType = nullptr) const;
 
 	float pdf(const Vector3f& wo, const Vector3f& wi);
-	virtual Spectrum rho(const Vector3f& wo, int nSamples, const point2* samples) const;
-	virtual Spectrum rho(int nSamples, const point2* samples1, const point2* samples2) const;
+	virtual Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples) const;
+	virtual Spectrum rho(int nSamples, const Point2f* samples1, const Point2f* samples2) const;
 
 	const BxDFType type;
 

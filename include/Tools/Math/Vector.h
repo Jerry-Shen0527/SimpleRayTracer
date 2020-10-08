@@ -1,14 +1,23 @@
 #pragma once
 #include <cassert>
+#include <cstdarg>
 #include <initializer_list>
 #include <ostream>
-
 
 template<typename T, int n>
 class Vector {
 public:
 	Vector() : data{ 0 } {}
-	Vector(std::initializer_list<T> list);
+
+	Vector(T a, ...) {
+		va_list list;
+		va_start(list, n);
+		for (int i = 0; i < n; ++i)
+		{
+			data[i] = va_arg(list, T);
+		}
+		va_end(list);
+	}
 
 	inline static Vector random();
 	inline static Vector random(T min, T max);
@@ -43,17 +52,6 @@ public:
 	T data[n];
 };
 
-template<typename T, int n>
-Vector<T, n>::Vector(std::initializer_list<T> list)
-{
-	assert(list.size() == n);
-
-	int i = 0;
-	for (auto iter = list.begin(); iter != list.end(); iter++, i++)
-	{
-		data[i] = *iter;
-	}
-}
 
 template<typename T, int n>
 Vector<T, n> Vector<T, n>::random()

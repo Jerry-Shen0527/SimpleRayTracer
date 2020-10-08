@@ -22,7 +22,7 @@ bool xy_rect::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	// The bounding box must have non-zero width in each dimension, so pad the Z
 	// dimension a small amount.
-	output_box = aabb(point3(x0, y0, k - 0.0001), point3(x1, y1, k + 0.0001));
+	output_box = aabb(Point3f(x0, y0, k - 0.0001), Point3f(x1, y1, k + 0.0001));
 	return true;
 }
 
@@ -44,7 +44,7 @@ bool xz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	return true;
 }
 
-float xz_rect::pdf_value(const point3& origin, const Vector3f& v) const
+float xz_rect::pdf_value(const Point3f& origin, const Vector3f& v) const
 {
 	surface_hit_record rec;
 	if (!this->hit(ray(origin, v), rec))
@@ -57,9 +57,9 @@ float xz_rect::pdf_value(const point3& origin, const Vector3f& v) const
 	return distance_squared / (cosine * area);
 }
 
-Vector3f xz_rect::random(const point3& origin) const
+Vector3f xz_rect::random(const Point3f& origin) const
 {
-	auto random_point = point3(random_float(x0, x1), k, random_float(z0, z1));
+	auto random_point = Point3f(random_float(x0, x1), k, random_float(z0, z1));
 	return random_point - origin;
 }
 
@@ -85,7 +85,7 @@ bool yz_rect::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	// The bounding box must have non-zero width in each dimension, so pad the X
 	// dimension a small amount.
-	output_box = aabb(point3(k - 0.0001, y0, z0), point3(k + 0.0001, y1, z1));
+	output_box = aabb(Point3f(k - 0.0001, y0, z0), Point3f(k + 0.0001, y1, z1));
 	return true;
 }
 
@@ -107,7 +107,7 @@ bool flip_face::get_pdf_enabled()
 {
 	return ptr->get_pdf_enabled();
 }
-float flip_face::pdf_value(const point3& o, const Vector3f& v) const
+float flip_face::pdf_value(const Point3f& o, const Vector3f& v) const
 {
 	return ptr->pdf_value(o, v);
 }

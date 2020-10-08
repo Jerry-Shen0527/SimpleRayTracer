@@ -50,7 +50,7 @@ bool sphere::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-void sphere::get_sphere_uv(const Vector3f& p, vec2& uv) const
+void sphere::get_sphere_uv(const Vector3f& p, Vector2f& uv) const
 {
 	auto phi = atan2(p.z(), p.x());
 	auto theta = asin(p.y());
@@ -58,7 +58,7 @@ void sphere::get_sphere_uv(const Vector3f& p, vec2& uv) const
 	uv.y() = (theta + pi / 2) / pi;
 }
 
-float sphere::pdf_value(const point3& o, const Vector3f& v) const {
+float sphere::pdf_value(const Point3f& o, const Vector3f& v) const {
 	surface_hit_record rec;
 	if (!this->hit(ray(o, v), rec))
 		return 0;
@@ -69,7 +69,7 @@ float sphere::pdf_value(const point3& o, const Vector3f& v) const {
 	return  1 / solid_angle;
 }
 
-Vector3f sphere::random(const point3& o) const {
+Vector3f sphere::random(const Point3f& o) const {
 	Vector3f direction = center - o;
 	auto distance_squared = direction.length_squared();
 	onb uvw;

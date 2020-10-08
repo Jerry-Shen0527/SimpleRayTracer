@@ -1,5 +1,6 @@
 #pragma once
 #include <Tools/Math/Sampling.h>
+#include <Tools/Math/Vector3.h>
 
 inline float CosTheta(const Vector3f& w) { return w.z(); }
 inline float Cos2Theta(const Vector3f& w) { return w.z() * w.z(); }
@@ -40,13 +41,12 @@ inline float CosDPhi(const Vector3f& wa, const Vector3f& wb) {
 	return Clamp((wa.x() * wb.x() + wa.y() * wb.y()) / std::sqrt((wa.x() * wa.x() + wa.y() * wa.y()) * (wb.x() * wb.x() + wb.y() * wb.y())), -1, 1);
 }
 
-inline Normal3f
-Faceforward(const Normal3f& n, const Vector3f& v) {
-	return (dot(n, v) < 0.f) ? -n : n;
+inline Normal3f Faceforward(const Normal3f& n, const Vector3f& v) {
+	return dot(n, v) < 0.f ? -n : n;
 }
 
-inline Vector3f CosineSampleHemisphere(const point2& u) {
-	point2 d = ConcentricSampleDisk(u);
+inline Vector3f CosineSampleHemisphere(const Point2f& u) {
+	Point2f d = ConcentricSampleDisk(u);
 	Float z = std::sqrt(std::max((Float)0, 1 - d.x() * d.x() - d.y() * d.y()));
 	return Vector3f(d.x(), d.y(), z);
 }

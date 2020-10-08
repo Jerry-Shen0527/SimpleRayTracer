@@ -5,8 +5,8 @@
 
 void Vector3f_test()
 {
-	Vector3f a{ 3, 4, 5 };
-	Vector3f b{ 4, 5, 6 };
+	Vector3f a(3, 4, 5);
+	Vector3f b(4, 5, 6);
 	std::cout << a << std::endl;
 	std::cout << a[0] << ' ' << a[1] << ' ' << a[2] << std::endl;
 

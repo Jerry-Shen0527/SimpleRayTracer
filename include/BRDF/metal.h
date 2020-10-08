@@ -8,16 +8,16 @@ Vector3f reflect(const Vector3f& v, const Vector3f& n);
 
 class metal : public Material {
 public:
-	metal(const color& a) : albedo(a) {}
+	metal(const Color& a) : albedo(a) {}
 
-	metal(const color& a, float f);
+	metal(const Color& a, float f);
 
 	virtual bool scatter(
 		const ray& r_in, const surface_hit_record& rec, scatter_record& srec
 	) const override;
 
 public:
-	color albedo;
+	Color albedo;
 	float fuzz;
 };
 

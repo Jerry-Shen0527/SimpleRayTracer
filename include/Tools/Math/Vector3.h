@@ -1,37 +1,37 @@
-#ifndef VEC3_H
-#define VEC3_H
+#pragma once
 
+#include <cassert>
+
+#include "config.h"
 #include "Vector.h"
 
-template<typename T>
-class Vector3 :public Vector<T, 3>
-{
-public:
-	Vector3() : Vector<T, 3>() {}
-	Vector3(const Vector<T, 3>& in_vec) :Vector<T, 3>(in_vec) {}
+using Vector3f = Vector<Float, 3>;
+using Vector2f = Vector<Float, 2>;
 
-	Vector3(const Normal3<T>& n)
-	{
-		data[0] = n.x();
-		data[1] = n.y();
-		data[2] = n.z();
-		assert(!n.HasNaNs());
-	}
-};
-using Vector3f = Vector3<float>;
-
-template<typename T>
-inline Vector3<T> cross(const Vector3<T>& u, const Vector3<T>& v) {
+inline Vector3f cross(const Vector3f& u, const Vector3f& v) {
 	return Vector3f(u.data[1] * v.data[2] - u.data[2] * v.data[1],
 		u.data[2] * v.data[0] - u.data[0] * v.data[2],
 		u.data[0] * v.data[1] - u.data[1] * v.data[0]);
 }
 
-template <typename T> class Normal3 :Vector3<T>
+template <typename T> class Normal3 :public Vector<T, 3>
 {
+	Normal3(Vector<T, 3>& vec) { static_cast<Vector<T, 3>>(*this) = vec; }
 };
 using Normal3f = Normal3<float>;
 
-void Vector3f_test();
+template<typename T, int n>
+class Point :public Vector<T, n>
+{
+public:
+	Point(Vector<T, 3>& vec) { static_cast<Vector<T, n>>(*this) = vec; }
+};
 
-#endif
+using Point2i = Point<int, 2>;
+using Point2f = Point<Float, 2>;
+using Point3i = Point<int, 3>;
+using Point3f = Point<Float, 3>;
+
+using Color = Vector3f;
+
+void Vector3f_test();

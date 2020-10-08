@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "math_tools.h"
 #include "rng.h"
+#include <config.h>
 
 inline Vector3f random_in_unit_sphere() {
 	while (true) {
-		auto p = Vector3f::random(-1, 1);
+		auto p = Vector<Float,3>::random(-1, 1);
 		if (p.length_squared() >= 1) continue;
 		return p;
 	}

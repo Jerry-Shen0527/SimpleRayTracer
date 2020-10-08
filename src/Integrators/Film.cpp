@@ -9,11 +9,11 @@ Film::Film(int w, int h): width(w), height(h)
 	image.resize(pixelcount * 3);
 }
 
-void Film::write_color(int i, int j, color pixel_color, int samples_per_pixel)
+void Film::write_Color(int i, int j, Color pixel_Color, int samples_per_pixel)
 {
-	auto r = pixel_color.x();
-	auto g = pixel_color.y();
-	auto b = pixel_color.z();
+	auto r = pixel_Color.x();
+	auto g = pixel_Color.y();
+	auto b = pixel_Color.z();
 
 	auto scale = 1.0 / samples_per_pixel;
 
@@ -22,12 +22,12 @@ void Film::write_color(int i, int j, color pixel_color, int samples_per_pixel)
 	if (g != g) g = 0.0;
 	if (b != b) b = 0.0;
 
-	// Divide the color by the number of samples and gamma-correct for gamma=2.0.
+	// Divide the Color by the number of samples and gamma-correct for gamma=2.0.
 	r = sqrt(scale * r);
 	g = sqrt(scale * g);
 	b = sqrt(scale * b);
 
-	// Write the translated [0,255] value of each color component.
+	// Write the translated [0,255] value of each Color component.
 	image[j * 3 * width + i * 3 + 0] = static_cast<unsigned char>(256 * Clamp(r, 0.0, 0.999));
 	image[j * 3 * width + i * 3 + 1] = static_cast<unsigned char>(256 * Clamp(g, 0.0, 0.999));
 	image[j * 3 * width + i * 3 + 2] = static_cast<unsigned char>(256 * Clamp(b, 0.0, 0.999));

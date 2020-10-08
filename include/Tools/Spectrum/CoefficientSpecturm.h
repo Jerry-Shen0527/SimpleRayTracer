@@ -3,9 +3,9 @@
 #include <vector>
 #include <algorithm>
 #include <config.h>
-#include <Tools/Math/vec3.h>
 
 #include "BRDF/BxDF_Utility.h"
+#include "Tools/Math/Vector3.h"
 
 template<int nSamples>
 class CoefficientSpectrum

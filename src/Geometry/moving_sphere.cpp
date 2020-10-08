@@ -2,7 +2,7 @@
 #include <Geometry/MovingSphere.h>
 #include <Geometry/bvh.h>
 
-point3 moving_sphere::center(float time) const {
+Point3f moving_sphere::center(float time) const {
 	return center0 + ((time - time0) / (time1 - time0)) * (center1 - center0);
 }
 bool moving_sphere::bounding_box(float t0, float t1, aabb& output_box) const

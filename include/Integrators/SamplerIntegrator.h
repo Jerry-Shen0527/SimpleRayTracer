@@ -15,8 +15,8 @@ public:
 		sampler = make_shared<StratifiedSampler>(a, a, true, 1);
 		lights = make_shared<hittable_list>(scene);
 	}
-	void integrate(camera& cam, hittable_list& world, color background = color(0, 0, 0)) override;
-	color ray_color(const ray& r, const color& background, const hittable& world, shared_ptr<hittable> lights,
+	void integrate(camera& cam, hittable_list& world, Color background = Color(0, 0, 0)) override;
+	Color ray_Color(const ray& r, const Color& background, const hittable& world, shared_ptr<hittable> lights,
 		int depth);
 
 	std::shared_ptr<Sampler> sampler;

@@ -128,8 +128,8 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 	cos_theta = cos(radians);
 	hasbox = ptr->bounding_box(0, 1, bbox);
 
-	point3 min(infinity, infinity, infinity);
-	point3 max(-infinity, -infinity, -infinity);
+	Point3f min(infinity, infinity, infinity);
+	Point3f max(-infinity, -infinity, -infinity);
 
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {

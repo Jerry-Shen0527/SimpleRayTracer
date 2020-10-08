@@ -1,7 +1,7 @@
 #include <BRDF/BxDF.h>
 #include <BRDF/BxDF_Utility.h>
 
-Spectrum BxDF::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const
+Spectrum BxDF::Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf, BxDFType* sampledType) const
 {
 	wi = CosineSampleHemisphere(sample);
 	if (wo.z() < 0) wi.z() *= -1;

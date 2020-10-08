@@ -11,7 +11,7 @@ public:
 
 	Film(int w, int h);
 
-	void write_color(int i, int j, color pixel_color, int samples_per_pixel);
+	void write_Color(int i, int j, Color pixel_Color, int samples_per_pixel);
 	int pixelcount;
 
 	int width;

@@ -35,13 +35,13 @@ public:
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
 		// The bounding box must have non-zero width in each dimension, so pad the Y
 		// dimension a small amount.
-		output_box = aabb(point3(x0, k - 0.0001, z0), point3(x1, k + 0.0001, z1));
+		output_box = aabb(Point3f(x0, k - 0.0001, z0), Point3f(x1, k + 0.0001, z1));
 		return true;
 	}
 
-	virtual float pdf_value(const point3& origin, const Vector3f& v) const override;
+	virtual float pdf_value(const Point3f& origin, const Vector3f& v) const override;
 
-	virtual Vector3f random(const point3& origin) const override;
+	virtual Vector3f random(const Point3f& origin) const override;
 
 public:
 	std::shared_ptr<Material> mp;
@@ -74,7 +74,7 @@ public:
 
 	bool get_pdf_enabled() override;
 
-	float pdf_value(const point3& o, const Vector3f& v) const override;
+	float pdf_value(const Point3f& o, const Vector3f& v) const override;
 	Vector3f random(const Vector3f& o) const override;
 
 	std::shared_ptr<hittable> ptr;

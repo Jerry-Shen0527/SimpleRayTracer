@@ -47,7 +47,7 @@ bool hittable_list::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-float hittable_list::pdf_value(const point3& o, const Vector3f& v) const {
+float hittable_list::pdf_value(const Point3f& o, const Vector3f& v) const {
 	auto weight = 1.0 / pdf_objects.size();
 	auto sum = 0.0;
 

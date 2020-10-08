@@ -4,6 +4,8 @@
 class Shape;
 class Primitive;
 const Float ShadowEpsilon = 0.0001f;
+class BSDF;
+class BSSRDF;
 
 struct hit_record
 {

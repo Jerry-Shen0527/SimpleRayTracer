@@ -5,7 +5,7 @@
 
 #include "Tools/Math/math_tools.h"
 
-color checker_texture::value(const vec2& uv, const point3& p) const
+Color checker_texture::value(const Vector2f& uv, const Point3f& p) const
 {
 	auto sines = sin(10 * p.x()) * sin(10 * p.y()) * sin(10 * p.z());
 	if (sines < 0)
@@ -14,9 +14,9 @@ color checker_texture::value(const vec2& uv, const point3& p) const
 		return even->value(uv, p);
 }
 
-color noise_texture::value(const vec2& uv, const point3& p) const
+Color noise_texture::value(const Vector2f& uv, const Point3f& p) const
 {
-	return color(1, 1, 1) * 0.5 * (1 + sin(scale * p.z() + 10 * noise.turb(p)));
+	return Color(1, 1, 1) * 0.5 * (1 + sin(scale * p.z() + 10 * noise.turb(p)));
 }
 
 image_texture::image_texture(const std::string& filename)
@@ -35,11 +35,11 @@ image_texture::image_texture(const std::string& filename)
 	bytes_per_scanline = bytes_per_pixel * width;
 }
 
-color image_texture::value(const vec2& uv, const Vector3f& p) const
+Color image_texture::value(const Vector2f& uv, const Point3f& p) const
 {
 	// If we have no texture data, then return solid cyan as a debugging aid.
 	if (data == nullptr)
-		return color(0, 1, 1);
+		return Color(0, 1, 1);
 
 	// Clamp input texture coordinates to [0,1] x [1,0]
 	auto x = Clamp(uv.x(), 0.0, 1.0);
@@ -52,8 +52,8 @@ color image_texture::value(const vec2& uv, const Vector3f& p) const
 	if (i >= width) i = width - 1;
 	if (j >= height) j = height - 1;
 
-	const auto color_scale = 1.0 / 255.0;
+	const auto Color_scale = 1.0 / 255.0;
 	auto pixel = data + j * bytes_per_scanline + i * bytes_per_pixel;
 
-	return color(color_scale * pixel[0], color_scale * pixel[1], color_scale * pixel[2]);
+	return Color(Color_scale * pixel[0], Color_scale * pixel[1], Color_scale * pixel[2]);
 }

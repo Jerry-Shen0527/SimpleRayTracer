@@ -10,7 +10,7 @@ public:
 	virtual bool hit(const ray& r, surface_hit_record& rec) const = 0;
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const;
 
-	virtual float pdf_value(const point3& o, const Vector3f& v) const {
+	virtual float pdf_value(const Point3f& o, const Vector3f& v) const {
 		return 0.0;
 	}
 

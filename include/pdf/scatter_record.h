@@ -7,7 +7,7 @@ class pdf;
 struct scatter_record {
 	ray specular_ray;
 	bool is_specular;
-	color attenuation;
+	Color attenuation;
 	std::shared_ptr<pdf> pdf_ptr;
 	Spectrum sp_attenuation;
 	virtual  void update() {}

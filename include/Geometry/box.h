@@ -8,7 +8,7 @@
 class box : public hittable {
 public:
 	box() {}
-	box(const point3& p0, const point3& p1, shared_ptr<Material> ptr);
+	box(const Point3f& p0, const Point3f& p1, shared_ptr<Material> ptr);
 
 	virtual bool hit(const ray& r,  surface_hit_record& rec) const override;
 
@@ -18,8 +18,8 @@ public:
 	}
 
 public:
-	point3 box_min;
-	point3 box_max;
+	Point3f box_min;
+	Point3f box_max;
 	hittable_list sides;
 };
 

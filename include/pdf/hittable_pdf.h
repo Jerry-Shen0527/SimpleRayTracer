@@ -5,7 +5,7 @@
 
 class hittable_pdf : public pdf {
 public:
-	hittable_pdf(shared_ptr<hittable> p, const point3& origin) : ptr(p), o(origin) {}
+	hittable_pdf(shared_ptr<hittable> p, const Point3f& origin) : ptr(p), o(origin) {}
 
 	virtual float value(const Vector3f& direction) const override {
 		return ptr->pdf_value(o, direction);
@@ -16,6 +16,6 @@ public:
 	}
 
 public:
-	point3 o;
+	Point3f o;
 	shared_ptr<hittable> ptr;
 };

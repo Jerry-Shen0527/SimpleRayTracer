@@ -4,6 +4,7 @@
 #include <Tools/Math/Vector3.h>
 
 #include "BRDF/BxDF_Utility.h"
+#include "Tools/Math/EFloat.h"
 
 class Medium;
 
@@ -14,17 +15,17 @@ public:
 	ray(const Point3f& o, const Vector3f& d, Float tMax = infinity, Float time = 0.f, const Medium* medium = nullptr)
 		: orig(o), dir(d), tMax(tMax), tm(time), medium(medium) { }
 
-	point3 origin() const { return orig; }
+	Point3f origin() const { return orig; }
 	Vector3f direction() const { return dir; }
 	float time() const { return tm; }
 
-	point3 at(float t) const
+	Point3f at(float t) const
 	{
-		return orig + t * dir;
+		return  t * dir + orig;
 	}
 
 public:
-	point3 orig;
+	Point3f orig;
 	float tm;
 	float tMax;
 	Vector3f dir;

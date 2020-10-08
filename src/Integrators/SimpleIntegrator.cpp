@@ -8,7 +8,7 @@
 #include "Tools/camera.h"
 #include <Tools/Film.h>
 
-void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color background)
+void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color background)
 {
 #ifndef _DEBUG
 	//int MAX_THREAD = 3;
@@ -47,7 +47,7 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color backg
 				std::cerr << int(float(j) / cam.film->height * 100) << '%' << "]" << std::flush;
 			}
 			old_j = j;
-			color pixel_color(0, 0, 0);
+			Color pixel_Color(0, 0, 0);
 
 			for (int s = 0; s < sample_per_pixel; ++s) {
 				auto u = (i + random_float()) / (cam.film->width - 1);
@@ -56,10 +56,10 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color backg
 				//auto u = (i + a.x()) / (cam.film->width - 1);
 				//auto v = (j + a.y()) / (cam.film->height - 1);
 				ray r = cam.get_ray(u, 1.0f - v);
-				pixel_color += ray_color(r, background, world, lights, max_depth);
+				pixel_Color += ray_Color(r, background, world, lights, max_depth);
 				_thread_sampler->StartNextSample();
 			}
-			cam.film->write_color(i, j, pixel_color, sample_per_pixel);
+			cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
 		}
 	};
 
@@ -85,7 +85,7 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color backg
 		{
 			std::cerr << "\rAlready finishd: " << float(j) / cam.film->height * 100 << '%' << std::flush;
 		}
-		color pixel_color(0, 0, 0);
+		Color pixel_Color(0, 0, 0);
 		sampler->StartPixel(Point2i{ i,j });
 		for (int s = 0; s < sample_per_pixel; ++s) {
 			//auto u = (i + random_float()) / (cam.film->width - 1);
@@ -94,33 +94,33 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, color backg
 			auto u = (i + a.x()) / (cam.film->width - 1);
 			auto v = (j + a.y()) / (cam.film->height - 1);
 			ray r = cam.get_ray(u, 1 - v);
-			pixel_color += ray_color(r, background, world, lights, max_depth);
+			pixel_Color += ray_Color(r, background, world, lights, max_depth);
 			sampler->StartNextSample();
 		}
-		cam.film->write_color(i, j, pixel_color, sample_per_pixel);
+		cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
 		old_j = j;
 	}
 
 #endif
 }
 
-color SamplerIntegrator::ray_color(const ray& r, const color& background, const hittable& world,
+Color SamplerIntegrator::ray_Color(const ray& r, const Color& background, const hittable& world,
 	std::shared_ptr<hittable> lights, int depth)
 {
 	surface_hit_record rec;
 
 	if (depth <= 0)
-		return color(0, 0, 0);
+		return Color(0, 0, 0);
 
 	if (!world.hit(r, rec))
 		return background;
 
 	scatter_record srec;
-	color emitted = rec.mat_ptr->emitted(r, rec, rec.uv, rec.p);
+	Color emitted = rec.mat_ptr->emitted(r, rec, rec.uv, rec.p);
 	if (!rec.mat_ptr->scatter(r, rec, srec))
 		return emitted;
 	if (srec.is_specular) {
-		return srec.attenuation * ray_color(srec.specular_ray, background, world, lights, depth - 1);
+		return srec.attenuation * ray_Color(srec.specular_ray, background, world, lights, depth - 1);
 	}
 
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
@@ -133,6 +133,6 @@ color SamplerIntegrator::ray_color(const ray& r, const color& background, const 
 
 	return emitted + srec.attenuation
 		* rec.mat_ptr->scattering_pdf(r, rec, scattered)
-		* ray_color(scattered, background, world, lights, depth - 1)
+		* ray_Color(scattered, background, world, lights, depth - 1)
 		/ pdf_val;
 }

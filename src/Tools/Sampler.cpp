@@ -98,7 +98,7 @@ Point2f PixelSampler::Get2D()
 	if (current2DDimension < samples2D.size())
 		return samples2D[current2DDimension++][currentPixelSampleIndex];
 	else
-		return vec2{ random_float(), random_float() };
+		return Vector2f{ random_float(), random_float() };
 }
 
 void PixelSampler::StartPixel(const Point2i& p)

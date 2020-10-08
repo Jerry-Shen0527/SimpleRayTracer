@@ -3,5 +3,5 @@
 class InverseIntegrator : public Integrator
 {
 public:
-	void integrate(camera& cam, Film& film, hittable_list& world, color background) override;
+	void integrate(camera& cam, Film& film, hittable_list& world, Color background) override;
 };

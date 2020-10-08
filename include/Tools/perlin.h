@@ -38,9 +38,9 @@ public:
 
 	float perlin_interp(Vector3f c[2][2][2], float u, float v, float w) const;
 
-	float noise(const point3& p) const;
+	float noise(const Point3f& p) const;
 
-	float turb(const point3& p, int depth = 7) const;
+	float turb(const Point3f& p, int depth = 7) const;
 
 private:
 	Vector3f* ranvec;
@@ -91,7 +91,7 @@ inline float perlin::perlin_interp(Vector3f c[2][2][2], float u, float v, float 
 	return accum;
 }
 
-inline float perlin::noise(const point3& p) const
+inline float perlin::noise(const Point3f& p) const
 {
 	auto u = p.x() - floor(p.x());
 	auto v = p.y() - floor(p.y());
@@ -118,7 +118,7 @@ inline float perlin::noise(const point3& p) const
 	return perlin_interp(c, u, v, w);
 }
 
-inline float perlin::turb(const point3& p, int depth) const
+inline float perlin::turb(const Point3f& p, int depth) const
 {
 	auto accum = 0.0;
 	auto temp_p = p;

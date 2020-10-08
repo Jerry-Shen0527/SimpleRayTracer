@@ -1,29 +1,31 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <memory>
+#include <memory>
 #include <Tools/perlin.h>
 
 #include "Tools/Math/Vector3.h"
 
 class texture {
 public:
-	virtual color value(const vec2& uv, const point3& p) const = 0;
+	virtual Color value(const Vector2f& uv, const Point3f& p) const = 0;
 };
 
-class solid_color : public texture {
+class solid_Color : public texture {
 public:
-	solid_color() {}
-	solid_color(color c) : color_value(c) {}
+	solid_Color() {}
+	solid_Color(Color c) : Color_value(c) {}
 
-	solid_color(float red, float green, float blue)
-		: solid_color(color(red, green, blue)) {}
+	solid_Color(float red, float green, float blue)
+		: solid_Color(Color(red, green, blue)) {}
 
-	virtual color value(const vec2& uv, const Vector3f& p) const override {
-		return color_value;
+	virtual Color value(const Vector2f& uv, const Point3f& p) const override {
+		return Color_value;
 	}
 
 private:
-	color color_value;
+	Color Color_value;
 };
 
 class checker_texture : public texture {
@@ -33,10 +35,10 @@ public:
 	checker_texture(std::shared_ptr<texture> t0, std::shared_ptr<texture> t1)
 		: even(t0), odd(t1) {}
 
-	checker_texture(color c1, color c2)
-		: even(make_shared<solid_color>(c1)), odd(make_shared<solid_color>(c2)) {}
+	checker_texture(Color c1, Color c2)
+		: even(std::make_shared<solid_Color>(c1)), odd(std::make_shared<solid_Color>(c2)) {}
 
-	virtual color value(const vec2& uv, const point3& p) const override;
+	virtual Color value(const Vector2f& uv, const Point3f& p) const override;
 
 public:
 	std::shared_ptr<texture> odd;
@@ -49,7 +51,7 @@ public:
 
 	noise_texture(float sc) : scale(sc) {}
 
-	virtual color value(const vec2& uv, const point3& p) const override;
+	virtual Color value(const Vector2f& uv, const Point3f& p) const override;
 
 public:
 	perlin noise;
@@ -69,7 +71,7 @@ public:
 		delete data;
 	}
 
-	virtual color value(const vec2& uv, const Vector3f& p) const override;
+	virtual Color value(const Vector2f& uv, const Point3f& p) const override;
 
 private:
 	unsigned char* data;

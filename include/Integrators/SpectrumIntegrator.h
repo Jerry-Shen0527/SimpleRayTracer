@@ -9,8 +9,8 @@ class SpectrumIntegrator : public Integrator
 {
 public:
 	SpectrumIntegrator(int spp, int max_depth) :Integrator(spp, max_depth) {}
-	void integrate(camera& cam,  hittable_list& world, color background) override;
-	Spectrum ray_color(const ray& r, const color& background, const hittable& world, shared_ptr<hittable> lights,
+	void integrate(camera& cam,  hittable_list& world, Color background) override;
+	Spectrum ray_Color(const ray& r, const Color& background, const hittable& world, shared_ptr<hittable> lights,
 		int depth);
 	
 };

@@ -11,8 +11,8 @@ public:
 	camera() {}
 
 	camera(
-		point3 lookfrom,
-		point3 lookat,
+		Point3f lookfrom,
+		Point3f lookat,
 		Vector3f   vup,
 		float vfov, // vertical field-of-view in degrees
 		float aspect_ratio,
@@ -57,8 +57,8 @@ public:
 private:
 	float time0;
 	float time1;
-	point3 origin;
-	point3 lower_left_corner;
+	Point3f origin;
+	Point3f lower_left_corner;
 	Vector3f horizontal;
 	Vector3f vertical;
 	float lens_radius;

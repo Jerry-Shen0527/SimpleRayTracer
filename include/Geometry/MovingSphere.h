@@ -7,17 +7,17 @@ class moving_sphere : public hittable {
 public:
 	moving_sphere() {}
 	moving_sphere(
-		point3 cen0, point3 cen1, float t0, float t1, float r, shared_ptr<Material> m)
+		Point3f cen0, Point3f cen1, float t0, float t1, float r, shared_ptr<Material> m)
 		: center0(cen0), center1(cen1), time0(t0), time1(t1), radius(r), mat_ptr(m)
 	{};
 
 	virtual bool hit(
 		const ray& r,  surface_hit_record& rec) const override;
 
-	point3 center(float time) const;
+	Point3f center(float time) const;
 
 	bool bounding_box(float t0, float t1, aabb& output_box) const override;
-	point3 center0, center1;
+	Point3f center0, center1;
 	float time0, time1;
 	float radius;
 	shared_ptr<Material> mat_ptr;

@@ -12,8 +12,8 @@ class Material {
 public:
 	virtual ~Material() = default;
 
-	virtual color emitted(const ray& r_in, const surface_hit_record& rec,const point2& uv, const point3& p) const {
-		return color(0, 0, 0);
+	virtual Color emitted(const ray& r_in, const surface_hit_record& rec,const Point2f& uv, const tPoint3f& p) const {
+		return Color(0, 0, 0);
 	}
 
 	virtual bool scatter(const ray& r_in, const surface_hit_record& rec, scatter_record& srec) const {

@@ -7,7 +7,7 @@ Vector3f reflect(const Vector3f& v, const Vector3f& n) {
 	return v - 2 * dot(v, n) * n;
 }
 
-metal::metal(const color& a, float f) : albedo(a), fuzz(f < 1 ? f : 1)
+metal::metal(const Color& a, float f) : albedo(a), fuzz(f < 1 ? f : 1)
 {
 }
 

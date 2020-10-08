@@ -10,13 +10,13 @@ public:
 		return Spectrum(0.f);
 	}
 
-	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf, BxDFType* sampledType) const override;
 private:
 	const Spectrum R;
 	const Fresnel* fresnel;
 };
 
-inline Spectrum SpecularReflection::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf,
+inline Spectrum SpecularReflection::Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf,
 	BxDFType* sampledType) const
 {
 	wi = Vector3f(-wo.x(), -wo.y(), wo.z());
@@ -37,7 +37,7 @@ public:
 		return Spectrum(0.f);
 	}
 
-	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf, BxDFType* sampledType) const override;
 private:
 	const Spectrum T;
 	const Float etaA, etaB;
@@ -61,7 +61,7 @@ inline bool Refract(const Vector3f& wi, const Normal3f& n, Float eta,
 	return true;
 }
 
-inline Spectrum SpecularTransmission::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf,
+inline Spectrum SpecularTransmission::Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf,
 	BxDFType* sampledType) const
 {
 	//Figure out which ¦Ç is incidentand which is transmitted 529
@@ -87,7 +87,7 @@ public:
 		mode(mode) { }
 
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
-	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf, BxDFType* sampledType) const override;
 private:
 	const Spectrum R, T;
 	const Float etaA, etaB;
@@ -101,7 +101,7 @@ inline Spectrum FresnelSpecular::f(const Vector3f& wo, const Vector3f& wi) const
 	return Spectrum(0.f);
 }
 
-inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf,
+inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample, float& pdf,
 	BxDFType* sampledType) const
 {
 	Float F = FrDielectric(CosTheta(wo), etaA, etaB);

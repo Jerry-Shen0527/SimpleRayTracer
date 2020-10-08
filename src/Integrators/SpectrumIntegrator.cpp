@@ -5,7 +5,7 @@
 #include "pdf/scatter_record.h"
 #include "Tools/camera.h"
 
-void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, color background)
+void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, Color background)
 {
 	auto lights = make_shared<hittable_list>(world);
 
@@ -39,16 +39,16 @@ void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, color back
 				std::cerr << int(float(j) / cam.film->height * 100) << '%' << "]" << std::flush;
 			}
 			old_j = j;
-			color pixel_color(0, 0, 0);
+			Color pixel_Color(0, 0, 0);
 			for (int s = 0; s < sample_per_pixel; ++s) {
 				auto u = (i + random_float()) / (cam.film->width - 1);
 				auto v = (j + random_float()) / (cam.film->height - 1);
 				ray r = cam.get_ray(u, 1 - v);
-				color c;
-				ray_color(r, background, world, lights, max_depth).ToRGB(c);
-				pixel_color += c;
+				Color c;
+				ray_Color(r, background, world, lights, max_depth).ToRGB(c);
+				pixel_Color += c;
 			}
-			cam.film->write_color(i, j, pixel_color, sample_per_pixel);
+			cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
 		}
 	};
 
@@ -74,23 +74,23 @@ void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, color back
 		{
 			std::cerr << "\rAlready finishd: " << float(j) / cam.film->height * 100 << '%' << std::flush;
 		}
-		color pixel_color(0, 0, 0);
+		Color pixel_Color(0, 0, 0);
 		for (int s = 0; s < sample_per_pixel; ++s) {
 			auto u = (i + random_float()) / (cam.film->width - 1);
 			auto v = (j + random_float()) / (cam.film->height - 1);
 			ray r = cam.get_ray(u, 1 - v);
-			color c;
-			ray_color(r, background, world, lights, max_depth).ToRGB(c);
-			pixel_color += c;
+			Color c;
+			ray_Color(r, background, world, lights, max_depth).ToRGB(c);
+			pixel_Color += c;
 		}
-		cam.film->write_color(i, j, pixel_color, sample_per_pixel);
+		cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
 		old_j = j;
 	}
 
 #endif
 }
 
-Spectrum SpectrumIntegrator::ray_color(const ray& r, const color& background, const hittable& world,
+Spectrum SpectrumIntegrator::ray_Color(const ray& r, const Color& background, const hittable& world,
 	shared_ptr<hittable> lights, int depth)
 {
 	surface_hit_record rec;
@@ -107,7 +107,7 @@ Spectrum SpectrumIntegrator::ray_color(const ray& r, const color& background, co
 		return emitted;
 	if (srec.is_specular) {
 		return srec.sp_attenuation
-			* ray_color(srec.specular_ray, background, world, lights, depth - 1);
+			* ray_Color(srec.specular_ray, background, world, lights, depth - 1);
 	}
 
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
@@ -118,5 +118,5 @@ Spectrum SpectrumIntegrator::ray_color(const ray& r, const color& background, co
 	ray scattered = ray(rec.p, p.generate(),infinity, r.time());
 	auto pdf_val = p.value(scattered.direction());
 
-	return emitted + ray_color(scattered, background, world, lights, depth - 1) * srec.sp_attenuation * rec.mat_ptr->scattering_pdf(r, rec, scattered) / pdf_val;
+	return emitted + ray_Color(scattered, background, world, lights, depth - 1) * srec.sp_attenuation * rec.mat_ptr->scattering_pdf(r, rec, scattered) / pdf_val;
 }

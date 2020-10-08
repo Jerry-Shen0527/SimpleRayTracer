@@ -40,7 +40,7 @@ public:
 	CameraSample Sampler::GetCameraSample(const Point2i& pRaster) {
 		CameraSample cs;
 		auto p = Get2D();
-		cs.pFilm = Point2f{ p.x() + pRaster.x(),p.y() + pRaster.y() };
+		cs.pFilm = Point2f(p.x() + pRaster.x(), p.y() + pRaster.y());
 		cs.time = Get1D();
 		cs.pLens = Get2D();
 		return cs;

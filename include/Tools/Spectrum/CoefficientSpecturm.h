@@ -1,18 +1,16 @@
 #pragma once
-#include <iostream>
 #include <vector>
-#include <algorithm>
-#include <config.h>
 
-#include "BRDF/BxDF_Utility.h"
+#include "config.h"
 #include "Tools/Math/Vector3.h"
+#include <Tools/Math/math_tools.h>
 
 template<int nSamples>
 class CoefficientSpectrum
 {
 public:
 
-	CoefficientSpectrum(float v = 0.f)
+	CoefficientSpectrum(Float v = 0.f)
 	{
 		for (int i = 0; i < nSamples; ++i)
 		{
@@ -25,13 +23,13 @@ public:
 	CoefficientSpectrum& operator-=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum operator-(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum& operator*=(const CoefficientSpectrum& s2);
-	CoefficientSpectrum& operator*=(float f);
+	CoefficientSpectrum& operator*=(Float f);
 	CoefficientSpectrum operator*(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum operator/(const CoefficientSpectrum& s2) const;
-	CoefficientSpectrum operator*(float x) const;
-	CoefficientSpectrum operator/(float x) const;
+	CoefficientSpectrum operator*(Float x) const;
+	CoefficientSpectrum operator/(Float x) const;
 
-	CoefficientSpectrum Clamp(float low = 0, float high = INFINITY) const;
+	CoefficientSpectrum Clamp(Float low = 0, Float high = INFINITY) const;
 
 	void print() const;
 	bool is_black() const;
@@ -39,11 +37,11 @@ public:
 
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Sqrt(const CoefficientSpectrum<nSamples>& s);
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Exp(const CoefficientSpectrum<nSamples>& s);
-	template <int nSamples> friend CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, float x);
-	template <int nSamples> friend CoefficientSpectrum<nSamples> operator*(float x, const CoefficientSpectrum<nSamples>& s);
+	template <int nSamples> friend CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, Float x);
+	template <int nSamples> friend CoefficientSpectrum<nSamples> operator*(Float x, const CoefficientSpectrum<nSamples>& s);
 
 protected:
-	float c[nSamples];
+	Float c[nSamples];
 };
 
 template <int nSamples>
@@ -100,7 +98,7 @@ CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(const C
 }
 
 template <int nSamples>
-CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(float f)
+CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(Float f)
 {
 	for (int i = 0; i < nSamples; ++i)
 	{
@@ -132,7 +130,7 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(const Coe
 }
 
 template <int nSamples>
-CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator*(float x) const
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator*(Float x) const
 {
 	CoefficientSpectrum rst = *this;
 	for (int i = 0; i < nSamples; ++i)
@@ -143,7 +141,7 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator*(float x) 
 }
 
 template <int nSamples>
-CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(float x) const
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(Float x) const
 {
 	CoefficientSpectrum rst = *this;
 	for (int i = 0; i < nSamples; ++i)
@@ -154,11 +152,11 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(float x) 
 }
 
 template <int nSamples>
-CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::Clamp(float low, float high) const
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::Clamp(Float low, Float high) const
 {
 	CoefficientSpectrum ret;
 	for (int i = 0; i < nSamples; ++i)
-		ret.c[i] = Clamp(c[i], low, high);
+		ret.c[i] = tool::Clamp(c[i], low, high);
 	return ret;
 }
 
@@ -204,7 +202,7 @@ CoefficientSpectrum<nSamples> Sqrt(const CoefficientSpectrum<nSamples>& s)
 }
 
 template <int nSamples>
-CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, float x)
+CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, Float x)
 {
 	CoefficientSpectrum<nSamples> rst;
 	for (int i = 0; i < nSamples; ++i)
@@ -226,12 +224,12 @@ CoefficientSpectrum<nSamples> Exp(const CoefficientSpectrum<nSamples>& s)
 }
 
 template<int nSamples>
-inline CoefficientSpectrum<nSamples> Lerp(float t, const CoefficientSpectrum<nSamples>& s1, const CoefficientSpectrum<nSamples>& s2)
+inline CoefficientSpectrum<nSamples> Lerp(Float t, const CoefficientSpectrum<nSamples>& s1, const CoefficientSpectrum<nSamples>& s2)
 {
 	return (1.f - t) * s1 + t * s2;
 }
 template <int nSamples>
-CoefficientSpectrum<nSamples> operator*(float x, const CoefficientSpectrum<nSamples>& s)
+CoefficientSpectrum<nSamples> operator*(Float x, const CoefficientSpectrum<nSamples>& s)
 {
 	return s * x;
 }
@@ -251,14 +249,14 @@ inline void RGBToXYZ(const Vector3f& rgb, Vector3f& xyz) {
 }
 
 // Spectrum Method Definitions
-inline bool SpectrumSamplesSorted(const float* lambda, const float* vals, int n) {
+inline bool SpectrumSamplesSorted(const Float* lambda, const Float* vals, int n) {
 	for (int i = 0; i < n - 1; ++i)
 		if (lambda[i] > lambda[i + 1]) return false;
 	return true;
 }
 
-inline void SortSpectrumSamples(float* lambda, float* vals, int n) {
-	std::vector<std::pair<float, float>> sortVec;
+inline void SortSpectrumSamples(Float* lambda, Float* vals, int n) {
+	std::vector<std::pair<Float, Float>> sortVec;
 	sortVec.reserve(n);
 	for (int i = 0; i < n; ++i)
 		sortVec.push_back(std::make_pair(lambda[i], vals[i]));
@@ -271,29 +269,29 @@ inline void SortSpectrumSamples(float* lambda, float* vals, int n) {
 
 //CIE data. CIE: basis of eye response functions
 static const int nCIESamples = 471;
-extern const float CIE_X[nCIESamples];
-extern const float CIE_Y[nCIESamples];
-extern const float CIE_Z[nCIESamples];
-extern const float CIE_lambda[nCIESamples];
+extern const Float CIE_X[nCIESamples];
+extern const Float CIE_Y[nCIESamples];
+extern const Float CIE_Z[nCIESamples];
+extern const Float CIE_lambda[nCIESamples];
 
 //RGB to spectrum data
 static const int nRGB2SpectSamples = 32;
-extern const float RGB2SpectLambda[nRGB2SpectSamples];
-extern const float RGBRefl2SpectWhite[nRGB2SpectSamples];
-extern const float RGBRefl2SpectCyan[nRGB2SpectSamples];
-extern const float RGBRefl2SpectMagenta[nRGB2SpectSamples];
-extern const float RGBRefl2SpectYellow[nRGB2SpectSamples];
-extern const float RGBRefl2SpectRed[nRGB2SpectSamples];
-extern const float RGBRefl2SpectGreen[nRGB2SpectSamples];
-extern const float RGBRefl2SpectBlue[nRGB2SpectSamples];
+extern const Float RGB2SpectLambda[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectWhite[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectCyan[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectMagenta[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectYellow[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectRed[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectGreen[nRGB2SpectSamples];
+extern const Float RGBRefl2SpectBlue[nRGB2SpectSamples];
 //Illumination conversion can be achieved using this data
-extern const float RGBIllum2SpectWhite[nRGB2SpectSamples];
-extern const float RGBIllum2SpectCyan[nRGB2SpectSamples];
-extern const float RGBIllum2SpectMagenta[nRGB2SpectSamples];
-extern const float RGBIllum2SpectYellow[nRGB2SpectSamples];
-extern const float RGBIllum2SpectRed[nRGB2SpectSamples];
-extern const float RGBIllum2SpectGreen[nRGB2SpectSamples];
-extern const float RGBIllum2SpectBlue[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectWhite[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectCyan[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectMagenta[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectYellow[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectRed[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectGreen[nRGB2SpectSamples];
+extern const Float RGBIllum2SpectBlue[nRGB2SpectSamples];
 
 inline void Blackbody(const Float* lambda, int n, Float T, Float* Le) {
 	const Float c = 299792458;

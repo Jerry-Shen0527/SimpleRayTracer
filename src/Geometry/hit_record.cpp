@@ -26,13 +26,13 @@ ray hit_record::SpawnRayTo(const Point3f& p2) const
 }
 
 
-void surface_hit_record::set_face_normal(const Vector3f& r_in, const Vector3f& outward_normal)
+void surface_hit_record::set_face_normal(const Vector3f& r_in, const Normal3f& outward_normal)
 {
 	front_face = dot(r_in, outward_normal) < 0;
 	normal = front_face ? outward_normal : -outward_normal;
 }
 
-surface_hit_record::surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time) : hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
+surface_hit_record::surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time,const Shape * shape) : hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
 {
 	set_face_normal(wo, normal);
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <BRDF/Material.h>
 #include <BRDF/Volume/Medium.h>
+
+
 class Shape;
 class Primitive;
 const Float ShadowEpsilon = 0.0001f;
@@ -56,9 +58,9 @@ struct surface_hit_record :public hit_record {
 
 	surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, r_in, time) {}
 
-	surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time);
+	surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time,const Shape *shape);
 
-	void set_face_normal(const Vector3f& r_in, const Vector3f& outward_normal);
+	void set_face_normal(const Vector3f& r_in, const Normal3f& outward_normal);
 
 	Point2f uv;
 	Vector3f dpdu, dpdv;

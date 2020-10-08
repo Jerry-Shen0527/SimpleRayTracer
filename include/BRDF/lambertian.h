@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "BxDF.h"
 #include <Tools/Spectrum/SampledSpectrum.h>
 
@@ -6,7 +8,7 @@
 
 class lambertian : public Material {
 public:
-	lambertian(const Color& a) : albedo(make_shared<solid_Color>(a)) {}
+	lambertian(const Color& a) : albedo(std::make_shared<solid_Color>(a)) {}
 	lambertian(shared_ptr<texture> a) : albedo(a) {}
 	virtual bool scatter(
 		const ray& r_in, const surface_hit_record& rec, scatter_record& srec
@@ -14,7 +16,7 @@ public:
 		srec.is_specular = false;
 		srec.attenuation = albedo->value(rec.uv, rec.p);
 		srec.update();
-		srec.pdf_ptr = make_shared< cosine_pdf>(rec.normal);
+		srec.pdf_ptr = std::make_shared< cosine_pdf>(rec.normal);
 		return true;
 	}
 

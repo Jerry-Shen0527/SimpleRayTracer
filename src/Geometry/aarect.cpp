@@ -1,3 +1,8 @@
+#include "Geometry/aarect.h"
+#include "Geometry/aarect.h"
+#include "Geometry/aarect.h"
+#include "Geometry/aarect.h"
+
 #include <Geometry/aarect.h>
 
 bool xy_rect::hit(const ray& r, surface_hit_record& rec) const {
@@ -112,7 +117,8 @@ float flip_face::pdf_value(const Point3f& o, const Vector3f& v) const
 	return ptr->pdf_value(o, v);
 }
 
-Vector3f flip_face::random(const Vector3f& o) const
+
+Vector3f flip_face::random(const Point3f& o) const
 {
 	return ptr->random(o);
 }

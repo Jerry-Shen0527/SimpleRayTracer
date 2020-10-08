@@ -75,7 +75,7 @@ public:
 	bool get_pdf_enabled() override;
 
 	float pdf_value(const Point3f& o, const Vector3f& v) const override;
-	Vector3f random(const Vector3f& o) const override;
+	Vector3f random(const Point3f& o) const override;
 
 	std::shared_ptr<hittable> ptr;
 };

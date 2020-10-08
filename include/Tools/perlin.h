@@ -2,6 +2,7 @@
 #define PERLIN_H
 
 #include <Tools/Math/Vector3.h>
+#include <Tools/Math/rng.h>
 
 inline float trilinear_interp(float c[2][2][2], float u, float v, float w) {
 	auto accum = 0.0;

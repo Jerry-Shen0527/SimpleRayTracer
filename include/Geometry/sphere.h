@@ -106,6 +106,8 @@ public:
 				-radius * std::sin(theta));
 
 		//	Compute error bounds for sphere intersection 225
+		Vector3f pError = gamma(5) * pHit.abs();
+		
 		Vector3f d2Pduu = -phiMax * phiMax * Vector3f(pHit.x(), pHit.y(), 0);
 		Vector3f d2Pduv = (thetaMax - thetaMin) * pHit.z() * phiMax *
 			Vector3f(-sinPhi, cosPhi, 0.);

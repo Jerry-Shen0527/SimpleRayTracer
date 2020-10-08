@@ -9,15 +9,9 @@ class Vector {
 public:
 	Vector() : data{ 0 } {}
 
-	Vector(T a, ...) {
-		va_list list;
-		va_start(list, n);
-		for (int i = 0; i < n; ++i)
-		{
-			data[i] = va_arg(list, T);
-		}
-		va_end(list);
-	}
+	Vector(T x, T y) { data[0] = x; data[1] = y; }
+	Vector(T x, T y, T z) { data[0] = x; data[1] = y; data[2] = z; }
+	Vector(T x, T y, T z, T w) { data[0] = x; data[1] = y; data[2] = z; data[3] = w; }
 
 	inline static Vector random();
 	inline static Vector random(T min, T max);
@@ -25,6 +19,14 @@ public:
 	Vector operator-() const;
 	T operator[](int i) const { return data[i]; }
 	T& operator[](int i) { return data[i]; }
+
+	Vector& operator=(const Vector& rhs) {
+		for (int i = 0; i < n; ++i)
+		{
+			data[i] = rhs[i];
+		}
+		return *this;
+	}
 
 	Vector& operator+=(const Vector& v);
 	Vector& operator*=(const T t);
@@ -50,8 +52,25 @@ public:
 	T& w();
 public:
 	T data[n];
+private:
+	void set_value(T x, T y, T z);
+	void set_value(T x, T y);
 };
 
+template <typename T, int n>
+void Vector<T, n>::set_value(T x, T y)
+{
+	data[0] = x;
+	data[1] = y;
+}
+
+template <typename T, int n>
+void Vector<T, n>::set_value(T x, T y, T z)
+{
+	data[0] = x;
+	data[1] = y;
+	data[2] = z;
+}
 
 template<typename T, int n>
 Vector<T, n> Vector<T, n>::random()
@@ -323,7 +342,7 @@ inline Vector<T, n> minimum(const Vector<T, n>& v1, const Vector<T, n>& v2)
 	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst = v1[i] < v2[i] ? v1[i] : v2[i];
+		rst[i] = v1[i] < v2[i] ? v1[i] : v2[i];
 	}
 	return  rst;
 }
@@ -334,7 +353,7 @@ inline Vector<T, n> maximum(const Vector<T, n>& v1, const Vector<T, n>& v2)
 	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst = v1[i] < v2[i] ? v1[i] : v2[i];
+		rst[i] = v1[i] < v2[i] ? v1[i] : v2[i];
 	}
 	return  rst;
 }

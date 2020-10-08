@@ -20,11 +20,13 @@ public:
 
 	template <typename T>
 	Vector<T, 3> operator()(const Vector<T, 3>& v) const;
+	template <typename T>
+	inline Point<T, 3> operator()(const Point<T, 3>& p) const;
+
 	Bounds3f operator()(const Bounds3f& b) const;
 	ray operator()(const ray& r) const;
 
 	SurfaceInteraction operator()(const SurfaceInteraction& si) const;
-	
 
 	bool HasScale() const;
 
@@ -37,9 +39,21 @@ template <typename T>
 Vector<T, 3> Transform::operator()(const Vector<T, 3>& v) const
 {
 	T x = v.x(), y = v.y(), z = v.z();
-	return Vector3<T>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
+	return Vector<T, 3>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
 		m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
 		m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
+}
+
+template <typename T>
+Point<T, 3> Transform::operator()(const Point<T, 3>& p) const
+{
+	T x = p.x(), y = p.y(), z = p.z();
+	T xp = m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z + m.m[0][3];
+	T yp = m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z + m.m[1][3];
+	T zp = m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z + m.m[2][3];
+	T wp = m.m[3][0] * x + m.m[3][1] * y + m.m[3][2] * z + m.m[3][3];
+	if (wp == 1) return Point<T,3>(xp, yp, zp);
+	else return Point<T,3>(xp, yp, zp) / wp;
 }
 
 inline Transform Inverse(const Transform& t) {
@@ -96,7 +110,7 @@ inline Transform Translate(const Vector3f& delta) {
 	return Transform(m, minv);
 }
 
-Transform Scale(Float x, Float y, Float z) {
+inline Transform Scale(Float x, Float y, Float z) {
 	Matrix4x4 m(x, 0, 0, 0,
 		0, y, 0, 0,
 		0, 0, z, 0,
@@ -108,7 +122,7 @@ Transform Scale(Float x, Float y, Float z) {
 	return Transform(m, minv);
 }
 
-Transform RotateX(Float theta) {
+inline Transform RotateX(Float theta) {
 	Float sinTheta = std::sin(Radians(theta));
 	Float cosTheta = std::cos(Radians(theta));
 	Matrix4x4 m(1, 0, 0, 0,
@@ -119,7 +133,7 @@ Transform RotateX(Float theta) {
 }
 
 //Here theta is measured by degrees.
-Transform Rotate(Float theta, const Vector3f& axis) {
+inline Transform Rotate(Float theta, const Vector3f& axis) {
 	Vector3f a = axis.normalize();
 	Float sinTheta = std::sin(Radians(theta));
 	Float cosTheta = std::cos(Radians(theta));

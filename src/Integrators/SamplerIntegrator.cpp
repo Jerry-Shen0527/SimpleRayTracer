@@ -1,5 +1,5 @@
 #include <thread>
-#include <Integrators/SimpleIntegrator.h>
+#include <Integrators/SamplerIntegrator.h>
 #include <pdf/hittable_pdf.h>
 #include <pdf/scatter_record.h>
 #include <BRDF/Material.h>
@@ -8,7 +8,7 @@
 #include "Tools/camera.h"
 #include <Tools/Film.h>
 
-void SimpleIntegrator::integrate(camera& cam, hittable_list& world, Color background)
+void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color background)
 {
 #ifndef _DEBUG
 	//int MAX_THREAD = 3;
@@ -56,7 +56,7 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, Color backgr
 				//auto u = (i + a.x()) / (cam.film->width - 1);
 				//auto v = (j + a.y()) / (cam.film->height - 1);
 				ray r = cam.get_ray(u, 1.0f - v);
-				pixel_Color += ray_Color(r, background, world, lights, max_depth);
+				pixel_Color += ray_color(r, background, world, lights, max_depth);
 				_thread_sampler->StartNextSample();
 			}
 			cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
@@ -94,7 +94,7 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, Color backgr
 			auto u = (i + a.x()) / (cam.film->width - 1);
 			auto v = (j + a.y()) / (cam.film->height - 1);
 			ray r = cam.get_ray(u, 1 - v);
-			pixel_Color += ray_Color(r, background, world, lights, max_depth);
+			pixel_Color += ray_color(r, background, world, lights, max_depth);
 			sampler->StartNextSample();
 		}
 		cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
@@ -104,7 +104,7 @@ void SimpleIntegrator::integrate(camera& cam, hittable_list& world, Color backgr
 #endif
 }
 
-Color SimpleIntegrator::ray_Color(const ray& r, const Color& background, const hittable& world,
+Color SamplerIntegrator::ray_color(const ray& r, const Color& background, const hittable& world,
 	std::shared_ptr<hittable> lights, int depth)
 {
 	surface_hit_record rec;
@@ -120,7 +120,7 @@ Color SimpleIntegrator::ray_Color(const ray& r, const Color& background, const h
 	if (!rec.mat_ptr->scatter(r, rec, srec))
 		return emitted;
 	if (srec.is_specular) {
-		return srec.attenuation * ray_Color(srec.specular_ray, background, world, lights, depth - 1);
+		return srec.attenuation * ray_color(srec.specular_ray, background, world, lights, depth - 1);
 	}
 
 	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
@@ -133,6 +133,6 @@ Color SimpleIntegrator::ray_Color(const ray& r, const Color& background, const h
 
 	return emitted + srec.attenuation
 		* rec.mat_ptr->scattering_pdf(r, rec, scattered)
-		* ray_Color(scattered, background, world, lights, depth - 1)
+		* ray_color(scattered, background, world, lights, depth - 1)
 		/ pdf_val;
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-
 #include "config.h"
 #include "Vector.h"
 
@@ -16,7 +14,16 @@ inline Vector3f cross(const Vector3f& u, const Vector3f& v) {
 
 template <typename T> class Normal3 :public Vector<T, 3>
 {
-	Normal3(Vector<T, 3>& vec) { static_cast<Vector<T, 3>>(*this) = vec; }
+public:
+	Normal3() :Vector() {}
+	Normal3(const Vector<T, 3>& vec)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			data[i] = vec[i];
+		}
+	}
+	Normal3(T x, T y, T z) { data[0] = x; data[1] = y; data[2] = z; }
 };
 using Normal3f = Normal3<float>;
 
@@ -24,7 +31,18 @@ template<typename T, int n>
 class Point :public Vector<T, n>
 {
 public:
-	Point(Vector<T, 3>& vec) { static_cast<Vector<T, n>>(*this) = vec; }
+	Point() :Vector() {}
+	Point(const Vector<T, n>& vec)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			data[i] = vec[i];
+		}
+	}
+
+	Point(T x, T y) { data[0] = x; data[1] = y; }
+	Point(T x, T y, T z) { data[0] = x; data[1] = y; data[2] = z; }
+	Point(T x, T y, T z, T w) { data[0] = x; data[1] = y; data[2] = z; data[3] = w; }
 };
 
 using Point2i = Point<int, 2>;

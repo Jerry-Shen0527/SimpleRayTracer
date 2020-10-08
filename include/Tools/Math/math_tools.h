@@ -1,20 +1,25 @@
 #pragma once
 
 // Constants
+#include <config.h>
 
-const float infinity = std::numeric_limits<float>::infinity();
-const float pi = 3.1415926535897932385f;
-const float inv_pi = 1 / pi;
+const Float infinity = std::numeric_limits<Float>::infinity();
+const Float pi = 3.1415926535897932385f;
+const Float inv_pi = 1 / pi;
 
-inline float degrees_to_radians(float degrees) {
+inline Float degrees_to_radians(Float degrees) {
 	return degrees * pi / 180.0;
 }
 
-inline float Clamp(float x, float min, float max) {
-	if (x < min) return min;
-	if (x > max) return max;
-	return x;
+namespace tool
+{
+	inline Float Clamp(Float x, Float min, Float max) {
+		if (x < min) return min;
+		if (x > max) return max;
+		return x;
+	}
 }
+using namespace tool;
 
 inline void idx_to_ij(int idx, int& i, int& j, int width)
 {
@@ -22,7 +27,7 @@ inline void idx_to_ij(int idx, int& i, int& j, int width)
 	j = idx / width;
 }
 
-inline float Lerp(float t, float v1, float v2) { return (1 - t) * v1 + t * v2; }
+inline Float Lerp(Float t, Float v1, Float v2) { return (1 - t) * v1 + t * v2; }
 
 inline bool Quadratic(Float a, Float b, Float c, Float* t0, Float* t1) {
 	//Find quadratic discriminant 1079

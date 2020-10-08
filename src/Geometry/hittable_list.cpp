@@ -1,6 +1,10 @@
 #include <Geometry/hittable_list.h>
 #include <Geometry/bvh.h>
 
+
+#include "Geometry/aarect.h"
+#include "Geometry/aarect.h"
+
 void hittable_list::add(shared_ptr<hittable> object)
 {
 	objects.push_back(object);
@@ -57,7 +61,7 @@ float hittable_list::pdf_value(const Point3f& o, const Vector3f& v) const {
 	return sum;
 }
 
-Vector3f hittable_list::random(const Vector3f& o) const {
+Vector3f hittable_list::random(const Point3f& o) const {
 	auto int_size = static_cast<int>(pdf_objects.size());
 	return pdf_objects[random_int(0, int_size - 1)]->random(o);
 }

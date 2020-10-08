@@ -14,7 +14,7 @@ public:
 		return 0.0;
 	}
 
-	virtual Vector3f random(const Vector3f& o) const {
+	virtual Vector3f random(const Point3f& o) const {
 		return Vector3f(1, 0, 0);
 	}
 

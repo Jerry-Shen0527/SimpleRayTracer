@@ -8,7 +8,7 @@ public:
 	diffuse_light(shared_ptr<texture> a) : emit(a) {}
 	diffuse_light(Color c) : emit(std::make_shared<solid_Color>(c)) {}
 
-	virtual Color emitted(const ray& r_in, const surface_hit_record& rec, const Vector2f& uv, const Point3f& p) const override
+	virtual Color emitted(const ray& r_in, const surface_hit_record& rec, const Point2f& uv, const Point3f& p) const override
 	{
 		if (rec.front_face)
 			return  emit->value(uv, p);

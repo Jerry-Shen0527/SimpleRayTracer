@@ -1,34 +1,29 @@
 #pragma once
-
 #include <cassert>
-#include <cmath>
-#include <iostream>
-using std::make_shared;
+#include <initializer_list>
+#include <ostream>
 
-#include "Tools/Math/rng.h"
-
-using std::sqrt;
 
 template<typename T, int n>
-class vec {
+class Vector {
 public:
-	vec() : data{ 0 } {}
-	vec(std::initializer_list<T> list);
+	Vector() : data{ 0 } {}
+	Vector(std::initializer_list<T> list);
 
-	inline static vec random();
-	inline static vec random(T min, T max);
+	inline static Vector random();
+	inline static Vector random(T min, T max);
 
-	vec operator-() const;
+	Vector operator-() const;
 	T operator[](int i) const { return data[i]; }
 	T& operator[](int i) { return data[i]; }
 
-	vec& operator+=(const vec& v);
-	vec& operator*=(const T t);
-	vec& operator/=(const T t);
-	bool operator==(const vec& t)const;
-	bool operator!=(const vec& t)const;
-	vec normalize() const;
-	vec abs() const;
+	Vector& operator+=(const Vector& v);
+	Vector& operator*=(const T t);
+	Vector& operator/=(const T t);
+	bool operator==(const Vector& t)const;
+	bool operator!=(const Vector& t)const;
+	Vector normalize() const;
+	Vector abs() const;
 
 	float length() const;
 	float length_squared() const;
@@ -49,7 +44,7 @@ public:
 };
 
 template<typename T, int n>
-vec<T, n>::vec(std::initializer_list<T> list)
+Vector<T, n>::Vector(std::initializer_list<T> list)
 {
 	assert(list.size() == n);
 
@@ -61,9 +56,9 @@ vec<T, n>::vec(std::initializer_list<T> list)
 }
 
 template<typename T, int n>
-vec<T, n> vec<T, n>::random()
+Vector<T, n> Vector<T, n>::random()
 {
-	vec rst;
+	Vector rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = static_cast<T> (random_float());
@@ -72,9 +67,9 @@ vec<T, n> vec<T, n>::random()
 }
 
 template<typename T, int n>
-vec<T, n> vec<T, n>::random(T min, T max)
+Vector<T, n> Vector<T, n>::random(T min, T max)
 {
-	vec rst;
+	Vector rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = random_float(min, max);
@@ -83,9 +78,9 @@ vec<T, n> vec<T, n>::random(T min, T max)
 }
 
 template<typename T, int n>
-vec<T, n> vec<T, n>::operator-() const
+Vector<T, n> Vector<T, n>::operator-() const
 {
-	vec rst;
+	Vector rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = -data[i];
@@ -94,7 +89,7 @@ vec<T, n> vec<T, n>::operator-() const
 }
 
 template<typename T, int n>
-vec<T, n>& vec<T, n>::operator+=(const vec<T, n>& v)
+Vector<T, n>& Vector<T, n>::operator+=(const Vector<T, n>& v)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -104,7 +99,7 @@ vec<T, n>& vec<T, n>::operator+=(const vec<T, n>& v)
 }
 
 template<typename T, int n>
-vec<T, n>& vec<T, n>::operator*=(const T t)
+Vector<T, n>& Vector<T, n>::operator*=(const T t)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -114,13 +109,13 @@ vec<T, n>& vec<T, n>::operator*=(const T t)
 }
 
 template<typename T, int n>
-vec<T, n>& vec<T, n>::operator/=(const T t)
+Vector<T, n>& Vector<T, n>::operator/=(const T t)
 {
 	return *this *= 1 / t;
 }
 
 template<typename T, int n>
-bool vec<T, n>::operator==(const vec& t) const
+bool Vector<T, n>::operator==(const Vector& t) const
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -133,21 +128,21 @@ bool vec<T, n>::operator==(const vec& t) const
 }
 
 template<typename T, int n>
-bool vec<T, n>::operator!=(const vec& t) const
+bool Vector<T, n>::operator!=(const Vector& t) const
 {
 	return !(*this == t);
 }
 
 template<typename T, int n>
-vec<T, n> vec<T, n>::normalize() const
+Vector<T, n> Vector<T, n>::normalize() const
 {
 	return *this / length();
 }
 
 template<typename T, int n>
-vec<T, n> vec<T, n>::abs() const
+Vector<T, n> Vector<T, n>::abs() const
 {
-	vec temp;
+	Vector temp;
 	for (int i = 0; i < n; ++i)
 	{
 		temp.data[i] = std::abs(data[i]);
@@ -156,13 +151,13 @@ vec<T, n> vec<T, n>::abs() const
 }
 
 template<typename T, int n>
-float vec<T, n>::length() const
+float Vector<T, n>::length() const
 {
 	return sqrt(length_squared());
 }
 
 template<typename T, int n>
-float vec<T, n>::length_squared() const
+float Vector<T, n>::length_squared() const
 {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
@@ -173,7 +168,7 @@ float vec<T, n>::length_squared() const
 }
 
 template <typename T, int n>
-T vec<T, n>::min()
+T Vector<T, n>::min()
 {
 	T temp = data[0];
 	for (int i = 0; i < n; ++i)
@@ -184,7 +179,7 @@ T vec<T, n>::min()
 }
 
 template <typename T, int n>
-T vec<T, n>::max()
+T Vector<T, n>::max()
 {
 	T temp = data[0];
 	for (int i = 0; i < n; ++i)
@@ -195,63 +190,63 @@ T vec<T, n>::max()
 }
 
 template<typename T, int n>
-T vec<T, n>::x() const
+T Vector<T, n>::x() const
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
 template<typename T, int n>
-T& vec<T, n>::x()
+T& Vector<T, n>::x()
 {
 	static_assert(n >= 1);
 	return data[0];
 }
 
 template<typename T, int n>
-T vec<T, n>::y() const
+T Vector<T, n>::y() const
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
 template<typename T, int n>
-T& vec<T, n>::y()
+T& Vector<T, n>::y()
 {
 	static_assert(n >= 2);
 	return data[1];
 }
 
 template<typename T, int n>
-T vec<T, n>::z() const
+T Vector<T, n>::z() const
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
 template<typename T, int n>
-T& vec<T, n>::z()
+T& Vector<T, n>::z()
 {
 	static_assert(n >= 3);
 	return data[2];
 }
 
 template<typename T, int n>
-T vec<T, n>::w() const
+T Vector<T, n>::w() const
 {
 	static_assert(n >= 4);
 	return data[3];
 }
 
 template<typename T, int n>
-T& vec<T, n>::w()
+T& Vector<T, n>::w()
 {
 	static_assert(n >= 4);
 	return data[3];
 }
 
 template<typename T, int n>
-inline std::ostream& operator<<(std::ostream& out, const vec<T, n>& v) {
+inline std::ostream& operator<<(std::ostream& out, const Vector<T, n>& v) {
 	for (int i = 0; i < n; ++i)
 	{
 		out << v.data[i] << ' ';
@@ -260,8 +255,8 @@ inline std::ostream& operator<<(std::ostream& out, const vec<T, n>& v) {
 }
 
 template<typename T, int n>
-inline vec<T, n> operator+(const vec<T, n>& u, const vec<T, n>& v) {
-	vec<T, n> rst;
+inline Vector<T, n> operator+(const Vector<T, n>& u, const Vector<T, n>& v) {
+	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = u.data[i] + v.data[i];
@@ -270,8 +265,8 @@ inline vec<T, n> operator+(const vec<T, n>& u, const vec<T, n>& v) {
 }
 
 template<typename T, int n>
-inline vec<T, n> operator-(const vec<T, n>& u, const vec<T, n>& v) {
-	vec<T, n> rst;
+inline Vector<T, n> operator-(const Vector<T, n>& u, const Vector<T, n>& v) {
+	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = u.data[i] - v.data[i];
@@ -280,8 +275,8 @@ inline vec<T, n> operator-(const vec<T, n>& u, const vec<T, n>& v) {
 }
 
 template<typename T, int n>
-inline vec<T, n> operator*(const vec<T, n>& u, const vec<T, n>& v) {
-	vec<T, n> rst;
+inline Vector<T, n> operator*(const Vector<T, n>& u, const Vector<T, n>& v) {
+	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = u.data[i] * v.data[i];
@@ -290,8 +285,8 @@ inline vec<T, n> operator*(const vec<T, n>& u, const vec<T, n>& v) {
 }
 
 template<typename T, int n>
-inline vec<T, n> operator*(float t, const vec<T, n>& v) {
-	vec<T, n> rst;
+inline Vector<T, n> operator*(float t, const Vector<T, n>& v) {
+	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst.data[i] = t * v.data[i];
@@ -300,17 +295,17 @@ inline vec<T, n> operator*(float t, const vec<T, n>& v) {
 }
 
 template<typename T, int n>
-inline vec<T, n> operator*(const vec<T, n>& v, float t) {
+inline Vector<T, n> operator*(const Vector<T, n>& v, float t) {
 	return t * v;
 }
 
 template<typename T, int n>
-inline vec<T, n> operator/(vec<T, n> v, float t) {
+inline Vector<T, n> operator/(Vector<T, n> v, float t) {
 	return (1 / t) * v;
 }
 
 template<typename T, int n>
-inline float dot(const vec<T, n>& u, const vec<T, n>& v) {
+inline float dot(const Vector<T, n>& u, const Vector<T, n>& v) {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{
@@ -320,14 +315,14 @@ inline float dot(const vec<T, n>& u, const vec<T, n>& v) {
 }
 
 template<typename T, int n>
-inline vec<T, n> unit_vector(vec<T, n> v) {
+inline Vector<T, n> unit_vector(Vector<T, n> v) {
 	return v / v.length();
 }
 
 template<typename T, int n>
-inline vec<T, n> minimum(const vec<T, n>& v1, const vec<T, n>& v2)
+inline Vector<T, n> minimum(const Vector<T, n>& v1, const Vector<T, n>& v2)
 {
-	vec<T, n> rst;
+	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst = v1[i] < v2[i] ? v1[i] : v2[i];
@@ -336,9 +331,9 @@ inline vec<T, n> minimum(const vec<T, n>& v1, const vec<T, n>& v2)
 }
 
 template<typename T, int n>
-inline vec<T, n> maximum(const vec<T, n>& v1, const vec<T, n>& v2)
+inline Vector<T, n> maximum(const Vector<T, n>& v1, const Vector<T, n>& v2)
 {
-	vec<T, n> rst;
+	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
 		rst = v1[i] < v2[i] ? v1[i] : v2[i];

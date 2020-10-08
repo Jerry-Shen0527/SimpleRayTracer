@@ -3,7 +3,7 @@
 #include "Tools/Math/Sampling.h"
 #include <Geometry/hit_record.h>
 
-vec3 reflect(const vec3& v, const vec3& n) {
+Vector3f reflect(const Vector3f& v, const Vector3f& n) {
 	return v - 2 * dot(v, n) * n;
 }
 
@@ -13,7 +13,7 @@ metal::metal(const color& a, float f) : albedo(a), fuzz(f < 1 ? f : 1)
 
 bool metal::scatter(const ray& r_in, const surface_hit_record& rec, scatter_record& srec) const
 {
-	vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
+	Vector3f reflected = reflect(unit_vector(r_in.direction()), rec.normal);
 	srec.specular_ray = ray(rec.p, reflected + fuzz * random_in_unit_sphere());
 	srec.attenuation = albedo;
 	srec.update();
@@ -22,7 +22,7 @@ bool metal::scatter(const ray& r_in, const surface_hit_record& rec, scatter_reco
 	return true;
 }
 
-Spectrum MicrofacetReflection::f(const vec3& wo, const vec3& wi) const
+Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	Float cosThetaO = AbsCosTheta(wo), cosThetaI = AbsCosTheta(wi);
 	Vector3f wh = wi + wo;
@@ -35,7 +35,7 @@ Spectrum MicrofacetReflection::f(const vec3& wo, const vec3& wi) const
 		(4 * cosThetaI * cosThetaO);
 }
 
-Spectrum MicrofacetTransmission::f(const vec3& wo, const vec3& wi) const
+Spectrum MicrofacetTransmission::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	if (SameHemisphere(wo, wi)) return 0;  // transmission only
 

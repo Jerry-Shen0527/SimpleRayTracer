@@ -7,11 +7,11 @@ class hittable_pdf : public pdf {
 public:
 	hittable_pdf(shared_ptr<hittable> p, const point3& origin) : ptr(p), o(origin) {}
 
-	virtual float value(const vec3& direction) const override {
+	virtual float value(const Vector3f& direction) const override {
 		return ptr->pdf_value(o, direction);
 	}
 
-	virtual vec3 generate() const override {
+	virtual Vector3f generate() const override {
 		return ptr->random(o);
 	}
 

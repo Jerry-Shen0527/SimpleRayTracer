@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include <Tools/Math/vec3.h>
+#include <Tools/Math/Vector3.h>
 #include <Tools/Spectrum/SampledSpectrum.h>
 
 enum BxDFType {
@@ -16,12 +16,12 @@ class BxDF
 {
 public:
 	BxDF(BxDFType type) : type(type) { }
-	virtual Spectrum f(const vec3& wo, const vec3& wi) const = 0;
+	virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const = 0;
 
-	virtual Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf, BxDFType* sampledType = nullptr) const;
+	virtual Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType = nullptr) const;
 
-	float pdf(const vec3& wo, const vec3& wi);
-	virtual Spectrum rho(const vec3& wo, int nSamples, const point2* samples) const;
+	float pdf(const Vector3f& wo, const Vector3f& wi);
+	virtual Spectrum rho(const Vector3f& wo, int nSamples, const point2* samples) const;
 	virtual Spectrum rho(int nSamples, const point2* samples1, const point2* samples2) const;
 
 	const BxDFType type;

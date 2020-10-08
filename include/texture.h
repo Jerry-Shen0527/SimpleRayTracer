@@ -3,7 +3,7 @@
 
 #include <Tools/perlin.h>
 
-#include "Tools/Math/vec3.h"
+#include "Tools/Math/Vector3.h"
 
 class texture {
 public:
@@ -18,7 +18,7 @@ public:
 	solid_color(float red, float green, float blue)
 		: solid_color(color(red, green, blue)) {}
 
-	virtual color value(const vec2& uv, const vec3& p) const override {
+	virtual color value(const vec2& uv, const Vector3f& p) const override {
 		return color_value;
 	}
 
@@ -69,7 +69,7 @@ public:
 		delete data;
 	}
 
-	virtual color value(const vec2& uv, const vec3& p) const override;
+	virtual color value(const vec2& uv, const Vector3f& p) const override;
 
 private:
 	unsigned char* data;

@@ -35,7 +35,7 @@ image_texture::image_texture(const std::string& filename)
 	bytes_per_scanline = bytes_per_pixel * width;
 }
 
-color image_texture::value(const vec2& uv, const vec3& p) const
+color image_texture::value(const vec2& uv, const Vector3f& p) const
 {
 	// If we have no texture data, then return solid cyan as a debugging aid.
 	if (data == nullptr)

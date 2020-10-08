@@ -1,5 +1,4 @@
 #pragma once
-#include <limits>
 
 // Constants
 
@@ -25,40 +24,18 @@ inline void idx_to_ij(int idx, int& i, int& j, int width)
 
 inline float Lerp(float t, float v1, float v2) { return (1 - t) * v1 + t * v2; }
 
-inline uint32_t FloatToBits(float f) {
-	uint32_t ui;
-	memcpy(&ui, &f, sizeof(float));
-	return ui;
-}
+inline bool Quadratic(Float a, Float b, Float c, Float* t0, Float* t1) {
+	//Find quadratic discriminant 1079
+	//	Compute quadratic t values 1080
+	double discrim = (double)b * (double)b - 4 * (double)a * (double)c;
+	if (discrim < 0) return false;
+	double rootDiscrim = std::sqrt(discrim);
 
-inline float BitsToFloat(uint32_t ui) {
-	float f;
-	memcpy(&f, &ui, sizeof(uint32_t));
-	return f;
-}
-
-inline float NextFloatUp(float v) {
-	// Handle infinity and negative zero for _NextFloatUp()_
-	if (std::isinf(v) && v > 0.) return v;
-	if (v == -0.f) v = 0.f;
-
-	// Advance _v_ to next higher float
-	uint32_t ui = FloatToBits(v);
-	if (v >= 0)
-		++ui;
-	else
-		--ui;
-	return BitsToFloat(ui);
-}
-
-inline float NextFloatDown(float v) {
-	// Handle infinity and positive zero for _NextFloatDown()_
-	if (std::isinf(v) && v < 0.) return v;
-	if (v == 0.f) v = -0.f;
-	uint32_t ui = FloatToBits(v);
-	if (v > 0)
-		--ui;
-	else
-		++ui;
-	return BitsToFloat(ui);
+	double q;
+	if (b < 0) q = -.5 * (b - rootDiscrim);
+	else q = -.5 * (b + rootDiscrim);
+	*t0 = q / a;
+	*t1 = c / q;
+	if (*t0 > * t1) std::swap(*t0, *t1);
+	return true;
 }

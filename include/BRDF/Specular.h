@@ -10,13 +10,13 @@ public:
 		return Spectrum(0.f);
 	}
 
-	Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
 private:
 	const Spectrum R;
 	const Fresnel* fresnel;
 };
 
-inline Spectrum SpecularReflection::Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf,
+inline Spectrum SpecularReflection::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf,
 	BxDFType* sampledType) const
 {
 	wi = Vector3f(-wo.x(), -wo.y(), wo.z());
@@ -37,7 +37,7 @@ public:
 		return Spectrum(0.f);
 	}
 
-	Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
 private:
 	const Spectrum T;
 	const Float etaA, etaB;
@@ -45,7 +45,7 @@ private:
 	const TransportMode mode;
 };
 
-inline bool Refract(const Vector3f& wi, const normal3& n, Float eta,
+inline bool Refract(const Vector3f& wi, const Normal3f& n, Float eta,
 	Vector3f& wt) {
 	//Compute cos ¦Èt using Snell¡¯s law 531
 
@@ -61,7 +61,7 @@ inline bool Refract(const Vector3f& wi, const normal3& n, Float eta,
 	return true;
 }
 
-inline Spectrum SpecularTransmission::Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf,
+inline Spectrum SpecularTransmission::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf,
 	BxDFType* sampledType) const
 {
 	//Figure out which ¦Ç is incidentand which is transmitted 529
@@ -69,7 +69,7 @@ inline Spectrum SpecularTransmission::Sample_f(const vec3& wo, vec3& wi, const p
 	Float etaI = entering ? etaA : etaB;
 	Float etaT = entering ? etaB : etaA;
 	//Compute ray direction for specular transmission 529
-	if (!Refract(wo, Faceforward(normal3(0, 0, 1), wo), etaI / etaT, wi))
+	if (!Refract(wo, Faceforward(Normal3f(0, 0, 1), wo), etaI / etaT, wi))
 		return 0;
 	pdf = 1;
 	Spectrum ft = T * (Spectrum(1.) - fresnel.Evaluate(CosTheta(wi)));
@@ -86,8 +86,8 @@ public:
 		R(R), T(T), etaA(etaA), etaB(etaB), fresnel(etaA, etaB),
 		mode(mode) { }
 
-	Spectrum f(const vec3& wo, const vec3& wi) const override;
-	Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
 private:
 	const Spectrum R, T;
 	const Float etaA, etaB;
@@ -96,12 +96,12 @@ private:
 	//FresnelSpecular Private Data 532
 };
 
-inline Spectrum FresnelSpecular::f(const vec3& wo, const vec3& wi) const
+inline Spectrum FresnelSpecular::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	return Spectrum(0.f);
 }
 
-inline Spectrum FresnelSpecular::Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf,
+inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf,
 	BxDFType* sampledType) const
 {
 	Float F = FrDielectric(CosTheta(wo), etaA, etaB);

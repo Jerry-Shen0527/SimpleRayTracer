@@ -1,7 +1,7 @@
 #ifndef PERLIN_H
 #define PERLIN_H
 
-#include <Tools/Math/vec3.h>
+#include <Tools/Math/Vector3.h>
 
 inline float trilinear_interp(float c[2][2][2], float u, float v, float w) {
 	auto accum = 0.0;
@@ -19,9 +19,9 @@ class perlin {
 public:
 
 	perlin() {
-		ranvec = new vec3[point_count];
+		ranvec = new Vector3f[point_count];
 		for (int i = 0; i < point_count; ++i) {
-			ranvec[i] = unit_vector(vec3::random(-1, 1));
+			ranvec[i] = unit_vector(Vector3f::random(-1, 1));
 		}
 
 		perm_x = perlin_generate_perm();
@@ -36,14 +36,14 @@ public:
 		delete[] perm_z;
 	}
 
-	float perlin_interp(vec3 c[2][2][2], float u, float v, float w) const;
+	float perlin_interp(Vector3f c[2][2][2], float u, float v, float w) const;
 
 	float noise(const point3& p) const;
 
 	float turb(const point3& p, int depth = 7) const;
 
 private:
-	vec3* ranvec;
+	Vector3f* ranvec;
 
 	static const int point_count = 256;
 	int* perm_x;
@@ -71,7 +71,7 @@ private:
 	}
 };
 
-inline float perlin::perlin_interp(vec3 c[2][2][2], float u, float v, float w) const
+inline float perlin::perlin_interp(Vector3f c[2][2][2], float u, float v, float w) const
 {
 	auto uu = u * u * (3 - 2 * u);
 	auto vv = v * v * (3 - 2 * v);
@@ -81,7 +81,7 @@ inline float perlin::perlin_interp(vec3 c[2][2][2], float u, float v, float w) c
 	for (int i = 0; i < 2; i++)
 		for (int j = 0; j < 2; j++)
 			for (int k = 0; k < 2; k++) {
-				vec3 weight_v(u - i, v - j, w - k);
+				Vector3f weight_v(u - i, v - j, w - k);
 				accum += (i * uu + (1 - i) * (1 - uu))
 					* (j * vv + (1 - j) * (1 - vv))
 					* (k * ww + (1 - k) * (1 - ww))
@@ -104,7 +104,7 @@ inline float perlin::noise(const point3& p) const
 	int i = floor(p.x());
 	int j = floor(p.y());
 	int k = floor(p.z());
-	vec3 c[2][2][2];
+	Vector3f c[2][2][2];
 
 	for (int di = 0; di < 2; di++)
 		for (int dj = 0; dj < 2; dj++)

@@ -8,18 +8,18 @@ point3 moving_sphere::center(float time) const {
 bool moving_sphere::bounding_box(float t0, float t1, aabb& output_box) const
 {
 	aabb box0(
-		center(t0) - vec3(radius, radius, radius),
-		center(t0) + vec3(radius, radius, radius));
+		center(t0) - Vector3f(radius, radius, radius),
+		center(t0) + Vector3f(radius, radius, radius));
 	aabb box1(
-		center(t1) - vec3(radius, radius, radius),
-		center(t1) + vec3(radius, radius, radius));
+		center(t1) - Vector3f(radius, radius, radius),
+		center(t1) + Vector3f(radius, radius, radius));
 	output_box = surrounding_box(box0, box1);
 	return true;
 }
 
 bool moving_sphere::hit(
 	const ray& r, surface_hit_record& rec) const {
-	vec3 oc = r.origin() - center(r.time());
+	Vector3f oc = r.origin() - center(r.time());
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());
 	auto c = oc.length_squared() - radius * radius;

@@ -26,7 +26,7 @@ ray hit_record::SpawnRayTo(const Point3f& p2) const
 }
 
 
-void surface_hit_record::set_face_normal(const vec3& r_in, const vec3& outward_normal)
+void surface_hit_record::set_face_normal(const Vector3f& r_in, const Vector3f& outward_normal)
 {
 	front_face = dot(r_in, outward_normal) < 0;
 	normal = front_face ? outward_normal : -outward_normal;

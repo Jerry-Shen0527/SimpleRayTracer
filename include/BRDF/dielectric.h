@@ -6,7 +6,7 @@
 #include <pdf/scatter_record.h>
 #include <Geometry/hit_record.h>
 
-vec3 refract(const vec3& uv, const vec3& n, float etai_over_etat);
+Vector3f refract(const Vector3f& uv, const Vector3f& n, float etai_over_etat);
 float schlick(float cosine, float ref_idx);
 
 class dielectric : public Material {

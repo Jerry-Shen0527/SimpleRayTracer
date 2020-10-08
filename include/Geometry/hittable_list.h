@@ -22,8 +22,8 @@ public:
 	bool hit(const ray& r) const;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
-	float pdf_value(const point3& o, const vec3& v) const override;
-	vec3 random(const vec3& o) const override;
+	float pdf_value(const point3& o, const Vector3f& v) const override;
+	Vector3f random(const Vector3f& o) const override;
 
 	std::vector<shared_ptr<hittable>> objects;
 	std::vector<shared_ptr<hittable>> pdf_objects;

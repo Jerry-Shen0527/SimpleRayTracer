@@ -1,7 +1,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include <Tools/Math/vec3.h>
+#include <Tools/Math/Vector3.h>
 
 #include "BRDF/BxDF_Utility.h"
 
@@ -15,7 +15,7 @@ public:
 		: orig(o), dir(d), tMax(tMax), tm(time), medium(medium) { }
 
 	point3 origin() const { return orig; }
-	vec3 direction() const { return dir; }
+	Vector3f direction() const { return dir; }
 	float time() const { return tm; }
 
 	point3 at(float t) const
@@ -27,7 +27,7 @@ public:
 	point3 orig;
 	float tm;
 	float tMax;
-	vec3 dir;
+	Vector3f dir;
 	const Medium* medium;
 };
 

@@ -39,9 +39,9 @@ public:
 		return true;
 	}
 
-	virtual float pdf_value(const point3& origin, const vec3& v) const override;
+	virtual float pdf_value(const point3& origin, const Vector3f& v) const override;
 
-	virtual vec3 random(const point3& origin) const override;
+	virtual Vector3f random(const point3& origin) const override;
 
 public:
 	std::shared_ptr<Material> mp;
@@ -74,8 +74,8 @@ public:
 
 	bool get_pdf_enabled() override;
 
-	float pdf_value(const point3& o, const vec3& v) const override;
-	vec3 random(const vec3& o) const override;
+	float pdf_value(const point3& o, const Vector3f& v) const override;
+	Vector3f random(const Vector3f& o) const override;
 
 	std::shared_ptr<hittable> ptr;
 };

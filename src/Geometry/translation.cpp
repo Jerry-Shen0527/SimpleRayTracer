@@ -15,6 +15,74 @@ Transform::Transform(const Matrix4x4& m, const Matrix4x4& mInv) : m(m), mInv(mIn
 {
 }
 
+Bounds3f Transform::operator()(const Bounds3f& b) const
+{
+	const Transform& M = *this;
+	Bounds3f ret(M(Point3f(b.pMin.x(), b.pMin.y(), b.pMin.z())));
+	ret = Union(ret, M(Point3f(b.pMax.x(), b.pMin.y(), b.pMin.z())));
+	ret = Union(ret, M(Point3f(b.pMin.x(), b.pMax.y(), b.pMin.z())));
+	ret = Union(ret, M(Point3f(b.pMin.x(), b.pMin.y(), b.pMax.z())));
+	ret = Union(ret, M(Point3f(b.pMin.x(), b.pMax.y(), b.pMax.z())));
+	ret = Union(ret, M(Point3f(b.pMax.x(), b.pMax.y(), b.pMin.z())));
+	ret = Union(ret, M(Point3f(b.pMax.x(), b.pMin.y(), b.pMax.z())));
+	ret = Union(ret, M(Point3f(b.pMax.x(), b.pMax.y(), b.pMax.z())));
+	return ret;
+}
+
+ray Transform::operator()(const ray& r) const
+{
+	Vector3f oError;
+	Point3f o = (*this)(r.orig);
+	Vector3f d = (*this)(r.dir);
+	//TODO:Offset ray origin to edge of error boundsand compute tMax 233
+	//Float lengthSquared = d.length_squared();
+	//Float tMax = r.tMax;
+	//if (lengthSquared > 0) {
+	//	Float dt = dot(abs(d), oError) / lengthSquared;
+	//	o += d * dt;
+	//	tMax -= dt;
+	//}
+	return ray(o, d, r.tMax, r.time(), r.medium);
+}
+
+SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
+{
+	SurfaceInteraction ret;
+	// Transform _p_ and _pError_ in _SurfaceInteraction_
+	ret.p = (*this)(si.p, si.pError, &ret.pError);
+
+	// Transform remaining members of _SurfaceInteraction_
+	const Transform& t = *this;
+	ret.normal = (t(si.normal)).normalize();
+	ret.ray_in = (t(si.ray_in)).normalize();
+	ret.time = si.time;
+	ret.mediumInterface = si.mediumInterface;
+	ret.uv = si.uv;
+	ret.shape = si.shape;
+	ret.dpdu = t(si.dpdu);
+	ret.dpdv = t(si.dpdv);
+	ret.dndu = t(si.dndu);
+	ret.dndv = t(si.dndv);
+	ret.shading.n = t(si.shading.n).normalize();
+	ret.shading.dpdu = t(si.shading.dpdu);
+	ret.shading.dpdv = t(si.shading.dpdv);
+	ret.shading.dndu = t(si.shading.dndu);
+	ret.shading.dndv = t(si.shading.dndv);
+	ret.dudx = si.dudx;
+	ret.dvdx = si.dvdx;
+	ret.dudy = si.dudy;
+	ret.dvdy = si.dvdy;
+	ret.dpdx = t(si.dpdx);
+	ret.dpdy = t(si.dpdy);
+	ret.bsdf = si.bsdf;
+	ret.bssrdf = si.bssrdf;
+	ret.primitive = si.primitive;
+	//    ret.n = Faceforward(ret.n, ret.shading.n);
+	ret.shading.n = Faceforward(ret.shading.n, ret.normal);
+	ret.faceIndex = si.faceIndex;
+	return ret;
+}
+
 bool Transform::HasScale() const
 {
 	Float la2 = (*this)(Vector3f(1, 0, 0)).length_squared();
@@ -73,7 +141,7 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 				auto newx = cos_theta * x + sin_theta * z;
 				auto newz = -sin_theta * x + cos_theta * z;
 
-				vec3 tester(newx, y, newz);
+				Vector3f tester(newx, y, newz);
 
 				for (int c = 0; c < 3; c++) {
 					min[c] = fmin(min[c], tester[c]);
@@ -86,7 +154,7 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 	bbox = aabb(min, max);
 }
 
-bool rotate_y::hit(const ray& r,  surface_hit_record& rec) const {
+bool rotate_y::hit(const ray& r, surface_hit_record& rec) const {
 	auto origin = r.origin();
 	auto direction = r.direction();
 
@@ -96,7 +164,7 @@ bool rotate_y::hit(const ray& r,  surface_hit_record& rec) const {
 	direction[0] = cos_theta * r.direction()[0] - sin_theta * r.direction()[2];
 	direction[2] = sin_theta * r.direction()[0] + cos_theta * r.direction()[2];
 
-	ray rotated_r(origin, direction,infinity, r.time());
+	ray rotated_r(origin, direction, infinity, r.time());
 
 	if (!ptr->hit(rotated_r, rec))
 		return false;

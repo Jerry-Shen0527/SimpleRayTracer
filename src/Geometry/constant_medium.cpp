@@ -50,7 +50,7 @@ bool constant_medium::hit(const ray& r, surface_hit_record& rec) const {
 			<< "rec.p = " << rec.p << '\n';
 	}
 
-	rec.normal = vec3(1, 0, 0);  // arbitrary
+	rec.normal = Vector3f(1, 0, 0);  // arbitrary
 	rec.front_face = true;     // also arbitrary
 	rec.mat_ptr = phase_function;
 

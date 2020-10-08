@@ -11,7 +11,7 @@ bool xy_rect::hit(const ray& r, surface_hit_record& rec) const {
 	rec.uv.x() = (x - x0) / (x1 - x0);
 	rec.uv.y() = (y - y0) / (y1 - y0);
 	rec.t = t;
-	auto outward_normal = vec3(0, 0, 1);
+	auto outward_normal = Vector3f(0, 0, 1);
 	rec.set_face_normal(r.direction(), outward_normal);
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
@@ -37,14 +37,14 @@ bool xz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	rec.uv.x() = (x - x0) / (x1 - x0);
 	rec.uv.y() = (z - z0) / (z1 - z0);
 	rec.t = t;
-	auto outward_normal = vec3(0, 1, 0);
+	auto outward_normal = Vector3f(0, 1, 0);
 	rec.set_face_normal(r.direction(), outward_normal);
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
 	return true;
 }
 
-float xz_rect::pdf_value(const point3& origin, const vec3& v) const
+float xz_rect::pdf_value(const point3& origin, const Vector3f& v) const
 {
 	surface_hit_record rec;
 	if (!this->hit(ray(origin, v), rec))
@@ -57,7 +57,7 @@ float xz_rect::pdf_value(const point3& origin, const vec3& v) const
 	return distance_squared / (cosine * area);
 }
 
-vec3 xz_rect::random(const point3& origin) const
+Vector3f xz_rect::random(const point3& origin) const
 {
 	auto random_point = point3(random_float(x0, x1), k, random_float(z0, z1));
 	return random_point - origin;
@@ -74,7 +74,7 @@ bool yz_rect::hit(const ray& r, surface_hit_record& rec) const {
 	rec.uv.x() = (y - y0) / (y1 - y0);
 	rec.uv.y() = (z - z0) / (z1 - z0);
 	rec.t = t;
-	auto outward_normal = vec3(1, 0, 0);
+	auto outward_normal = Vector3f(1, 0, 0);
 	rec.set_face_normal(r.direction(), outward_normal);
 	rec.mat_ptr = mp;
 	rec.p = r.at(t);
@@ -107,12 +107,12 @@ bool flip_face::get_pdf_enabled()
 {
 	return ptr->get_pdf_enabled();
 }
-float flip_face::pdf_value(const point3& o, const vec3& v) const
+float flip_face::pdf_value(const point3& o, const Vector3f& v) const
 {
 	return ptr->pdf_value(o, v);
 }
 
-vec3 flip_face::random(const vec3& o) const
+Vector3f flip_face::random(const Vector3f& o) const
 {
 	return ptr->random(o);
 }

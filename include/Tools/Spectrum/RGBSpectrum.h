@@ -10,21 +10,21 @@ public:
 	RGBSpectrum(float v = 0.f) :CoefficientSpectrum<3>(v) {}
 	RGBSpectrum(const CoefficientSpectrum<3>& v) :CoefficientSpectrum<3>(v) {}
 
-	static RGBSpectrum FromRGB(const vec3& rgb, SpectrumType type = SpectrumType::Illuminant);
-	static RGBSpectrum FromXYZ(const vec3& xyz, SpectrumType type = SpectrumType::Illuminant);
+	static RGBSpectrum FromRGB(const Vector3f& rgb, SpectrumType type = SpectrumType::Illuminant);
+	static RGBSpectrum FromXYZ(const Vector3f& xyz, SpectrumType type = SpectrumType::Illuminant);
 	static RGBSpectrum FromSampled(const float* lambda, const float* v, int n);
 
 	static float InterpolateSpectrumSamples(const float* lambda, const float* p, int i, const float x);
 
-	void ToRGB(vec3& rgb) const;
+	void ToRGB(Vector3f& rgb) const;
 	float y() const;
 
 	const RGBSpectrum& ToRGBSpectrum() const;
 
-	void ToXYZ(vec3& xyz) const;
+	void ToXYZ(Vector3f& xyz) const;
 };
 
-inline RGBSpectrum RGBSpectrum::FromRGB(const vec3& rgb, SpectrumType type)
+inline RGBSpectrum RGBSpectrum::FromRGB(const Vector3f& rgb, SpectrumType type)
 {
 	RGBSpectrum s;
 	s.c[0] = rgb[0];
@@ -33,9 +33,9 @@ inline RGBSpectrum RGBSpectrum::FromRGB(const vec3& rgb, SpectrumType type)
 	return s;
 }
 
-inline RGBSpectrum RGBSpectrum::FromXYZ(const vec3& xyz, SpectrumType type)
+inline RGBSpectrum RGBSpectrum::FromXYZ(const Vector3f& xyz, SpectrumType type)
 {
-	vec3 rgb;
+	Vector3f rgb;
 
 	XYZToRGB(xyz, rgb);
 	return FromRGB(rgb, type);
@@ -65,7 +65,7 @@ inline RGBSpectrum RGBSpectrum::FromSampled(const float* lambda, const float* v,
 		SortSpectrumSamples(&slambda[0], &sv[0], n);
 		return FromSampled(&slambda[0], &sv[0], n);
 	}
-	vec3 xyz = { 0, 0, 0 };
+	Vector3f xyz = { 0, 0, 0 };
 	float yint = 0.f;
 	for (int i = 0; i < nCIESamples; ++i)
 	{
@@ -81,7 +81,7 @@ inline RGBSpectrum RGBSpectrum::FromSampled(const float* lambda, const float* v,
 	return FromXYZ(xyz);
 }
 
-inline void RGBSpectrum::ToRGB(vec3& rgb) const
+inline void RGBSpectrum::ToRGB(Vector3f& rgb) const
 {
 	rgb[0] = c[0];
 	rgb[1] = c[1];
@@ -90,8 +90,8 @@ inline void RGBSpectrum::ToRGB(vec3& rgb) const
 
 inline float RGBSpectrum::y() const
 {
-	vec3 xyz;
-	vec3 rgb;
+	Vector3f xyz;
+	Vector3f rgb;
 	ToRGB(rgb);
 
 	RGBToXYZ(rgb, xyz);
@@ -103,9 +103,9 @@ inline const RGBSpectrum& RGBSpectrum::ToRGBSpectrum() const
 	return *this;
 }
 
-inline void RGBSpectrum::ToXYZ(vec3& xyz) const
+inline void RGBSpectrum::ToXYZ(Vector3f& xyz) const
 {
-	vec3 rgb;
+	Vector3f rgb;
 	ToRGB(rgb);
 	RGBToXYZ(rgb, xyz);
 }

@@ -35,21 +35,21 @@ public:
 	LambertianReflection(const Spectrum& R)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), R(R) { }
 
-	Spectrum f(const vec3& wo, const vec3& wi) const override;
-	Spectrum Sample_f(const vec3& wo, vec3& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
-	Spectrum rho(const vec3& wo, int nSamples, const point2* samples) const override;
+	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f& wi, const point2& sample, float& pdf, BxDFType* sampledType) const override;
+	Spectrum rho(const Vector3f& wo, int nSamples, const point2* samples) const override;
 	Spectrum rho(int nSamples, const point2* samples1, const point2* samples2) const override;
 private:
 	//LambertianReflection Private Data 532
 	const Spectrum R;
 };
 
-inline Spectrum LambertianReflection::f(const vec3& wo, const vec3& wi) const
+inline Spectrum LambertianReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	return R * inv_pi;
 }
 
-inline Spectrum LambertianReflection::rho(const vec3& wo, int nSamples, const point2* samples) const
+inline Spectrum LambertianReflection::rho(const Vector3f& wo, int nSamples, const point2* samples) const
 {
 	return R;
 }

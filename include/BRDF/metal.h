@@ -4,7 +4,7 @@
 #include "MicrofacetDistribution.h"
 #include "Fresnel/Fresnel.h"
 
-vec3 reflect(const vec3& v, const vec3& n);
+Vector3f reflect(const Vector3f& v, const Vector3f& n);
 
 class metal : public Material {
 public:
@@ -28,7 +28,7 @@ public:
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_GLOSSY)), R(R),
 		distribution(distribution), fresnel(fresnel) { }
 
-	Spectrum f(const vec3& wo, const vec3& wi) const override;
+	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
 private:
 	const Spectrum R;
 	shared_ptr<MicrofacetDistribution> distribution;
@@ -44,7 +44,7 @@ public:
 		T(T), distribution(distribution), etaA(etaA), etaB(etaB),
 		fresnel(etaA, etaB), mode(mode) { }
 
-	Spectrum f(const vec3& wo, const vec3& wi) const override;
+	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
 private:
 	const Spectrum T;
 	shared_ptr<MicrofacetDistribution> distribution;

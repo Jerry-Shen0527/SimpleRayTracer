@@ -114,12 +114,12 @@ hittable_list WorldFactory::cornell_box() {
 	//shared_ptr<material> aluminum = make_shared<metal>(color(0.8, 0.85, 0.88), 0.0);
 	shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
 	box1 = make_shared<rotate_y>(box1, 15);
-	box1 = make_shared<translate>(box1, vec3(265, 0, 295));
+	box1 = make_shared<translate>(box1, Vector3f(265, 0, 295));
 	world.add(box1);
 
 	//shared_ptr<hittable> box2 = make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
 	//box2 = make_shared<rotate_y>(box2, -18);
-	//box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+	//box2 = make_shared<translate>(box2, Vector3f(130, 0, 65));
 	//world.add(box2);
 	shared_ptr<Material> glass = make_shared<dielectric>(1.5);
 	shared_ptr<hittable> glass_sphere = make_shared<sphere>(point3(190, 90, 190), 90.0, glass);
@@ -146,11 +146,11 @@ hittable_list WorldFactory::cornell_smoke() {
 
 	shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(165, 330, 165), white);
 	box1 = make_shared<rotate_y>(box1, 15);
-	box1 = make_shared<translate>(box1, vec3(265, 0, 295));
+	box1 = make_shared<translate>(box1, Vector3f(265, 0, 295));
 
 	shared_ptr<hittable> box2 = make_shared<box>(point3(0, 0, 0), point3(165, 165, 165), white);
 	box2 = make_shared<rotate_y>(box2, -18);
-	box2 = make_shared<translate>(box2, vec3(130, 0, 65));
+	box2 = make_shared<translate>(box2, Vector3f(130, 0, 65));
 
 	world.add(make_shared<constant_medium>(box1, 0.01, color(0, 0, 0)));
 	world.add(make_shared<constant_medium>(box2, 0.01, color(1, 1, 1)));
@@ -185,7 +185,7 @@ hittable_list WorldFactory::final_scene() {
 	objects.add(make_shared<flip_face>(make_shared<xz_rect>(123, 423, 147, 412, 554, light, true)));
 
 	auto center1 = point3(400, 400, 200);
-	auto center2 = center1 + vec3(30, 0, 0);
+	auto center2 = center1 + Vector3f(30, 0, 0);
 	auto moving_sphere_material = make_shared<lambertian>(color(0.7, 0.3, 0.1));
 	objects.add(make_shared<moving_sphere>(center1, center2, 0, 1, 50, moving_sphere_material));
 
@@ -215,7 +215,7 @@ hittable_list WorldFactory::final_scene() {
 	objects.add(make_shared<translate>(
 		make_shared<rotate_y>(
 			make_shared<bvh_node>(boxes2, 0.0, 1.0), 15),
-		vec3(-100, 270, 395)
+		Vector3f(-100, 270, 395)
 		)
 	);
 
@@ -224,7 +224,7 @@ hittable_list WorldFactory::final_scene() {
 
 void WorldFactory::get_world(int idx, hittable_list& world, camera& cam, color& background)
 {
-	vec3 vup(0, 1, 0);
+	Vector3f vup(0, 1, 0);
 	auto dist_to_focus = 10.0;
 	point3 lookfrom;
 	point3 lookat;

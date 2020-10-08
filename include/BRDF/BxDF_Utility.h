@@ -1,54 +1,47 @@
 #pragma once
 #include <Tools/Math/Sampling.h>
 
-#include "Tools/Math/vec3.h"
+inline float CosTheta(const Vector3f& w) { return w.z(); }
+inline float Cos2Theta(const Vector3f& w) { return w.z() * w.z(); }
+inline float AbsCosTheta(const Vector3f& w) { return std::abs(w.z()); }
 
-inline float CosTheta(const vec3& w) { return w.z(); }
-inline float Cos2Theta(const vec3& w) { return w.z() * w.z(); }
-inline float AbsCosTheta(const vec3& w) { return std::abs(w.z()); }
-
-inline float Sin2Theta(const vec3& w) {
+inline float Sin2Theta(const Vector3f& w) {
 	return std::max((float)0, (float)1 - Cos2Theta(w));
 }
-inline float SinTheta(const vec3& w) {
+inline float SinTheta(const Vector3f& w) {
 	return std::sqrt(Sin2Theta(w));
 }
 
-inline float TanTheta(const vec3& w) {
+inline float TanTheta(const Vector3f& w) {
 	return SinTheta(w) / CosTheta(w);
 }
-inline float Tan2Theta(const vec3& w) {
+inline float Tan2Theta(const Vector3f& w) {
 	return Sin2Theta(w) / Cos2Theta(w);
 }
 
-inline float CosPhi(const vec3& w) {
+inline float CosPhi(const Vector3f& w) {
 	float sinTheta = SinTheta(w);
 	return (sinTheta == 0) ? 1 : Clamp(w.x() / sinTheta, -1, 1);
 }
-inline float SinPhi(const vec3& w) {
+inline float SinPhi(const Vector3f& w) {
 	float sinTheta = SinTheta(w);
 	return (sinTheta == 0) ? 0 : Clamp(w.y() / sinTheta, -1, 1);
 }
 
-inline float Cos2Phi(const vec3& w) {
+inline float Cos2Phi(const Vector3f& w) {
 	return CosPhi(w) * CosPhi(w);
 }
-inline float Sin2Phi(const vec3& w) {
+inline float Sin2Phi(const Vector3f& w) {
 	return SinPhi(w) * SinPhi(w);
 }
 
 //Calculate different phi between two vectors
-inline float CosDPhi(const vec3& wa, const vec3& wb) {
+inline float CosDPhi(const Vector3f& wa, const Vector3f& wb) {
 	return Clamp((wa.x() * wb.x() + wa.y() * wb.y()) / std::sqrt((wa.x() * wa.x() + wa.y() * wa.y()) * (wb.x() * wb.x() + wb.y() * wb.y())), -1, 1);
 }
 
-using Float = float;
-using Vector3f = vec3;
-using Point3f = vec3;
-using Normal3f = vec3;
-
-inline normal3
-Faceforward(const normal3& n, const vec3& v) {
+inline Normal3f
+Faceforward(const Normal3f& n, const Vector3f& v) {
 	return (dot(n, v) < 0.f) ? -n : n;
 }
 

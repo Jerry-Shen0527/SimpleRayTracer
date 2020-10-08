@@ -5,7 +5,7 @@
 #include "Tools/Math/Sampling.h"
 
 bool sphere::hit(const ray& r, surface_hit_record& rec) const {
-	vec3 oc = r.origin() - center;
+	Vector3f oc = r.origin() - center;
 	auto a = r.direction().length_squared();
 	auto half_b = dot(oc, r.direction());
 	auto c = oc.length_squared() - radius * radius;
@@ -20,7 +20,7 @@ bool sphere::hit(const ray& r, surface_hit_record& rec) const {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
-			vec3 outward_normal = (rec.p - center) / radius;
+			Vector3f outward_normal = (rec.p - center) / radius;
 			rec.set_face_normal(r.direction(), outward_normal);
 			get_sphere_uv((rec.p - center) / radius, rec.uv);
 			rec.mat_ptr = mat_ptr;
@@ -33,7 +33,7 @@ bool sphere::hit(const ray& r, surface_hit_record& rec) const {
 			rec.t = temp;
 			rec.p = r.at(rec.t);
 			rec.normal = (rec.p - center) / radius;
-			vec3 outward_normal = (rec.p - center) / radius;
+			Vector3f outward_normal = (rec.p - center) / radius;
 			rec.set_face_normal(r.direction(), outward_normal);
 			get_sphere_uv((rec.p - center) / radius, rec.uv);
 			rec.mat_ptr = mat_ptr;
@@ -46,11 +46,11 @@ bool sphere::hit(const ray& r, surface_hit_record& rec) const {
 
 bool sphere::bounding_box(float t0, float t1, aabb& output_box) const
 {
-	output_box = aabb(center - vec3(radius, radius, radius), center + vec3(radius, radius, radius));
+	output_box = aabb(center - Vector3f(radius, radius, radius), center + Vector3f(radius, radius, radius));
 	return true;
 }
 
-void sphere::get_sphere_uv(const vec3& p, vec2& uv) const
+void sphere::get_sphere_uv(const Vector3f& p, vec2& uv) const
 {
 	auto phi = atan2(p.z(), p.x());
 	auto theta = asin(p.y());
@@ -58,7 +58,7 @@ void sphere::get_sphere_uv(const vec3& p, vec2& uv) const
 	uv.y() = (theta + pi / 2) / pi;
 }
 
-float sphere::pdf_value(const point3& o, const vec3& v) const {
+float sphere::pdf_value(const point3& o, const Vector3f& v) const {
 	surface_hit_record rec;
 	if (!this->hit(ray(o, v), rec))
 		return 0;
@@ -69,8 +69,8 @@ float sphere::pdf_value(const point3& o, const vec3& v) const {
 	return  1 / solid_angle;
 }
 
-vec3 sphere::random(const point3& o) const {
-	vec3 direction = center - o;
+Vector3f sphere::random(const point3& o) const {
+	Vector3f direction = center - o;
 	auto distance_squared = direction.length_squared();
 	onb uvw;
 	uvw.build_from_w(direction);

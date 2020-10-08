@@ -47,7 +47,7 @@ bool hittable_list::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-float hittable_list::pdf_value(const point3& o, const vec3& v) const {
+float hittable_list::pdf_value(const point3& o, const Vector3f& v) const {
 	auto weight = 1.0 / pdf_objects.size();
 	auto sum = 0.0;
 
@@ -57,7 +57,7 @@ float hittable_list::pdf_value(const point3& o, const vec3& v) const {
 	return sum;
 }
 
-vec3 hittable_list::random(const vec3& o) const {
+Vector3f hittable_list::random(const Vector3f& o) const {
 	auto int_size = static_cast<int>(pdf_objects.size());
 	return pdf_objects[random_int(0, int_size - 1)]->random(o);
 }

@@ -1,29 +1,29 @@
 #ifndef ONB_H
 #define ONB_H
-#include "vec3.h"
+#include "Vector3.h"
 
 class onb {
 public:
 	onb() {}
 
-	inline vec3 operator[](int i) const { return axis[i]; }
+	inline Vector3f operator[](int i) const { return axis[i]; }
 
-	vec3 u() const { return axis[0]; }
-	vec3 v() const { return axis[1]; }
-	vec3 w() const { return axis[2]; }
+	Vector3f u() const { return axis[0]; }
+	Vector3f v() const { return axis[1]; }
+	Vector3f w() const { return axis[2]; }
 
-	vec3 local(float a, float b, float c) const {
+	Vector3f local(float a, float b, float c) const {
 		return a * u() + b * v() + c * w();
 	}
 
-	vec3 local(const vec3& a) const {
+	Vector3f local(const Vector3f& a) const {
 		return a.x() * u() + a.y() * v() + a.z() * w();
 	}
 
-	void build_from_w(const vec3&);
+	void build_from_w(const Vector3f&);
 
 public:
-	vec3 axis[3];
+	Vector3f axis[3];
 };
 
 #endif

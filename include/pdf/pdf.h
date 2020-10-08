@@ -8,20 +8,20 @@ class pdf {
 public:
 	virtual ~pdf() {}
 
-	virtual float value(const vec3& direction) const = 0;
-	virtual vec3 generate() const = 0;
+	virtual float value(const Vector3f& direction) const = 0;
+	virtual Vector3f generate() const = 0;
 };
 
 class cosine_pdf : public pdf {
 public:
-	cosine_pdf(const vec3& w) { uvw.build_from_w(w); }
+	cosine_pdf(const Vector3f& w) { uvw.build_from_w(w); }
 
-	virtual float value(const vec3& direction) const override {
+	virtual float value(const Vector3f& direction) const override {
 		auto cosine = dot(unit_vector(direction), uvw.w());
 		return (cosine <= 0) ? 0 : cosine / pi;
 	}
 
-	virtual vec3 generate() const override {
+	virtual Vector3f generate() const override {
 		return uvw.local(random_cosine_direction());
 	}
 
@@ -38,11 +38,11 @@ public:
 		threshold = th;
 	}
 
-	virtual float value(const vec3& direction) const override {
+	virtual float value(const Vector3f& direction) const override {
 		return threshold * p[0]->value(direction) + (1 - threshold) * p[1]->value(direction);
 	}
 
-	virtual vec3 generate() const override {
+	virtual Vector3f generate() const override {
 		if (random_float() < threshold)
 			return p[0]->generate();
 		else

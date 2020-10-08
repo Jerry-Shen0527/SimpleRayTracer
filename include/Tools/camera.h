@@ -13,7 +13,7 @@ public:
 	camera(
 		point3 lookfrom,
 		point3 lookat,
-		vec3   vup,
+		Vector3f   vup,
 		float vfov, // vertical field-of-view in degrees
 		float aspect_ratio,
 		float aperture,
@@ -46,8 +46,8 @@ public:
 	}
 
 	ray get_ray(float s, float t) const {
-		vec3 rd = lens_radius * random_in_unit_disk();
-		vec3 offset = u * rd.x() + v * rd.y();
+		Vector3f rd = lens_radius * random_in_unit_disk();
+		Vector3f offset = u * rd.x() + v * rd.y();
 
 		return ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, infinity, random_float(time0, time1));
 	}
@@ -59,11 +59,11 @@ private:
 	float time1;
 	point3 origin;
 	point3 lower_left_corner;
-	vec3 horizontal;
-	vec3 vertical;
+	Vector3f horizontal;
+	Vector3f vertical;
 	float lens_radius;
 
-	vec3 w, u, v;
+	Vector3f w, u, v;
 };
 
 #endif

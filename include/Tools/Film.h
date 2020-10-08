@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Math/vec3.h"
+#include "Math/Vector3.h"
 
 
 class Film

@@ -2,7 +2,6 @@
 #include <Geometry/hittable.h>
 #include <Geometry/bvh.h>
 
-
 #include "Tools/Bound.h"
 #include "Tools/Math/matrix.h"
 
@@ -18,21 +17,14 @@ public:
 
 	friend Transform Inverse(const Transform& t);
 	friend Transform Transpose(const Transform& t);
-	template <typename T>
-	inline vec<T, 3> operator()(const vec<T, 3>& v) const;
 
-	Bounds3f Transform::operator()(const Bounds3f& b) const {
-		const Transform& M = *this;
-		Bounds3f ret(M(Point3f(b.pMin.x, b.pMin.y, b.pMin.z)));
-		ret = Union(ret, M(Point3f(b.pMax.x, b.pMin.y, b.pMin.z)));
-		ret = Union(ret, M(Point3f(b.pMin.x, b.pMax.y, b.pMin.z)));
-		ret = Union(ret, M(Point3f(b.pMin.x, b.pMin.y, b.pMax.z)));
-		ret = Union(ret, M(Point3f(b.pMin.x, b.pMax.y, b.pMax.z)));
-		ret = Union(ret, M(Point3f(b.pMax.x, b.pMax.y, b.pMin.z)));
-		ret = Union(ret, M(Point3f(b.pMax.x, b.pMin.y, b.pMax.z)));
-		ret = Union(ret, M(Point3f(b.pMax.x, b.pMax.y, b.pMax.z)));
-		return ret;
-	}
+	template <typename T>
+	Vector<T, 3> operator()(const Vector<T, 3>& v) const;
+	Bounds3f operator()(const Bounds3f& b) const;
+	ray operator()(const ray& r) const;
+
+	SurfaceInteraction operator()(const SurfaceInteraction& si) const;
+	
 
 	bool HasScale() const;
 
@@ -42,9 +34,9 @@ private:
 };
 
 template <typename T>
-vec<T, 3> Transform::operator()(const vec<T, 3>& v) const
+Vector<T, 3> Transform::operator()(const Vector<T, 3>& v) const
 {
-	T x = v.x(), y = v.y, z = v.z;
+	T x = v.x(), y = v.y(), z = v.z();
 	return Vector3<T>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
 		m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
 		m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
@@ -60,7 +52,7 @@ inline Transform Transpose(const Transform& t) {
 
 class translate : public hittable {
 public:
-	translate(std::shared_ptr<hittable> p, const vec3& displacement)
+	translate(std::shared_ptr<hittable> p, const Vector3f& displacement)
 		: ptr(p), offset(displacement) {}
 
 	virtual bool hit(
@@ -70,7 +62,7 @@ public:
 
 public:
 	std::shared_ptr<hittable> ptr;
-	vec3 offset;
+	Vector3f offset;
 };
 
 class rotate_y : public hittable {
@@ -134,8 +126,8 @@ Transform Rotate(Float theta, const Vector3f& axis) {
 	Matrix4x4 m;
 	//Compute rotation of first basis vector 91
 	m.m[0][0] = a.x() * a.x() + (1 - a.x() * a.x()) * cosTheta;
-	m.m[0][1] = a.x() * a.y * (1 - cosTheta) - a.z * sinTheta;
-	m.m[0][2] = a.x() * a.z * (1 - cosTheta) + a.y * sinTheta;
+	m.m[0][1] = a.x() * a.y() * (1 - cosTheta) - a.z() * sinTheta;
+	m.m[0][2] = a.x() * a.z() * (1 - cosTheta) + a.y() * sinTheta;
 	m.m[0][3] = 0;
 	//Compute rotations of second and third basis vectors
 	return Transform(m, Transpose(m));

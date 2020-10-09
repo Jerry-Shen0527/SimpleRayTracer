@@ -76,8 +76,8 @@ public:
 		if (phi < 0) phi += 2 * pi;
 		//	Test sphere intersection against clipping parameters 137
 
-		if ((zMin > -radius && pHit.z() < zMin) ||
-			(zMax < radius && pHit.z() > zMax) || phi > phiMax) {
+		if (zMin > -radius && pHit.z() < zMin ||
+			zMax < radius && pHit.z() > zMax || phi > phiMax) {
 			if (tShapeHit == t1) return false;
 			if (t1.UpperBound() > r.tMax) return false;
 			tShapeHit = t1;

@@ -17,17 +17,17 @@ public:
 
 	Point3f origin() const { return orig; }
 	Vector3f direction() const { return dir; }
-	float time() const { return tm; }
+	Float time() const { return tm; }
 
-	Point3f at(float t) const
+	Point3f at(Float t) const
 	{
 		return  t * dir + orig;
 	}
 
 public:
 	Point3f orig;
-	float tm;
-	float tMax;
+	Float tm;
+	mutable Float tMax;
 	Vector3f dir;
 	const Medium* medium;
 };

@@ -86,7 +86,7 @@ inline float perlin::perlin_interp(Vector3f c[2][2][2], float u, float v, float 
 				accum += (i * uu + (1 - i) * (1 - uu))
 					* (j * vv + (1 - j) * (1 - vv))
 					* (k * ww + (1 - k) * (1 - ww))
-					* dot(c[i][j][k], weight_v);
+					* Dot(c[i][j][k], weight_v);
 			}
 
 	return accum;

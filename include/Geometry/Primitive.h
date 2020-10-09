@@ -35,6 +35,8 @@ public:
 		if (material)
 			material->ComputeScatteringFunctions(isect, arena, mode, allowMultipleLobes);
 	}
+
+
 private:
 	std::shared_ptr<Shape> shape;
 	std::shared_ptr<Material> material;
@@ -47,6 +49,11 @@ public:
 	TransformedPrimitive(std::shared_ptr<Primitive>& primitive,
 		const AnimatedTransform& PrimitiveToWorld)
 		: primitive(primitive), PrimitiveToWorld(PrimitiveToWorld) { }
+
+	Bounds3f WorldBound() const {
+		return PrimitiveToWorld.MotionBounds(primitive->WorldBound());
+	}
+	
 private:
 	std::shared_ptr<Primitive> primitive;
 	const AnimatedTransform PrimitiveToWorld;

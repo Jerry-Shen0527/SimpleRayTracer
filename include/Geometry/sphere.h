@@ -114,13 +114,13 @@ public:
 		Vector3f d2Pdvv = -(thetaMax - thetaMin) * (thetaMax - thetaMin) *
 			Vector3f(pHit.x(), pHit.y(), pHit.z());
 
-		Float E = dot(dpdu, dpdu);
-		Float F = dot(dpdu, dpdv);
-		Float G = dot(dpdv, dpdv);
+		Float E = Dot(dpdu, dpdu);
+		Float F = Dot(dpdu, dpdv);
+		Float G = Dot(dpdv, dpdv);
 		Vector3f N = cross(dpdu, dpdv).normalize();
-		Float e = dot(N, d2Pduu);
-		Float f = dot(N, d2Pduv);
-		Float g = dot(N, d2Pdvv);
+		Float e = Dot(N, d2Pduu);
+		Float f = Dot(N, d2Pduv);
+		Float g = Dot(N, d2Pdvv);
 
 		Float invEGF2 = 1 / (E * G - F * F);
 		Normal3f dndu = Normal3f((f * F - e * G) * invEGF2 * dpdu + (e * F - f * E) * invEGF2 * dpdv);

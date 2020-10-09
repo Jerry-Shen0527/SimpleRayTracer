@@ -17,7 +17,7 @@ void Vector3f_test()
 	std::cout << a + b << std::endl;
 	std::cout << b - a << std::endl;
 	std::cout << a * b << std::endl;
-	std::cout << dot(a, b) << std::endl;
+	std::cout << Dot(a, b) << std::endl;
 
 	b = a;
 	std::cout << b << std::endl;

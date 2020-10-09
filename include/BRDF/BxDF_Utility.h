@@ -42,7 +42,7 @@ inline float CosDPhi(const Vector3f& wa, const Vector3f& wb) {
 }
 
 inline Normal3f Faceforward(const Normal3f& n, const Vector3f& v) {
-	return dot(n, v) < 0.f ? -n : n;
+	return Dot(n, v) < 0.f ? -n : n;
 }
 
 inline Vector3f CosineSampleHemisphere(const Point2f& u) {

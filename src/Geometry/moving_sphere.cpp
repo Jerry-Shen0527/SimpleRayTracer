@@ -21,7 +21,7 @@ bool moving_sphere::hit(
 	const ray& r, surface_hit_record& rec) const {
 	Vector3f oc = r.origin() - center(r.time());
 	auto a = r.direction().length_squared();
-	auto half_b = dot(oc, r.direction());
+	auto half_b = Dot(oc, r.direction());
 	auto c = oc.length_squared() - radius * radius;
 
 	auto discriminant = half_b * half_b - a * c;

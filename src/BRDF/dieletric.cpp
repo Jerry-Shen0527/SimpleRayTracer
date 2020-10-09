@@ -1,7 +1,7 @@
 #include <BRDF/dielectric.h>
 
 Vector3f refract(const Vector3f& uv, const Vector3f& n, float etai_over_etat) {
-	auto cos_theta = dot(-uv, n);
+	auto cos_theta = Dot(-uv, n);
 	Vector3f r_out_perp = etai_over_etat * (uv + cos_theta * n);
 	Vector3f r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
 	return r_out_perp + r_out_parallel;
@@ -23,7 +23,7 @@ bool dielectric::scatter(const ray& r_in, const surface_hit_record& rec, scatter
 
 	Vector3f unit_direction = unit_vector(r_in.direction());
 
-	float cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
+	float cos_theta = fmin(Dot(-unit_direction, rec.normal), 1.0);
 	float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
 	if (etai_over_etat * sin_theta > 1.0)
 	{

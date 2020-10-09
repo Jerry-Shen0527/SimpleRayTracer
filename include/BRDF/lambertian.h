@@ -23,7 +23,7 @@ public:
 	float scattering_pdf(
 		const ray& r_in, const surface_hit_record& rec, const ray& scattered
 	) const {
-		auto cosine = dot(rec.normal, unit_vector(scattered.direction()));
+		auto cosine = Dot(rec.normal, unit_vector(scattered.direction()));
 		return cosine < 0 ? 0 : cosine / pi;
 	}
 

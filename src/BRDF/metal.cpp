@@ -4,7 +4,7 @@
 #include <Geometry/hit_record.h>
 
 Vector3f reflect(const Vector3f& v, const Vector3f& n) {
-	return v - 2 * dot(v, n) * n;
+	return v - 2 * Dot(v, n) * n;
 }
 
 metal::metal(const Color& a, float f) : albedo(a), fuzz(f < 1 ? f : 1)
@@ -30,7 +30,7 @@ Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 	if (cosThetaI == 0 || cosThetaO == 0) return Spectrum(0.);
 	if (wh.x() == 0 && wh.y() == 0 && wh.z() == 0) return Spectrum(0.);
 	wh = wh.normalize();
-	Spectrum F = fresnel->Evaluate(dot(wi, wh));
+	Spectrum F = fresnel->Evaluate(Dot(wi, wh));
 	return R * distribution->D(wh) * distribution->G(wo, wi) * F /
 		(4 * cosThetaI * cosThetaO);
 }
@@ -49,15 +49,15 @@ Spectrum MicrofacetTransmission::f(const Vector3f& wo, const Vector3f& wi) const
 	if (wh.z() < 0) wh = -wh;
 
 	// Same side?
-	if (dot(wo, wh) * dot(wi, wh) > 0) return Spectrum(0);
+	if (Dot(wo, wh) * Dot(wi, wh) > 0) return Spectrum(0);
 
-	Spectrum F = fresnel.Evaluate(dot(wo, wh));
+	Spectrum F = fresnel.Evaluate(Dot(wo, wh));
 
-	Float sqrtDenom = dot(wo, wh) + eta * dot(wi, wh);
+	Float sqrtDenom = Dot(wo, wh) + eta * Dot(wi, wh);
 	Float factor = (mode == TransportMode::Radiance) ? (1 / eta) : 1;
 
 	return (Spectrum(1.f) - F) * T *
 		std::abs(distribution->D(wh) * distribution->G(wo, wi) * eta * eta *
-			abs(dot(wi, wh) * dot(wo, wh)) * factor * factor /
+			abs(Dot(wi, wh) * Dot(wo, wh)) * factor * factor /
 			(cosThetaI * cosThetaO * sqrtDenom * sqrtDenom));
 }

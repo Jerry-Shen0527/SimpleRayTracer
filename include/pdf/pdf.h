@@ -17,7 +17,7 @@ public:
 	cosine_pdf(const Vector3f& w) { uvw.build_from_w(w); }
 
 	virtual float value(const Vector3f& direction) const override {
-		auto cosine = dot(unit_vector(direction), uvw.w());
+		auto cosine = Dot(unit_vector(direction), uvw.w());
 		return (cosine <= 0) ? 0 : cosine / pi;
 	}
 

@@ -75,9 +75,9 @@ public:
 		if (wh.x() == 0 && wh.y() == 0 && wh.z() == 0) return Spectrum(0);
 		wh = wh.normalize();
 		Spectrum specular = distribution->D(wh) /
-			(4 * abs(dot(wi, wh)) *
+			(4 * abs(Dot(wi, wh)) *
 				std::max(AbsCosTheta(wi), AbsCosTheta(wo))) *
-			SchlickFresnel(dot(wi, wh));
+			SchlickFresnel(Dot(wi, wh));
 		return diffuse + specular;
 	}
 private:

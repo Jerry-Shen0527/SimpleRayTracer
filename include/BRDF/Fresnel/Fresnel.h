@@ -28,7 +28,7 @@ inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
 }
 
 inline Vector3f Reflect(const Vector3f& wo, const Vector3f& n) {
-	return -wo + 2 * dot(wo, n) * n;
+	return -wo + 2 * Dot(wo, n) * n;
 }
 
 inline Spectrum FrConductor(Float cosThetaI, const Spectrum& etaI, const Spectrum& etaT, const Spectrum& k)

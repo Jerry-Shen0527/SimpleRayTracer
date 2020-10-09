@@ -322,7 +322,7 @@ inline Vector<T, n> operator/(Vector<T, n> v, float t) {
 }
 
 template<typename T, int n>
-inline float dot(const Vector<T, n>& u, const Vector<T, n>& v) {
+inline float Dot(const Vector<T, n>& u, const Vector<T, n>& v) {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)
 	{

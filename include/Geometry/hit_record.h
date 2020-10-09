@@ -36,7 +36,7 @@ struct hit_record
 	ray SpawnRayTo(const hit_record& h2) const;
 
 	const Medium* GetMedium(const Vector3f& w) const {
-		return dot(w, normal) > 0 ? mediumInterface.outside : mediumInterface.inside;
+		return Dot(w, normal) > 0 ? mediumInterface.outside : mediumInterface.inside;
 	}
 
 	const Medium* GetMedium() const {

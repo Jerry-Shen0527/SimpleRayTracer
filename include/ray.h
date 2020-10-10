@@ -8,11 +8,11 @@
 
 class Medium;
 
-class ray {
+class Ray {
 public:
-	ray() {}
+	Ray() {}
 
-	ray(const Point3f& o, const Vector3f& d, Float tMax = infinity, Float time = 0.f, const Medium* medium = nullptr)
+	Ray(const Point3f& o, const Vector3f& d, Float tMax = infinity, Float time = 0.f, const Medium* medium = nullptr)
 		: orig(o), dir(d), tMax(tMax), tm(time), medium(medium) { }
 
 	Point3f origin() const { return orig; }

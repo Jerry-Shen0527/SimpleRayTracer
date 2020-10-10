@@ -52,7 +52,7 @@ bool VisibilityTester::Unoccluded(const Scene& scene) const {
 }
 
 Spectrum VisibilityTester::Tr(const Scene& scene, Sampler& sampler) const {
-	ray ray(p0.SpawnRayTo(p1));
+	Ray ray(p0.SpawnRayTo(p1));
 	Spectrum Tr(1.f);
 	while (true) {
 		SurfaceInteraction isect;

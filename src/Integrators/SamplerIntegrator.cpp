@@ -55,7 +55,7 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color backg
 				//auto a = _thread_sampler->Get2D();
 				//auto u = (i + a.x()) / (cam.film->width - 1);
 				//auto v = (j + a.y()) / (cam.film->height - 1);
-				ray r = cam.get_ray(u, 1.0f - v);
+				Ray r = cam.get_ray(u, 1.0f - v);
 				pixel_Color += ray_color(r, background, world, lights, max_depth);
 				_thread_sampler->StartNextSample();
 			}
@@ -104,7 +104,7 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color backg
 #endif
 }
 
-Color SamplerIntegrator::ray_color(const ray& r, const Color& background, const hittable& world,
+Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const hittable& world,
 	std::shared_ptr<hittable> lights, int depth)
 {
 	surface_hit_record rec;
@@ -128,7 +128,7 @@ Color SamplerIntegrator::ray_color(const ray& r, const Color& background, const 
 
 	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
-	ray scattered = ray(rec.p, p.generate(), infinity, r.time());
+	Ray scattered = Ray(rec.p, p.generate(), infinity, r.time());
 	auto pdf_val = p.value(scattered.direction());
 
 	return emitted + srec.attenuation

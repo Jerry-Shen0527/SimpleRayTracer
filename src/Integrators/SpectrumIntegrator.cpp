@@ -43,7 +43,7 @@ void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, Color back
 			for (int s = 0; s < sample_per_pixel; ++s) {
 				auto u = (i + random_float()) / (cam.film->width - 1);
 				auto v = (j + random_float()) / (cam.film->height - 1);
-				ray r = cam.get_ray(u, 1 - v);
+				Ray r = cam.get_ray(u, 1 - v);
 				Color c;
 				ray_Color(r, background, world, lights, max_depth).ToRGB(c);
 				pixel_Color += c;
@@ -90,7 +90,7 @@ void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, Color back
 #endif
 }
 
-Spectrum SpectrumIntegrator::ray_Color(const ray& r, const Color& background, const hittable& world,
+Spectrum SpectrumIntegrator::ray_Color(const Ray& r, const Color& background, const hittable& world,
 	shared_ptr<hittable> lights, int depth)
 {
 	surface_hit_record rec;
@@ -115,7 +115,7 @@ Spectrum SpectrumIntegrator::ray_Color(const ray& r, const Color& background, co
 
 	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
-	ray scattered = ray(rec.p, p.generate(),infinity, r.time());
+	Ray scattered = Ray(rec.p, p.generate(),infinity, r.time());
 	auto pdf_val = p.value(scattered.direction());
 
 	return emitted + ray_Color(scattered, background, world, lights, depth - 1) * srec.sp_attenuation * rec.mat_ptr->scattering_pdf(r, rec, scattered) / pdf_val;

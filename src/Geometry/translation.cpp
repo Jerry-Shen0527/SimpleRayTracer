@@ -29,7 +29,7 @@ Bounds3f Transform::operator()(const Bounds3f& b) const
 	return ret;
 }
 
-ray Transform::operator()(const ray& r) const
+Ray Transform::operator()(const Ray& r) const
 {
 	Vector3f oError;
 	Point3f o = (*this)(r.orig);
@@ -42,7 +42,7 @@ ray Transform::operator()(const ray& r) const
 	//	o += d * dt;
 	//	tMax -= dt;
 	//}
-	return ray(o, d, r.tMax, r.time(), r.medium);
+	return Ray(o, d, r.tMax, r.time(), r.medium);
 }
 
 SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
@@ -102,8 +102,18 @@ bool Transform::SwapsHandedness() const
 	return det < 0;
 }
 
-bool translate::hit(const ray& r, surface_hit_record& rec) const {
-	ray moved_r(r.origin() - offset, r.direction(), r.time());
+bool Transform::IsIdentity() const
+{
+	return (m.m[0][0] == 1.f && m.m[0][1] == 0.f && m.m[0][2] == 0.f &&
+		m.m[0][3] == 0.f && m.m[1][0] == 0.f && m.m[1][1] == 1.f &&
+		m.m[1][2] == 0.f && m.m[1][3] == 0.f && m.m[2][0] == 0.f &&
+		m.m[2][1] == 0.f && m.m[2][2] == 1.f && m.m[2][3] == 0.f &&
+		m.m[3][0] == 0.f && m.m[3][1] == 0.f && m.m[3][2] == 0.f &&
+		m.m[3][3] == 1.f);
+}
+
+bool translate::hit(const Ray& r, surface_hit_record& rec) const {
+	Ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, rec))
 		return false;
 
@@ -154,7 +164,7 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 	bbox = aabb(min, max);
 }
 
-bool rotate_y::hit(const ray& r, surface_hit_record& rec) const {
+bool rotate_y::hit(const Ray& r, surface_hit_record& rec) const {
 	auto origin = r.origin();
 	auto direction = r.direction();
 
@@ -164,7 +174,7 @@ bool rotate_y::hit(const ray& r, surface_hit_record& rec) const {
 	direction[0] = cos_theta * r.direction()[0] - sin_theta * r.direction()[2];
 	direction[2] = sin_theta * r.direction()[0] + cos_theta * r.direction()[2];
 
-	ray rotated_r(origin, direction, infinity, r.time());
+	Ray rotated_r(origin, direction, infinity, r.time());
 
 	if (!ptr->hit(rotated_r, rec))
 		return false;

@@ -18,8 +18,8 @@ public:
 	void clear() { objects.clear(); }
 	void add(shared_ptr<hittable> object);
 
-	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
-	bool hit(const ray& r) const;
+	virtual bool hit(const Ray& r, surface_hit_record& rec) const override;
+	bool hit(const Ray& r) const;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 	float pdf_value(const Point3f& o, const Vector3f& v) const override;

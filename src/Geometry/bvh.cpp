@@ -83,7 +83,7 @@ bvh_node::bvh_node(std::vector<shared_ptr<hittable>>& objects, size_t start, siz
 bvh_node::bvh_node(hittable_list& list, float time0, float time1) : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
 {}
 
-bool bvh_node::hit(const ray& r, surface_hit_record& rec) const {
+bool bvh_node::hit(const Ray& r, surface_hit_record& rec) const {
 	if (!box.hit(r))
 		return false;
 
@@ -103,7 +103,7 @@ bool bvh_node::hit(const ray& r, surface_hit_record& rec) const {
 	return hit_left || hit_right;
 }
 
-inline bool aabb::hit(const ray& r) const {
+inline bool aabb::hit(const Ray& r) const {
 	for (int a = 0; a < 3; a++) {
 		auto invD = 1.0f / r.direction()[a];
 		auto t0 = (min()[a] - r.origin()[a]) * invD;

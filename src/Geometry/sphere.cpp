@@ -4,7 +4,7 @@
 #include "Tools/Math/math_tools.h"
 #include "Tools/Math/Sampling.h"
 
-bool sphere::hit(const ray& r, surface_hit_record& rec) const {
+bool sphere::hit(const Ray& r, surface_hit_record& rec) const {
 	Vector3f oc = r.origin() - center;
 	auto a = r.direction().length_squared();
 	auto half_b = Dot(oc, r.direction());
@@ -60,7 +60,7 @@ void sphere::get_sphere_uv(const Vector3f& p, Vector2f& uv) const
 
 float sphere::pdf_value(const Point3f& o, const Vector3f& v) const {
 	surface_hit_record rec;
-	if (!this->hit(ray(o, v), rec))
+	if (!this->hit(Ray(o, v), rec))
 		return 0;
 
 	auto cos_theta_max = sqrt(1 - radius * radius / (center - o).length_squared());

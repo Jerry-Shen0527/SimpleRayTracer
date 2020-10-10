@@ -14,7 +14,7 @@ float schlick(float cosine, float ref_idx) {
 	return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
-bool dielectric::scatter(const ray& r_in, const surface_hit_record& rec, scatter_record& srec) const
+bool dielectric::scatter(const Ray& r_in, const surface_hit_record& rec, scatter_record& srec) const
 {
 	srec.attenuation = Color(1.0, 1.0, 1.0);
 	srec.update();
@@ -28,7 +28,7 @@ bool dielectric::scatter(const ray& r_in, const surface_hit_record& rec, scatter
 	if (etai_over_etat * sin_theta > 1.0)
 	{
 		Vector3f reflected = reflect(unit_direction, rec.normal);
-		srec.specular_ray = ray(rec.p, reflected);
+		srec.specular_ray = Ray(rec.p, reflected);
 		return true;
 	}
 
@@ -36,11 +36,11 @@ bool dielectric::scatter(const ray& r_in, const surface_hit_record& rec, scatter
 	if (random_float() < reflect_prob)
 	{
 		Vector3f reflected = reflect(unit_direction, rec.normal);
-		srec.specular_ray = ray(rec.p, reflected);
+		srec.specular_ray = Ray(rec.p, reflected);
 		return true;
 	}
 
 	Vector3f refracted = refract(unit_direction, rec.normal, etai_over_etat);
-	srec.specular_ray = ray(rec.p, refracted);
+	srec.specular_ray = Ray(rec.p, refracted);
 	return true;
 }

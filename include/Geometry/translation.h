@@ -11,6 +11,7 @@
 class Transform
 {
 public:
+	Transform() {}
 	Transform(const Float mat[4][4]);
 
 	Transform(const Matrix4x4& m, const Matrix4x4& mInv);
@@ -24,13 +25,15 @@ public:
 	inline Point<T, 3> operator()(const Point<T, 3>& p) const;
 
 	Bounds3f operator()(const Bounds3f& b) const;
-	ray operator()(const ray& r) const;
+	Ray operator()(const Ray& r) const;
 
 	SurfaceInteraction operator()(const SurfaceInteraction& si) const;
 
 	bool HasScale() const;
 
 	bool SwapsHandedness() const;
+
+	bool IsIdentity() const;
 private:
 	Matrix4x4 m, mInv;
 };
@@ -70,7 +73,7 @@ public:
 		: ptr(p), offset(displacement) {}
 
 	virtual bool hit(
-		const ray& r, surface_hit_record& rec) const override;
+		const Ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
@@ -83,7 +86,7 @@ class rotate_y : public hittable {
 public:
 	rotate_y(std::shared_ptr<hittable> p, float angle);
 
-	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
+	virtual bool hit(const Ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
 		output_box = bbox;

@@ -11,10 +11,10 @@ metal::metal(const Color& a, float f) : albedo(a), fuzz(f < 1 ? f : 1)
 {
 }
 
-bool metal::scatter(const ray& r_in, const surface_hit_record& rec, scatter_record& srec) const
+bool metal::scatter(const Ray& r_in, const surface_hit_record& rec, scatter_record& srec) const
 {
 	Vector3f reflected = reflect(unit_vector(r_in.direction()), rec.normal);
-	srec.specular_ray = ray(rec.p, reflected + fuzz * random_in_unit_sphere());
+	srec.specular_ray = Ray(rec.p, reflected + fuzz * random_in_unit_sphere());
 	srec.attenuation = albedo;
 	srec.update();
 	srec.is_specular = true;

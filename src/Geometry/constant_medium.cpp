@@ -10,7 +10,7 @@ constant_medium::constant_medium(std::shared_ptr<hittable> b, float d, Color c) 
 {
 }
 
-bool constant_medium::hit(const ray& r, surface_hit_record& rec) const {
+bool constant_medium::hit(const Ray& r, surface_hit_record& rec) const {
 	// Print occasional samples when debugging. To enable, set enableDebug true.
 	const bool enableDebug = false;
 	const bool debugging = enableDebug && random_float() < 0.00001;

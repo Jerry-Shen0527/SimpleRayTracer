@@ -16,7 +16,7 @@ public:
 		pdf_enabled = pdf;
 	}
 
-	virtual bool hit(const ray& r, surface_hit_record& rec) const override;
+	virtual bool hit(const Ray& r, surface_hit_record& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
@@ -42,12 +42,12 @@ public:
 			Point3f(radius, radius, zMax));
 	}
 
-	bool Sphere::Intersect(const ray& r, Float& tHit, SurfaceInteraction& isect, bool testAlphaTexture) const {
+	bool Sphere::Intersect(const Ray& r, Float& tHit, SurfaceInteraction& isect, bool testAlphaTexture) const {
 		Float phi;
 		Point3f pHit;
 		//Transform Ray to object space 134
 		Vector3f oErr, dErr;
-		ray r_new = (*WorldToObject)(r);
+		Ray r_new = (*WorldToObject)(r);
 		//	Compute quadratic sphere coefficients 135
 		EFloat ox(r.orig.x(), oErr.x()), oy(r.orig.y(), oErr.y()), oz(r.orig.z(), oErr.z());
 		EFloat dx(r.dir.x(), dErr.x()), dy(r.dir.y(), dErr.y()), dz(r.dir.z(), dErr.z());

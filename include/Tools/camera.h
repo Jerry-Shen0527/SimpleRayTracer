@@ -45,11 +45,11 @@ public:
 		film = _film;
 	}
 
-	ray get_ray(float s, float t) const {
+	Ray get_ray(float s, float t) const {
 		Vector3f rd = lens_radius * random_in_unit_disk();
 		Vector3f offset = u * rd.x() + v * rd.y();
 
-		return ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, infinity, random_float(time0, time1));
+		return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, infinity, random_float(time0, time1));
 	}
 
 	shared_ptr<Film> film;

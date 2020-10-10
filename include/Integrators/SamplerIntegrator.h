@@ -16,7 +16,7 @@ public:
 		lights = make_shared<hittable_list>(scene);
 	}
 	void integrate(camera& cam, hittable_list& world, Color background = Color(0, 0, 0)) override;
-	Color ray_color(const ray& r, const Color& background, const hittable& world, shared_ptr<hittable> lights,
+	Color ray_color(const Ray& r, const Color& background, const hittable& world, shared_ptr<hittable> lights,
 		int depth);
 
 	std::shared_ptr<Sampler> sampler;

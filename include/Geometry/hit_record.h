@@ -30,10 +30,10 @@ struct hit_record
 
 	Vector3f pError;
 
-	ray SpawnRay(const Vector3f& d) const;
+	Ray SpawnRay(const Vector3f& d) const;
 
-	ray SpawnRayTo(const Point3f& p2) const;
-	ray SpawnRayTo(const hit_record& h2) const;
+	Ray SpawnRayTo(const Point3f& p2) const;
+	Ray SpawnRayTo(const hit_record& h2) const;
 
 	const Medium* GetMedium(const Vector3f& w) const {
 		return Dot(w, normal) > 0 ? mediumInterface.outside : mediumInterface.inside;

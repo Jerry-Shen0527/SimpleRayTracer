@@ -41,8 +41,8 @@ public:
 	Vector<T, n>& operator[](int i);
 	Vector<T, n> Corner(int corner) const;
 
-	bool IntersectP(const ray& ray, Float* hitt0, Float* hitt1) const;
-	bool IntersectP(const ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const;
+	bool IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const;
+	bool IntersectP(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const;
 
 	Vector<T, n> pMin;
 	Vector<T, n> pMax;
@@ -116,7 +116,7 @@ Vector<T, n> Bounds<T, n>::Corner(int corner) const
 }
 
 template <typename T, int n>
-bool Bounds<T, n>::IntersectP(const ray& ray, Float* hitt0, Float* hitt1) const
+bool Bounds<T, n>::IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const
 {
 	assert(n == 3);
 
@@ -141,7 +141,7 @@ bool Bounds<T, n>::IntersectP(const ray& ray, Float* hitt0, Float* hitt1) const
 }
 
 template <typename T, int n>
-bool Bounds<T, n>::IntersectP(const ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const
+bool Bounds<T, n>::IntersectP(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const
 {
 	const Bounds& bounds = *this;
 	Float tMin = (bounds[dirIsNeg[0]].x() - ray.orig.x()) * invDir.x();

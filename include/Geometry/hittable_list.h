@@ -18,7 +18,7 @@ public:
 	void clear() { objects.clear(); }
 	void add(shared_ptr<hittable> object);
 
-	virtual bool hit(const Ray& r, surface_hit_record& rec) const override;
+	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
 	bool hit(const Ray& r) const;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;

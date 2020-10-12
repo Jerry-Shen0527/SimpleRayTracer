@@ -16,7 +16,7 @@ public:
 		pdf_enabled = pdf;
 	}
 
-	virtual bool hit(const Ray& r, surface_hit_record& rec) const override;
+	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
@@ -50,7 +50,7 @@ public:
 		Ray r_new = (*WorldToObject)(r);
 		//	Compute quadratic sphere coefficients 135
 		EFloat ox(r.orig.x(), oErr.x()), oy(r.orig.y(), oErr.y()), oz(r.orig.z(), oErr.z());
-		EFloat dx(r.dir.x(), dErr.x()), dy(r.dir.y(), dErr.y()), dz(r.dir.z(), dErr.z());
+		EFloat dx(r.d.x(), dErr.x()), dy(r.d.y(), dErr.y()), dz(r.d.z(), dErr.z());
 
 		EFloat a = dx * dx + dy * dy + dz * dz;
 		EFloat b = 2 * (dx * ox + dy * oy + dz * oz);
@@ -117,7 +117,7 @@ public:
 		Float E = Dot(dpdu, dpdu);
 		Float F = Dot(dpdu, dpdv);
 		Float G = Dot(dpdv, dpdv);
-		Vector3f N = cross(dpdu, dpdv).normalize();
+		Vector3f N = Cross(dpdu, dpdv).normalize();
 		Float e = Dot(N, d2Pduu);
 		Float f = Dot(N, d2Pduv);
 		Float g = Dot(N, d2Pdvv);
@@ -127,7 +127,7 @@ public:
 		Normal3f dndv = Normal3f((g * F - f * G) * invEGF2 * dpdu + (f * F - g * E) * invEGF2 * dpdv);
 
 		//	Initialize SurfaceInteraction from parametric information 140
-		isect = (*ObjectToWorld)(SurfaceInteraction(pHit, pError, Point2f(u, v), -r.dir, dpdu, dpdv, dndu, dndv, r.time(), this));
+		isect = (*ObjectToWorld)(SurfaceInteraction(pHit, pError, Point2f(u, v), -r.d, dpdu, dpdv, dndu, dndv, r.time(), this));
 		//	Update tHit for quadric intersection 140
 		tHit = (Float)tShapeHit;
 		return true;

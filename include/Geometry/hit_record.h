@@ -1,9 +1,8 @@
 #pragma once
 #include <BRDF/Material.h>
 #include <BRDF/Volume/Medium.h>
+#include <Geometry/Shape.h>
 
-
-class Shape;
 class Primitive;
 const Float ShadowEpsilon = 0.0001f;
 class BSDF;
@@ -13,18 +12,18 @@ struct hit_record
 {
 	hit_record() {}
 	hit_record(const Point3f& p, const Normal3f& n, const Vector3f& pError, const Vector3f& r_in, Float time)
-		: p(p), t(time), pError(pError), ray_in(r_in), normal(n), time(time)
+		: p(p), t(time), pError(pError), ray_in(r_in), n(n), time(time)
 	{ }
 
 	hit_record(const Point3f& p, Float time, const MediumInterface& mediumInterface)
 		: p(p), time(time), mediumInterface(mediumInterface) {}
 
 	bool IsSurfaceInteraction() const {
-		return normal != Normal3f();
+		return n != Normal3f();
 	}
 	Point3f p;
 	float t;
-	Normal3f normal;
+	Normal3f n;
 	Vector3f ray_in;
 	float time;
 
@@ -36,7 +35,7 @@ struct hit_record
 	Ray SpawnRayTo(const hit_record& h2) const;
 
 	const Medium* GetMedium(const Vector3f& w) const {
-		return Dot(w, normal) > 0 ? mediumInterface.outside : mediumInterface.inside;
+		return Dot(w, n) > 0 ? mediumInterface.outside : mediumInterface.inside;
 	}
 
 	const Medium* GetMedium() const {
@@ -51,16 +50,35 @@ public:
 	BSSRDF* bssrdf = nullptr;
 };
 
-struct surface_hit_record :public hit_record {
-	surface_hit_record() {}
+struct SurfaceInteraction :public hit_record {
+	SurfaceInteraction() {}
 
 	std::shared_ptr<Material> mat_ptr;
 
-	surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :hit_record(p, Normal3f((cross(dpdu, dpdv)).normalize()), pError, r_in, time) {}
+	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :hit_record(p, Normal3f((Cross(dpdu, dpdv)).normalize()), pError, r_in, time) {}
 
-	surface_hit_record(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time,const Shape *shape);
+	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape);
 
 	void set_face_normal(const Vector3f& r_in, const Normal3f& outward_normal);
+
+	void SetShadingGeometry(const Vector3f& dpdus,
+		const Vector3f& dpdvs, const Normal3f& dndus,
+		const Normal3f& dndvs, bool orientationIsAuthoritative) {
+		//Compute shading.n for SurfaceInteraction 119
+		shading.n = Normalize((Normal3f)Cross(dpdus, dpdvs));
+		if (shape && (shape->reverseOrientation ^ shape->transformSwapsHandedness))
+			shading.n = -shading.n;
+		if (orientationIsAuthoritative)
+			n = Faceforward(n, shading.n);
+		else
+			shading.n = Faceforward(shading.n, n);
+
+		//Initialize shading partial derivative values 119
+		shading.dpdu = dpdus;
+		shading.dpdv = dpdvs;
+		shading.dndu = dndus;
+		shading.dndv = dndvs;
+	}
 
 	Point2f uv;
 	Vector3f dpdu, dpdv;
@@ -84,4 +102,3 @@ struct surface_hit_record :public hit_record {
 };
 
 using Interaction = hit_record;
-using  SurfaceInteraction = surface_hit_record;

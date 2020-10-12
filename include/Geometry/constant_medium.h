@@ -9,7 +9,7 @@ public:
 
 	constant_medium(std::shared_ptr<hittable> b, float d, Color c);
 
-	virtual bool hit(const Ray& r,  surface_hit_record& rec) const override;
+	virtual bool hit(const Ray& r,  SurfaceInteraction& rec) const override;
 
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 

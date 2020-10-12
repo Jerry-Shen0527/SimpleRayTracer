@@ -12,7 +12,7 @@ public:
 	{};
 
 	virtual bool hit(
-		const Ray& r,  surface_hit_record& rec) const override;
+		const Ray& r,  SurfaceInteraction& rec) const override;
 
 	Point3f center(float time) const;
 

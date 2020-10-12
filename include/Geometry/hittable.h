@@ -7,7 +7,7 @@ class Material;
 
 class hittable {
 public:
-	virtual bool hit(const Ray& r, surface_hit_record& rec) const = 0;
+	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const = 0;
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const;
 
 	virtual float pdf_value(const Point3f& o, const Vector3f& v) const {

@@ -54,7 +54,7 @@ public:
 	bool Intersect(const Ray& r, SurfaceInteraction& isect) const {
 		//Compute ray after transformation by PrimitiveToWorld 253
 		Transform InterpolatedPrimToWorld;
-		PrimitiveToWorld.Interpolate(r.time, &InterpolatedPrimToWorld);
+		PrimitiveToWorld.Interpolate(r.time(), &InterpolatedPrimToWorld);
 		Ray ray = Inverse(InterpolatedPrimToWorld)(r);
 		if (!primitive->Intersect(ray, isect))
 			return false;

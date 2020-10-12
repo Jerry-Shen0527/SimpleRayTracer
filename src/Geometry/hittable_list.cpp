@@ -14,8 +14,8 @@ void hittable_list::add(shared_ptr<hittable> object)
 	}
 }
 
-bool hittable_list::hit(const Ray& r, surface_hit_record& rec) const {
-	surface_hit_record temp_rec;
+bool hittable_list::hit(const Ray& r, SurfaceInteraction& rec) const {
+	SurfaceInteraction temp_rec;
 	bool hit_anything = false;
 	Ray r_temp = r;
 
@@ -32,7 +32,7 @@ bool hittable_list::hit(const Ray& r, surface_hit_record& rec) const {
 
 bool hittable_list::hit(const Ray& r) const
 {
-	return hit(r, surface_hit_record());
+	return hit(r, SurfaceInteraction());
 }
 
 bool hittable_list::bounding_box(float t0, float t1, aabb& output_box) const

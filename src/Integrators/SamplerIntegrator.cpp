@@ -107,7 +107,7 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color backg
 Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const hittable& world,
 	std::shared_ptr<hittable> lights, int depth)
 {
-	surface_hit_record rec;
+	SurfaceInteraction rec;
 
 	if (depth <= 0)
 		return Color(0, 0, 0);

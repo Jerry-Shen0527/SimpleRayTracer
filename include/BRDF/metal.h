@@ -13,7 +13,7 @@ public:
 	metal(const Color& a, float f);
 
 	virtual bool scatter(
-		const Ray& r_in, const surface_hit_record& rec, scatter_record& srec
+		const Ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
 	) const override;
 
 public:

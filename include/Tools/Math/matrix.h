@@ -23,8 +23,6 @@ struct Matrix4x4 {
 		return r;
 	}
 
-	
-
 	Float m[4][4];
 	friend Matrix4x4 Inverse(const Matrix4x4&);
 };

@@ -5,7 +5,7 @@
 
 #include <Geometry/aarect.h>
 
-bool xy_rect::hit(const Ray& r, surface_hit_record& rec) const {
+bool xy_rect::hit(const Ray& r, SurfaceInteraction& rec) const {
 	auto t = (k - r.origin().z()) / r.direction().z();
 	if (t<0.0001 || t > r.tMax)
 		return false;
@@ -31,7 +31,7 @@ bool xy_rect::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-bool xz_rect::hit(const Ray& r, surface_hit_record& rec) const {
+bool xz_rect::hit(const Ray& r, SurfaceInteraction& rec) const {
 	auto t = (k - r.origin().y()) / r.direction().y();
 	if (t<0.0001 || t > r.tMax)
 		return false;
@@ -51,13 +51,13 @@ bool xz_rect::hit(const Ray& r, surface_hit_record& rec) const {
 
 float xz_rect::pdf_value(const Point3f& origin, const Vector3f& v) const
 {
-	surface_hit_record rec;
+	SurfaceInteraction rec;
 	if (!this->hit(Ray(origin, v), rec))
 		return 0;
 
 	auto area = (x1 - x0) * (z1 - z0);
-	auto distance_squared = rec.t * rec.t * v.length_squared();
-	auto cosine = fabs(Dot(v, rec.normal) / v.length());
+	auto distance_squared = rec.t * rec.t * v.LengthSquared();
+	auto cosine = fabs(Dot(v, rec.n) / v.length());
 
 	return distance_squared / (cosine * area);
 }
@@ -68,7 +68,7 @@ Vector3f xz_rect::random(const Point3f& origin) const
 	return random_point - origin;
 }
 
-bool yz_rect::hit(const Ray& r, surface_hit_record& rec) const {
+bool yz_rect::hit(const Ray& r, SurfaceInteraction& rec) const {
 	auto t = (k - r.origin().x()) / r.direction().x();
 	if (t<0.0001 || t > r.tMax)
 		return false;
@@ -94,7 +94,7 @@ bool yz_rect::bounding_box(float t0, float t1, aabb& output_box) const
 	return true;
 }
 
-bool flip_face::hit(const Ray& r, surface_hit_record& rec) const
+bool flip_face::hit(const Ray& r, SurfaceInteraction& rec) const
 {
 	if (!ptr->hit(r, rec))
 		return false;

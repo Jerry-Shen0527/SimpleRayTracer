@@ -12,7 +12,7 @@ public:
 	isotropic(std::shared_ptr<texture> a) : albedo(a) {}
 
 	virtual bool scatter(
-		const Ray& r_in, const surface_hit_record& rec, scatter_record& srec
+		const Ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
 	) const override {
 		srec.attenuation = albedo->value(rec.uv, rec.p);
 		srec.update();

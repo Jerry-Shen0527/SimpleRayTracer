@@ -13,22 +13,20 @@ public:
 	Ray() {}
 
 	Ray(const Point3f& o, const Vector3f& d, Float tMax = infinity, Float time = 0.f, const Medium* medium = nullptr)
-		: orig(o), dir(d), tMax(tMax), tm(time), medium(medium) { }
+		: orig(o), d(d), tMax(tMax), time(time), medium(medium) { }
 
 	Point3f origin() const { return orig; }
-	Vector3f direction() const { return dir; }
-	Float time() const { return tm; }
 
 	Point3f at(Float t) const
 	{
-		return  t * dir + orig;
+		return  t * d + orig;
 	}
 
 public:
 	Point3f orig;
-	Float tm;
+	Float time;
 	mutable Float tMax;
-	Vector3f dir;
+	Vector3f d;
 	const Medium* medium;
 };
 

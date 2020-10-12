@@ -11,19 +11,19 @@ public:
 	lambertian(const Color& a) : albedo(std::make_shared<solid_Color>(a)) {}
 	lambertian(shared_ptr<texture> a) : albedo(a) {}
 	virtual bool scatter(
-		const ray& r_in, const surface_hit_record& rec, scatter_record& srec
+		const ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
 	) const override {
 		srec.is_specular = false;
 		srec.attenuation = albedo->value(rec.uv, rec.p);
 		srec.update();
-		srec.pdf_ptr = std::make_shared< cosine_pdf>(rec.normal);
+		srec.pdf_ptr = std::make_shared< cosine_pdf>(rec.n);
 		return true;
 	}
 
 	float scattering_pdf(
-		const ray& r_in, const surface_hit_record& rec, const ray& scattered
+		const ray& r_in, const SurfaceInteraction& rec, const ray& scattered
 	) const {
-		auto cosine = Dot(rec.normal, unit_vector(scattered.direction()));
+		auto cosine = Dot(rec.n, unit_vector(scattered.direction()));
 		return cosine < 0 ? 0 : cosine / pi;
 	}
 

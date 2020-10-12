@@ -124,7 +124,7 @@ bool Bounds<T, n>::IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const
 	for (int i = 0; i < 3; ++i)
 	{
 		//Update interval for ith bounding box slab 128
-		Float invRayDir = 1 / ray.dir[i];
+		Float invRayDir = 1 / ray.d[i];
 		Float tNear = (pMin[i] - ray.orig[i]) * invRayDir;
 		Float tFar = (pMax[i] - ray.orig[i]) * invRayDir;
 

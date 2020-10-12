@@ -14,7 +14,7 @@ public:
 	dielectric(float ri) : ref_idx(ri) {}
 
 	virtual bool scatter(
-		const Ray& r_in, const surface_hit_record& rec, scatter_record& srec
+		const Ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
 	) const override;
 
 	float ref_idx;

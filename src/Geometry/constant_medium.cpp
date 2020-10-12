@@ -10,12 +10,12 @@ constant_medium::constant_medium(std::shared_ptr<hittable> b, float d, Color c) 
 {
 }
 
-bool constant_medium::hit(const Ray& r, surface_hit_record& rec) const {
+bool constant_medium::hit(const Ray& r, SurfaceInteraction& rec) const {
 	// Print occasional samples when debugging. To enable, set enableDebug true.
 	const bool enableDebug = false;
 	const bool debugging = enableDebug && random_float() < 0.00001;
 
-	surface_hit_record rec1, rec2;
+	SurfaceInteraction rec1, rec2;
 
 	if (!boundary->hit(r, rec1))
 		return false;
@@ -52,7 +52,7 @@ bool constant_medium::hit(const Ray& r, surface_hit_record& rec) const {
 			<< "rec.p = " << rec.p << '\n';
 	}
 
-	rec.normal = Vector3f(1, 0, 0);  // arbitrary
+	rec.n = Vector3f(1, 0, 0);  // arbitrary
 	rec.front_face = true;     // also arbitrary
 	rec.mat_ptr = phase_function;
 

@@ -93,7 +93,7 @@ void SpectrumIntegrator::integrate(camera& cam, hittable_list& world, Color back
 Spectrum SpectrumIntegrator::ray_Color(const Ray& r, const Color& background, const hittable& world,
 	shared_ptr<hittable> lights, int depth)
 {
-	surface_hit_record rec;
+	SurfaceInteraction rec;
 
 	if (depth <= 0)
 		return Spectrum(0);

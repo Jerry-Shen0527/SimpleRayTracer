@@ -4,11 +4,11 @@
 #include "Tools/Math/math_tools.h"
 #include "Tools/Math/Sampling.h"
 
-bool sphere::hit(const Ray& r, surface_hit_record& rec) const {
+bool sphere::hit(const Ray& r, SurfaceInteraction& rec) const {
 	Vector3f oc = r.origin() - center;
-	auto a = r.direction().length_squared();
+	auto a = r.direction().LengthSquared();
 	auto half_b = Dot(oc, r.direction());
-	auto c = oc.length_squared() - radius * radius;
+	auto c = oc.LengthSquared() - radius * radius;
 	auto discriminant = half_b * half_b - a * c;
 
 	if (discriminant > 0) {
@@ -19,7 +19,7 @@ bool sphere::hit(const Ray& r, surface_hit_record& rec) const {
 		{
 			rec.t = temp;
 			rec.p = r.at(rec.t);
-			rec.normal = (rec.p - center) / radius;
+			rec.n = (rec.p - center) / radius;
 			Vector3f outward_normal = (rec.p - center) / radius;
 			rec.set_face_normal(r.direction(), outward_normal);
 			get_sphere_uv((rec.p - center) / radius, rec.uv);
@@ -32,7 +32,7 @@ bool sphere::hit(const Ray& r, surface_hit_record& rec) const {
 		{
 			rec.t = temp;
 			rec.p = r.at(rec.t);
-			rec.normal = (rec.p - center) / radius;
+			rec.n = (rec.p - center) / radius;
 			Vector3f outward_normal = (rec.p - center) / radius;
 			rec.set_face_normal(r.direction(), outward_normal);
 			get_sphere_uv((rec.p - center) / radius, rec.uv);
@@ -59,11 +59,11 @@ void sphere::get_sphere_uv(const Vector3f& p, Vector2f& uv) const
 }
 
 float sphere::pdf_value(const Point3f& o, const Vector3f& v) const {
-	surface_hit_record rec;
+	SurfaceInteraction rec;
 	if (!this->hit(Ray(o, v), rec))
 		return 0;
 
-	auto cos_theta_max = sqrt(1 - radius * radius / (center - o).length_squared());
+	auto cos_theta_max = sqrt(1 - radius * radius / (center - o).LengthSquared());
 	auto solid_angle = 2 * pi * (1 - cos_theta_max);
 
 	return  1 / solid_angle;
@@ -71,7 +71,7 @@ float sphere::pdf_value(const Point3f& o, const Vector3f& v) const {
 
 Vector3f sphere::random(const Point3f& o) const {
 	Vector3f direction = center - o;
-	auto distance_squared = direction.length_squared();
+	auto distance_squared = direction.LengthSquared();
 	onb uvw;
 	uvw.build_from_w(direction);
 	return uvw.local(random_to_sphere(radius, distance_squared));

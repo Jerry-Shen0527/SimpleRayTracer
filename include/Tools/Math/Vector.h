@@ -37,7 +37,7 @@ public:
 	Vector abs() const;
 
 	float length() const;
-	float length_squared() const;
+	float LengthSquared() const;
 
 	T min();
 	T max();
@@ -157,6 +157,12 @@ Vector<T, n> Vector<T, n>::normalize() const
 }
 
 template<typename T, int n>
+Vector<T, n> Normalize(const Vector<T, n>& rhs)
+{
+	return rhs.normalize();
+}
+
+template<typename T, int n>
 Vector<T, n> Vector<T, n>::abs() const
 {
 	Vector temp;
@@ -168,13 +174,19 @@ Vector<T, n> Vector<T, n>::abs() const
 }
 
 template<typename T, int n>
-float Vector<T, n>::length() const
+Vector<T, n> Abs(const Vector<T, n>& v)
 {
-	return sqrt(length_squared());
+	return  v.abs();
 }
 
 template<typename T, int n>
-float Vector<T, n>::length_squared() const
+float Vector<T, n>::length() const
+{
+	return sqrt(LengthSquared());
+}
+
+template<typename T, int n>
+float Vector<T, n>::LengthSquared() const
 {
 	float rst = 0.f;
 	for (int i = 0; i < n; ++i)

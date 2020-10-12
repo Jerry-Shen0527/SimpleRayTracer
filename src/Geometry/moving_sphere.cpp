@@ -18,11 +18,11 @@ bool moving_sphere::bounding_box(float t0, float t1, aabb& output_box) const
 }
 
 bool moving_sphere::hit(
-	const Ray& r, surface_hit_record& rec) const {
+	const Ray& r, SurfaceInteraction& rec) const {
 	Vector3f oc = r.origin() - center(r.time());
-	auto a = r.direction().length_squared();
+	auto a = r.direction().LengthSquared();
 	auto half_b = Dot(oc, r.direction());
-	auto c = oc.length_squared() - radius * radius;
+	auto c = oc.LengthSquared() - radius * radius;
 
 	auto discriminant = half_b * half_b - a * c;
 

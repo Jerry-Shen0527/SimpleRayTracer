@@ -6,7 +6,7 @@
 inline Vector3f random_in_unit_sphere() {
 	while (true) {
 		auto p = Vector3f::random(-1, 1);
-		if (p.length_squared() >= 1) continue;
+		if (p.LengthSquared() >= 1) continue;
 		return p;
 	}
 }
@@ -53,7 +53,7 @@ inline Point2f ConcentricSampleDisk(const Point2f& u) {
 inline Vector3f random_in_unit_disk() {
 	while (true) {
 		auto p = Vector3f(random_float(-1, 1), random_float(-1, 1), 0);
-		if (p.length_squared() >= 1) continue;
+		if (p.LengthSquared() >= 1) continue;
 		return p;
 	}
 }

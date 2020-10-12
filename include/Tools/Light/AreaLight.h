@@ -22,7 +22,7 @@ public:
 		shape(shape), area(shape->Area()) { }
 
 	Spectrum L(const Interaction& intr, const Vector3f& w) const {
-		return Dot(intr.normal, w) > 0.f ? Lemit : Spectrum(0.f);
+		return Dot(intr.n, w) > 0.f ? Lemit : Spectrum(0.f);
 	}
 
 	Spectrum DiffuseAreaLight::Power() const {

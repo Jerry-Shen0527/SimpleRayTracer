@@ -33,7 +33,7 @@ Ray Transform::operator()(const Ray& r) const
 {
 	Vector3f oError;
 	Point3f o = (*this)(r.orig);
-	Vector3f d = (*this)(r.dir);
+	Vector3f d = (*this)(r.d);
 	//TODO:Offset ray origin to edge of error boundsand compute tMax 233
 	//Float lengthSquared = d.length_squared();
 	//Float tMax = r.tMax;
@@ -53,7 +53,7 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 
 	// Transform remaining members of _SurfaceInteraction_
 	const Transform& t = *this;
-	ret.normal = (t(si.normal)).normalize();
+	ret.n = (t(si.n)).normalize();
 	ret.ray_in = (t(si.ray_in)).normalize();
 	ret.time = si.time;
 	ret.mediumInterface = si.mediumInterface;
@@ -78,16 +78,16 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 	ret.bssrdf = si.bssrdf;
 	ret.primitive = si.primitive;
 	//    ret.n = Faceforward(ret.n, ret.shading.n);
-	ret.shading.n = Faceforward(ret.shading.n, ret.normal);
+	ret.shading.n = Faceforward(ret.shading.n, ret.n);
 	ret.faceIndex = si.faceIndex;
 	return ret;
 }
 
 bool Transform::HasScale() const
 {
-	Float la2 = (*this)(Vector3f(1, 0, 0)).length_squared();
-	Float lb2 = (*this)(Vector3f(0, 1, 0)).length_squared();
-	Float lc2 = (*this)(Vector3f(0, 0, 1)).length_squared();
+	Float la2 = (*this)(Vector3f(1, 0, 0)).LengthSquared();
+	Float lb2 = (*this)(Vector3f(0, 1, 0)).LengthSquared();
+	Float lc2 = (*this)(Vector3f(0, 0, 1)).LengthSquared();
 #define NOT_ONE(x) ((x) < .999f || (x) > 1.001f)
 	return (NOT_ONE(la2) || NOT_ONE(lb2) || NOT_ONE(lc2));
 #undef NOT_ONE
@@ -112,13 +112,13 @@ bool Transform::IsIdentity() const
 		m.m[3][3] == 1.f);
 }
 
-bool translate::hit(const Ray& r, surface_hit_record& rec) const {
+bool translate::hit(const Ray& r, SurfaceInteraction& rec) const {
 	Ray moved_r(r.origin() - offset, r.direction(), r.time());
 	if (!ptr->hit(moved_r, rec))
 		return false;
 
 	rec.p += offset;
-	rec.set_face_normal(moved_r.direction(), rec.normal);
+	rec.set_face_normal(moved_r.direction(), rec.n);
 
 	return true;
 }
@@ -164,7 +164,7 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 	bbox = aabb(min, max);
 }
 
-bool rotate_y::hit(const Ray& r, surface_hit_record& rec) const {
+bool rotate_y::hit(const Ray& r, SurfaceInteraction& rec) const {
 	auto origin = r.origin();
 	auto direction = r.direction();
 
@@ -180,13 +180,13 @@ bool rotate_y::hit(const Ray& r, surface_hit_record& rec) const {
 		return false;
 
 	auto p = rec.p;
-	auto normal = rec.normal;
+	auto normal = rec.n;
 
 	p[0] = cos_theta * rec.p[0] + sin_theta * rec.p[2];
 	p[2] = -sin_theta * rec.p[0] + cos_theta * rec.p[2];
 
-	normal[0] = cos_theta * rec.normal[0] + sin_theta * rec.normal[2];
-	normal[2] = -sin_theta * rec.normal[0] + cos_theta * rec.normal[2];
+	normal[0] = cos_theta * rec.n[0] + sin_theta * rec.n[2];
+	normal[2] = -sin_theta * rec.n[0] + cos_theta * rec.n[2];
 
 	rec.p = p;
 	rec.set_face_normal(rotated_r.direction(), normal);

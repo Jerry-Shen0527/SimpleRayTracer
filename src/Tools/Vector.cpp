@@ -21,7 +21,7 @@ void Vector3f_test()
 
 	b = a;
 	std::cout << b << std::endl;
-	std::cout << cross(a, b) << std::endl;
+	std::cout << Cross(a, b) << std::endl;
 	std::cout << a.x() << ' ' << a.y() << ' ' << a.z() << std::endl;
 	std::cout << a.random() << std::endl;
 	std::cout << a.random(1, 2) << std::endl;

@@ -29,8 +29,8 @@ public:
 		auto viewport_width = aspect_ratio * viewport_height;
 
 		w = unit_vector(lookfrom - lookat);
-		u = unit_vector(cross(vup, w));
-		v = cross(w, u);
+		u = unit_vector(Cross(vup, w));
+		v = Cross(w, u);
 
 		origin = lookfrom;
 		horizontal = focus_dist * viewport_width * u;

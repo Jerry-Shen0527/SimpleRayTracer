@@ -15,6 +15,6 @@ box::box(const Point3f& p0, const Point3f& p1, shared_ptr<Material> ptr) {
 	sides.add(make_shared<yz_rect>(p0.y(), p1.y(), p0.z(), p1.z(), p0.x(), ptr));
 }
 
-bool box::hit(const Ray& r,  surface_hit_record& rec) const {
+bool box::hit(const Ray& r,  SurfaceInteraction& rec) const {
 	return sides.hit(r,  rec);
 }

@@ -32,7 +32,7 @@ Bounds3f Transform::operator()(const Bounds3f& b) const
 Ray Transform::operator()(const Ray& r) const
 {
 	Vector3f oError;
-	Point3f o = (*this)(r.orig);
+	Point3f o = (*this)(r.o);
 	Vector3f d = (*this)(r.d);
 	//TODO:Offset ray origin to edge of error boundsand compute tMax 233
 	//Float lengthSquared = d.length_squared();
@@ -138,8 +138,8 @@ rotate_y::rotate_y(std::shared_ptr<hittable> p, float angle) : ptr(p) {
 	cos_theta = cos(radians);
 	hasbox = ptr->bounding_box(0, 1, bbox);
 
-	Point3f min(infinity, infinity, infinity);
-	Point3f max(-infinity, -infinity, -infinity);
+	Point3f min(Infinity, Infinity, Infinity);
+	Point3f max(-Infinity, -Infinity, -Infinity);
 
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {
@@ -174,7 +174,7 @@ bool rotate_y::hit(const Ray& r, SurfaceInteraction& rec) const {
 	direction[0] = cos_theta * r.direction()[0] - sin_theta * r.direction()[2];
 	direction[2] = sin_theta * r.direction()[0] + cos_theta * r.direction()[2];
 
-	Ray rotated_r(origin, direction, infinity, r.time());
+	Ray rotated_r(origin, direction, Infinity, r.time());
 
 	if (!ptr->hit(rotated_r, rec))
 		return false;

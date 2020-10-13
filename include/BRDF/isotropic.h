@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "Tools/Math/Sampling.h"
 
-class isotropic : public Material {
+class isotropic : public material {
 public:
 	isotropic(Color c) : albedo(std::make_shared<solid_Color>(c)) {}
 	isotropic(std::shared_ptr<texture> a) : albedo(a) {}
@@ -16,7 +16,7 @@ public:
 	) const override {
 		srec.attenuation = albedo->value(rec.uv, rec.p);
 		srec.update();
-		srec.specular_ray = Ray(rec.p, random_in_unit_sphere(),infinity, r_in.time());
+		srec.specular_ray = Ray(rec.p, random_in_unit_sphere(),Infinity, r_in.time());
 		srec.is_specular = true;
 		return true;
 	}

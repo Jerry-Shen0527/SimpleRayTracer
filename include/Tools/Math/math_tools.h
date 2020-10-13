@@ -3,7 +3,7 @@
 // Constants
 #include <config.h>
 
-const Float infinity = std::numeric_limits<Float>::infinity();
+const Float Infinity = std::numeric_limits<Float>::infinity();
 const Float pi = 3.1415926535897932385f;
 const Float inv_pi = 1 / pi;
 
@@ -42,5 +42,17 @@ inline bool Quadratic(Float a, Float b, Float c, Float* t0, Float* t1) {
 	*t0 = q / a;
 	*t1 = c / q;
 	if (*t0 > * t1) std::swap(*t0, *t1);
+	return true;
+}
+
+bool SolveLinearSystem2x2(const Float A[2][2],
+	const Float B[2], Float* x0, Float* x1) {
+	Float det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+	if (std::abs(det) < 1e-10f)
+		return false;
+	*x0 = (A[1][1] * B[0] - A[0][1] * B[1]) / det;
+	*x1 = (A[0][0] * B[1] - A[1][0] * B[0]) / det;
+	if (std::isnan(*x0) || std::isnan(*x1))
+		return false;
 	return true;
 }

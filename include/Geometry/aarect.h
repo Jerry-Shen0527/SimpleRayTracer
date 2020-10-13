@@ -9,14 +9,14 @@ public:
 	xy_rect() {}
 
 	xy_rect(float _x0, float _x1, float _y0, float _y1, float _k,
-		std::shared_ptr<Material> mat)
+		std::shared_ptr<material> mat)
 		: x0(_x0), x1(_x1), y0(_y0), y1(_y1), k(_k), mp(mat) {};
 
 	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
 public:
-	std::shared_ptr<Material> mp;
+	std::shared_ptr<material> mp;
 	float x0, x1, y0, y1, k;
 };
 
@@ -25,7 +25,7 @@ public:
 	xz_rect() {}
 
 	xz_rect(float _x0, float _x1, float _z0, float _z1, float _k,
-		std::shared_ptr<Material> mat, bool pdf_ = false)
+		std::shared_ptr<material> mat, bool pdf_ = false)
 		: x0(_x0), x1(_x1), z0(_z0), z1(_z1), k(_k), mp(mat) {
 		pdf_enabled = pdf_;
 	}
@@ -44,7 +44,7 @@ public:
 	virtual Vector3f random(const Point3f& origin) const override;
 
 public:
-	std::shared_ptr<Material> mp;
+	std::shared_ptr<material> mp;
 	float x0, x1, z0, z1, k;
 };
 
@@ -53,14 +53,14 @@ public:
 	yz_rect() {}
 
 	yz_rect(float _y0, float _y1, float _z0, float _z1, float _k,
-		std::shared_ptr<Material> mat)
+		std::shared_ptr<material> mat)
 		: y0(_y0), y1(_y1), z0(_z0), z1(_z1), k(_k), mp(mat) {};
 
 	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
 	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
 
 public:
-	std::shared_ptr<Material> mp;
+	std::shared_ptr<material> mp;
 	float y0, y1, z0, z1, k;
 };
 

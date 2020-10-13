@@ -128,7 +128,7 @@ Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const 
 
 	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
-	Ray scattered = Ray(rec.p, p.generate(), infinity, r.time());
+	Ray scattered = Ray(rec.p, p.generate(), Infinity, r.time());
 	auto pdf_val = p.value(scattered.direction());
 
 	return emitted + srec.attenuation

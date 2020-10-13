@@ -6,7 +6,7 @@
 
 Vector3f reflect(const Vector3f& v, const Vector3f& n);
 
-class metal : public Material {
+class metal : public material {
 public:
 	metal(const Color& a) : albedo(a) {}
 

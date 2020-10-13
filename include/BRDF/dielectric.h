@@ -9,7 +9,7 @@
 Vector3f refract(const Vector3f& uv, const Vector3f& n, float etai_over_etat);
 float schlick(float cosine, float ref_idx);
 
-class dielectric : public Material {
+class dielectric : public material {
 public:
 	dielectric(float ri) : ref_idx(ri) {}
 

@@ -7,12 +7,11 @@
 class SurfaceInteraction;
 class AreaLight;
 
-
-class Material {
+class material {
 public:
-	virtual ~Material() = default;
+	virtual ~material() = default;
 
-	virtual Color emitted(const Ray& r_in, const SurfaceInteraction& rec,const Point2f& uv, const Point3f& p) const {
+	virtual Color emitted(const Ray& r_in, const SurfaceInteraction& rec, const Point2f& uv, const Point3f& p) const {
 		return Color(0, 0, 0);
 	}
 
@@ -27,6 +26,12 @@ public:
 	}
 
 	virtual  AreaLight* GetAreaLight() { return  nullptr; }
+};
+
+class Material
+{
+public:
+	virtual void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 };
 
 #endif

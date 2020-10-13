@@ -21,7 +21,7 @@ bool constant_medium::hit(const Ray& r, SurfaceInteraction& rec) const {
 		return false;
 
 	auto r_temp = r;
-	r_temp.orig = r.at(rec1.t);
+	r_temp.o = r.at(rec1.t);
 	if (!boundary->hit(r_temp, rec2))
 		return false;
 

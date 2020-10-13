@@ -15,7 +15,7 @@ public:
 
 public:
 	std::shared_ptr<hittable> boundary;
-	std::shared_ptr<Material> phase_function;
+	std::shared_ptr<material> phase_function;
 	float neg_inv_density;
 };
 

@@ -3,7 +3,7 @@
 
 #include "texture.h"
 
-class diffuse_light : public Material {
+class diffuse_light : public material {
 public:
 	diffuse_light(shared_ptr<texture> a) : emit(a) {}
 	diffuse_light(Color c) : emit(std::make_shared<solid_Color>(c)) {}

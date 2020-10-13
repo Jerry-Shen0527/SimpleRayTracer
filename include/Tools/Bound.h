@@ -125,8 +125,8 @@ bool Bounds<T, n>::IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const
 	{
 		//Update interval for ith bounding box slab 128
 		Float invRayDir = 1 / ray.d[i];
-		Float tNear = (pMin[i] - ray.orig[i]) * invRayDir;
-		Float tFar = (pMax[i] - ray.orig[i]) * invRayDir;
+		Float tNear = (pMin[i] - ray.o[i]) * invRayDir;
+		Float tFar = (pMax[i] - ray.o[i]) * invRayDir;
 
 		if (tNear > tFar) std::swap(tNear, tFar);
 		//Update tFar to ensure robust ray¨Cbounds intersection 221
@@ -144,18 +144,18 @@ template <typename T, int n>
 bool Bounds<T, n>::IntersectP(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const
 {
 	const Bounds& bounds = *this;
-	Float tMin = (bounds[dirIsNeg[0]].x() - ray.orig.x()) * invDir.x();
-	Float tMax = (bounds[1 - dirIsNeg[0]].x() - ray.orig.x()) * invDir.x();
-	Float tyMin = (bounds[dirIsNeg[1]].y - ray.orig.y) * invDir.y;
-	Float tyMax = (bounds[1 - dirIsNeg[1]].y - ray.orig.y) * invDir.y;
+	Float tMin = (bounds[dirIsNeg[0]].x() - ray.o.x()) * invDir.x();
+	Float tMax = (bounds[1 - dirIsNeg[0]].x() - ray.o.x()) * invDir.x();
+	Float tyMin = (bounds[dirIsNeg[1]].y - ray.o.y) * invDir.y;
+	Float tyMax = (bounds[1 - dirIsNeg[1]].y - ray.o.y) * invDir.y;
 	//TODO:Update tMax and tyMax to ensure robust bounds intersection
 	if (tMin > tyMax || tyMin > tMax)
 		return false;
 	if (tyMin > tMin) tMin = tyMin;
 	if (tyMax < tMax) tMax = tyMax;
 
-	Float tzMin = (bounds[dirIsNeg[1]].z() - ray.orig.z()) * invDir.z();
-	Float tzMax = (bounds[1 - dirIsNeg[1]].z() - ray.orig.z()) * invDir.z();
+	Float tzMin = (bounds[dirIsNeg[1]].z() - ray.o.z()) * invDir.z();
+	Float tzMax = (bounds[1 - dirIsNeg[1]].z() - ray.o.z()) * invDir.z();
 
 	if (tMin > tzMax || tzMin > tMax)
 		return false;

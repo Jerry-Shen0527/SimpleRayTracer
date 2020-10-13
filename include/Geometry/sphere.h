@@ -11,7 +11,7 @@
 class sphere : public hittable {
 public:
 	sphere() {}
-	sphere(Point3f cen, float r, std::shared_ptr<Material> m, bool pdf = false)
+	sphere(Point3f cen, float r, std::shared_ptr<material> m, bool pdf = false)
 		: center(cen), radius(r), mat_ptr(m) {
 		pdf_enabled = pdf;
 	}
@@ -28,7 +28,7 @@ public:
 
 	Point3f center;
 	float radius;
-	std::shared_ptr<Material> mat_ptr;
+	std::shared_ptr<material> mat_ptr;
 };
 
 class Sphere :public Shape
@@ -49,7 +49,7 @@ public:
 		Vector3f oErr, dErr;
 		Ray r_new = (*WorldToObject)(r);
 		//	Compute quadratic sphere coefficients 135
-		EFloat ox(r.orig.x(), oErr.x()), oy(r.orig.y(), oErr.y()), oz(r.orig.z(), oErr.z());
+		EFloat ox(r.o.x(), oErr.x()), oy(r.o.y(), oErr.y()), oz(r.o.z(), oErr.z());
 		EFloat dx(r.d.x(), dErr.x()), dy(r.d.y(), dErr.y()), dz(r.d.z(), dErr.z());
 
 		EFloat a = dx * dx + dy * dy + dz * dz;

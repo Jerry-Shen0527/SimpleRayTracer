@@ -92,7 +92,7 @@ bool bvh_node::hit(const Ray& r, SurfaceInteraction& rec) const {
 	if (hit_left)
 	{
 		auto r_temp = r;
-		r_temp.orig = r.at(rec.t);
+		r_temp.o = r.at(rec.t);
 		hit_right = right->hit(r_temp, rec);
 	}
 	else

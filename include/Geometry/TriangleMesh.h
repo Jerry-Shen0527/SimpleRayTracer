@@ -101,19 +101,19 @@ inline bool Triangle::Intersect(const Ray& ray, Float* tHit, SurfaceInteraction*
 	p0t = Permute(p0t, kx, ky, kz);
 	p1t = Permute(p1t, kx, ky, kz);
 	p2t = Permute(p2t, kx, ky, kz);
-	Float Sx = -d.x / d.z;
+	Float Sx = -d.x() / d.z;
 	Float Sy = -d.y / d.z;
 	Float Sz = 1.f / d.z;
-	p0t.x += Sx * p0t.z;
+	p0t.x() += Sx * p0t.z;
 	p0t.y += Sy * p0t.z;
-	p1t.x += Sx * p1t.z;
+	p1t.x() += Sx * p1t.z;
 	p1t.y += Sy * p1t.z;
-	p2t.x += Sx * p2t.z;
+	p2t.x() += Sx * p2t.z;
 	p2t.y += Sy * p2t.z;
 	//	Compute edge function coefficients e0, e1, and e2 161
-	Float e0 = p1t.x * p2t.y - p1t.y * p2t.x;
-	Float e1 = p2t.x * p0t.y - p2t.y * p0t.x;
-	Float e2 = p0t.x * p1t.y - p0t.y * p1t.x;
+	Float e0 = p1t.x() * p2t.y - p1t.y * p2t.x();
+	Float e1 = p2t.x() * p0t.y - p2t.y * p0t.x();
+	Float e2 = p0t.x() * p1t.y - p0t.y * p1t.x();
 	//	Fall back to double - precision test at triangle edges
 	//	Perform triangle edge and determinant tests 162
 	if ((e0 < 0 || e1 < 0 || e2 < 0) && (e0 > 0 || e1 > 0 || e2 > 0))

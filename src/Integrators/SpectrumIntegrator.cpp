@@ -115,7 +115,7 @@ Spectrum SpectrumIntegrator::ray_Color(const Ray& r, const Color& background, co
 
 	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
-	Ray scattered = Ray(rec.p, p.generate(),infinity, r.time());
+	Ray scattered = Ray(rec.p, p.generate(),Infinity, r.time());
 	auto pdf_val = p.value(scattered.direction());
 
 	return emitted + ray_Color(scattered, background, world, lights, depth - 1) * srec.sp_attenuation * rec.mat_ptr->scattering_pdf(r, rec, scattered) / pdf_val;

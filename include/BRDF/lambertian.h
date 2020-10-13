@@ -6,12 +6,12 @@
 
 #include "pdf/pdf.h"
 
-class lambertian : public Material {
+class lambertian : public material {
 public:
 	lambertian(const Color& a) : albedo(std::make_shared<solid_Color>(a)) {}
 	lambertian(shared_ptr<texture> a) : albedo(a) {}
 	virtual bool scatter(
-		const ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
+		const Ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
 	) const override {
 		srec.is_specular = false;
 		srec.attenuation = albedo->value(rec.uv, rec.p);
@@ -21,7 +21,7 @@ public:
 	}
 
 	float scattering_pdf(
-		const ray& r_in, const SurfaceInteraction& rec, const ray& scattered
+		const Ray& r_in, const SurfaceInteraction& rec, const Ray& scattered
 	) const {
 		auto cosine = Dot(rec.n, unit_vector(scattered.direction()));
 		return cosine < 0 ? 0 : cosine / pi;

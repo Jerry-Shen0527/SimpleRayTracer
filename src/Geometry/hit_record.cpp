@@ -15,7 +15,7 @@ Ray hit_record::SpawnRayTo(const hit_record& h2) const
 Ray hit_record::SpawnRay(const Vector3f& d) const
 {
 	Point3f o = OffsetRayOrigin(p, pError, n, d);
-	return Ray(o, d, infinity, t, GetMedium(d));
+	return Ray(o, d, Infinity, t, GetMedium(d));
 }
 
 Ray hit_record::SpawnRayTo(const Point3f& p2) const

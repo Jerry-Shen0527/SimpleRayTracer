@@ -20,9 +20,9 @@ public:
 	}
 
 	Vector3f LocalToWorld(const Vector3f& v) const {
-		return Vector3f(ss.x * v.x + ts.x * v.y + ns.x * v.z,
-			ss.y * v.x + ts.y * v.y + ns.y * v.z,
-			ss.z * v.x + ts.z * v.y + ns.z * v.z);
+		return Vector3f(ss.x() * v.x() + ts.x() * v.y + ns.x() * v.z,
+			ss.y * v.x() + ts.y * v.y + ns.y * v.z,
+			ss.z * v.x() + ts.z * v.y + ns.z * v.z);
 	}
 
 	Spectrum f(const Vector3f& woW, const Vector3f& wiW, BxDFType flags) const {

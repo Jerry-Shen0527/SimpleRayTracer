@@ -11,7 +11,7 @@ public:
 	virtual bool Intersect(const Ray& r, SurfaceInteraction&) const = 0;
 	virtual bool IntersectP(const Ray& r) const = 0;
 	virtual const AreaLight* GetAreaLight() const = 0;
-	virtual const Material* GetMaterial() const = 0;
+	virtual const material* GetMaterial() const = 0;
 
 	virtual void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 };
@@ -38,7 +38,7 @@ public:
 
 private:
 	std::shared_ptr<Shape> shape;
-	std::shared_ptr<Material> material;
+	std::shared_ptr<material> material;
 	std::shared_ptr<AreaLight> areaLight;
 	MediumInterface mediumInterface;
 };

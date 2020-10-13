@@ -49,7 +49,7 @@ public:
 		Vector3f rd = lens_radius * random_in_unit_disk();
 		Vector3f offset = u * rd.x() + v * rd.y();
 
-		return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, infinity, random_float(time0, time1));
+		return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset, Infinity, random_float(time0, time1));
 	}
 
 	shared_ptr<Film> film;

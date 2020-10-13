@@ -1,6 +1,8 @@
 #pragma once
 #include <BRDF/BxDF_Utility.h>
 
+#include "ray.h"
+
 template<typename T, int n> class Bounds;
 template<typename T, int n> bool Inside(const Vector<T, n>& p, const Bounds<T, n>& b);
 

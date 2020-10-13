@@ -1,7 +1,6 @@
 #pragma once
 #include "config.h"
 #include "Vector3.h"
-#include "Geometry/translation.h"
 
 class Quaternion
 {

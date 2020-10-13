@@ -37,9 +37,7 @@ public:
 		const int* vertexIndices, int nVertices, const Point3f* p,
 		const Vector3f* s, const Normal3f* n, const Point2f* uv,
 		const std::shared_ptr<Texture<Float>>& alphaMask) {
-		std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(
-			*ObjectToWorld, nTriangles, vertexIndices, nVertices, p, s, n, uv,
-			alphaMask);
+		std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(*ObjectToWorld, nTriangles, vertexIndices, nVertices, p, s, n, uv, alphaMask);
 		std::vector<std::shared_ptr<Shape>> tris;
 		for (int i = 0; i < nTriangles; ++i)
 			tris.push_back(std::make_shared<Triangle>(ObjectToWorld,
@@ -88,9 +86,9 @@ inline bool Triangle::Intersect(const Ray& ray, Float* tHit, SurfaceInteraction*
 	const Point3f& p1 = mesh->p[v[1]];
 	const Point3f& p2 = mesh->p[v[2]];
 	//	Perform ray¨Ctriangle intersection test 158
-	Point3f p0t = p0 - Vector3f(ray.orig);
-	Point3f p1t = p1 - Vector3f(ray.orig);
-	Point3f p2t = p2 - Vector3f(ray.orig);
+	Point3f p0t = p0 - Vector3f(ray.o);
+	Point3f p1t = p1 - Vector3f(ray.o);
+	Point3f p2t = p2 - Vector3f(ray.o);
 	//Transform triangle vertices to ray coordinate space 158
 	int kz = MaxDimension(Abs(ray.d));
 	int kx = kz + 1;

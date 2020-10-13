@@ -3,6 +3,7 @@
 #include "config.h"
 #include "Vector.h"
 
+using Vector4f = Vector<Float, 4>;
 using Vector3f = Vector<Float, 3>;
 using Vector2f = Vector<Float, 2>;
 

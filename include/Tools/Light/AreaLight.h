@@ -6,7 +6,7 @@ class AreaLight :public Light
 {
 public:
 	AreaLight(const Transform& LightToWorld, const MediumInterface& medium, int nSamples);
-	virtual Spectrum L(const hit_record& intr, const Vector3f& w) const = 0;
+	virtual Spectrum L(const Interaction& intr, const Vector3f& w) const = 0;
 };
 
 inline AreaLight::AreaLight(const Transform& LightToWorld, const MediumInterface& medium, int nSamples) :Light((int)LightFlags::Area, LightToWorld, medium, nSamples)

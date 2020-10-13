@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 	clock_t start, finish;
 
 	//World
-	hittable_list world;
+	Scene world;
 
 	camera cam;
 	WorldFactory world_factory;
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
 	// Render
 
-	SpectrumIntegrator spectrum_integrator(samples_per_pixel, max_depth);
+	//SpectrumIntegrator spectrum_integrator(samples_per_pixel, max_depth);
 	SamplerIntegrator simple_integrator(world, samples_per_pixel, max_depth);
 
 	start = clock();
@@ -53,30 +53,3 @@ int main(int argc, char** argv) {
 
 	std::cerr << "\nDone.\n";
 }
-//
-//#include <Tools/Sampler/PixelSampler.h>
-//
-//#include "Tools/Sampler/StratifiedSampler.h"
-//
-//int main()
-//{
-//	StratifiedSampler sampler(3, 2, false, 100);
-//
-//	sampler.StartPixel({ 1,1 });
-//
-//	sampler.Request1DArray(10);
-//	sampler.Request2DArray(10);
-//	std::cout << sampler.Get2D() << std::endl;
-//	std::cout << sampler.Get2D() << std::endl;
-//	std::cout << sampler.Get2D() << std::endl;
-//	std::cout << sampler.Get2D() << std::endl;
-//	std::cout << sampler.Get2D() << std::endl;
-//
-//	auto p = sampler.Get2DArray(10);
-//
-//	for (int i = 0; i < 10; ++i)
-//	{
-//		std::cout << p[i] << std::endl;
-//	}
-//}
-//

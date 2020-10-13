@@ -21,7 +21,7 @@ bool dielectric::scatter(const Ray& r_in, const SurfaceInteraction& rec, scatter
 	srec.is_specular = true;
 	float etai_over_etat = rec.front_face ? (1.0 / ref_idx) : ref_idx;
 
-	Vector3f unit_direction = unit_vector(r_in.direction());
+	Vector3f unit_direction = unit_vector(r_in.d);
 
 	float cos_theta = fmin(Dot(-unit_direction, rec.n), 1.0);
 	float sin_theta = sqrt(1.0 - cos_theta * cos_theta);

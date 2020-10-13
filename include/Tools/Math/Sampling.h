@@ -18,7 +18,7 @@ inline Vector3f random_unit_vector() {
 	return Vector3f(r * std::cosf(a), r * std::sinf(a), z);
 }
 
-inline Vector3f random_cosine_direction() {
+inline Vector3f random_cosine_d() {
 	auto r1 = random_float();
 	auto r2 = random_float();
 	auto z = sqrt(1 - r2);

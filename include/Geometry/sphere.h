@@ -127,7 +127,7 @@ public:
 		Normal3f dndv = Normal3f((g * F - f * G) * invEGF2 * dpdu + (f * F - g * E) * invEGF2 * dpdv);
 
 		//	Initialize SurfaceInteraction from parametric information 140
-		isect = (*ObjectToWorld)(SurfaceInteraction(pHit, pError, Point2f(u, v), -r.d, dpdu, dpdv, dndu, dndv, r.time(), this));
+		isect = (*ObjectToWorld)(SurfaceInteraction(pHit, pError, Point2f(u, v), -r.d, dpdu, dpdv, dndu, dndv, r.time, this));
 		//	Update tHit for quadric intersection 140
 		tHit = (Float)tShapeHit;
 		return true;

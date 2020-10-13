@@ -1,3 +1,4 @@
+#include <memory>
 #include <thread>
 #include <Integrators/SamplerIntegrator.h>
 #include <pdf/hittable_pdf.h>
@@ -8,15 +9,16 @@
 #include "Tools/camera.h"
 #include <Tools/Film.h>
 
-void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color background)
+void SamplerIntegrator::integrate(camera& cam, Scene& scene, Color background)
 {
 #ifndef _DEBUG
 	//int MAX_THREAD = 3;
 	int MAX_THREAD = std::thread::hardware_concurrency() - 2;
+#else
+	int MAX_THREAD = 1;
+#endif
 
-	//std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
-
-	auto worker = [MAX_THREAD, &world, &cam, background, this](int arg)
+	auto worker = [MAX_THREAD, &scene, &cam, background, this](int arg)
 	{
 		int i, j, old_j;
 
@@ -50,13 +52,11 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color backg
 			Color pixel_Color(0, 0, 0);
 
 			for (int s = 0; s < sample_per_pixel; ++s) {
-				auto u = (i + random_float()) / (cam.film->width - 1);
-				auto v = (j + random_float()) / (cam.film->height - 1);
-				//auto a = _thread_sampler->Get2D();
-				//auto u = (i + a.x()) / (cam.film->width - 1);
-				//auto v = (j + a.y()) / (cam.film->height - 1);
+				auto a = _thread_sampler->Get2D();
+				auto u = (i + a.x()) / (cam.film->width - 1);
+				auto v = (j + a.y()) / (cam.film->height - 1);
 				Ray r = cam.get_ray(u, 1.0f - v);
-				pixel_Color += ray_color(r, background, world, lights, max_depth);
+				pixel_Color += ray_color(r, background, scene, max_depth);
 				_thread_sampler->StartNextSample();
 			}
 			cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
@@ -74,45 +74,16 @@ void SamplerIntegrator::integrate(camera& cam, hittable_list& world, Color backg
 	{
 		thread.join();
 	}
-#else
-
-	int i, j, old_j = 0;
-
-	for (int idx = 0; idx < cam.film->pixelcount; idx++)
-	{
-		idx_to_ij(idx, i, j, cam.film->width);
-		if (j != old_j)
-		{
-			std::cerr << "\rAlready finishd: " << float(j) / cam.film->height * 100 << '%' << std::flush;
-		}
-		Color pixel_Color(0, 0, 0);
-		sampler->StartPixel(Point2i{ i,j });
-		for (int s = 0; s < sample_per_pixel; ++s) {
-			//auto u = (i + random_float()) / (cam.film->width - 1);
-			//auto v = (j + random_float()) / (cam.film->height - 1);
-			auto a = sampler->Get2D();
-			auto u = (i + a.x()) / (cam.film->width - 1);
-			auto v = (j + a.y()) / (cam.film->height - 1);
-			ray r = cam.get_ray(u, 1 - v);
-			pixel_Color += ray_color(r, background, world, lights, max_depth);
-			sampler->StartNextSample();
-		}
-		cam.film->write_Color(i, j, pixel_Color, sample_per_pixel);
-		old_j = j;
-	}
-
-#endif
 }
 
-Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const hittable& world,
-	std::shared_ptr<hittable> lights, int depth)
+Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const Scene& world, int depth)
 {
 	SurfaceInteraction rec;
 
 	if (depth <= 0)
 		return Color(0, 0, 0);
 
-	if (!world.hit(r, rec))
+	if (!world.Intersect(r, &rec))
 		return background;
 
 	scatter_record srec;
@@ -120,19 +91,18 @@ Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const 
 	if (!rec.mat_ptr->scatter(r, rec, srec))
 		return emitted;
 	if (srec.is_specular) {
-		return srec.attenuation * ray_color(srec.specular_ray, background, world, lights, depth - 1);
+		return srec.attenuation * ray_color(srec.specular_ray, background, world, depth - 1);
 	}
 
-	shared_ptr<pdf> light_ptr = make_shared<hittable_pdf>(lights, rec.p);
 	//mixture_pdf p(light_ptr, srec.pdf_ptr);
 
-	mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
+	//mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
-	Ray scattered = Ray(rec.p, p.generate(), Infinity, r.time());
-	auto pdf_val = p.value(scattered.direction());
+	Ray scattered = Ray(rec.p, srec.pdf_ptr->generate(), Infinity, r.time);
+	auto pdf_val = srec.pdf_ptr->value(scattered.d);
 
 	return emitted + srec.attenuation
 		* rec.mat_ptr->scattering_pdf(r, rec, scattered)
-		* ray_color(scattered, background, world, lights, depth - 1)
+		* ray_color(scattered, background, world, depth - 1)
 		/ pdf_val;
 }

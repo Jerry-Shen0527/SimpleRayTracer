@@ -13,7 +13,7 @@ metal::metal(const Color& a, float f) : albedo(a), fuzz(f < 1 ? f : 1)
 
 bool metal::scatter(const Ray& r_in, const SurfaceInteraction& rec, scatter_record& srec) const
 {
-	Vector3f reflected = reflect(unit_vector(r_in.direction()), rec.n);
+	Vector3f reflected = reflect(unit_vector(r_in.d), rec.n);
 	srec.specular_ray = Ray(rec.p, reflected + fuzz * random_in_unit_sphere());
 	srec.attenuation = albedo;
 	srec.update();

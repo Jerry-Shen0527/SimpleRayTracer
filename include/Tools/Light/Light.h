@@ -1,11 +1,12 @@
 #pragma once
 #include <algorithm>
 #include <Geometry/hittable_list.h>
-#include <Geometry/translation.h>
 
 #include "BRDF/Volume/Medium.h"
+#include "Geometry/Transform.h"
 #include "Tools/Sampler/Sampler.h"
 
+class Scene;
 class VisibilityTester;
 
 enum class LightFlags : int { DeltaPosition = 1, DeltaDirection = 2, Area = 4, Infinite = 8 };
@@ -21,7 +22,7 @@ public:
 	Light(int flags, const Transform& LightToWorld, const MediumInterface& mediumInterface, int nSamples = 1)
 		: flags(flags), nSamples(std::max(1, nSamples)), mediumInterface(mediumInterface), LightToWorld(LightToWorld), WorldToLight(Inverse(LightToWorld)) {	}
 
-	virtual Spectrum Sample_Li(const hit_record& ref, const Point2f& u, Vector3f& wi, Float& pdf, VisibilityTester* vis) const = 0;
+	virtual Spectrum Sample_Li(const Interaction& ref, const Point2f& u, Vector3f& wi, Float& pdf, VisibilityTester* vis) const = 0;
 
 	virtual Spectrum Power() const = 0;
 	virtual void Preprocess(const Scene& scene) { }
@@ -46,27 +47,3 @@ public:
 private:
 	Interaction p0, p1;
 };
-
-bool VisibilityTester::Unoccluded(const Scene& scene) const {
-	return !scene.hit(p0.SpawnRayTo(p1.p));
-}
-
-Spectrum VisibilityTester::Tr(const Scene& scene, Sampler& sampler) const {
-	Ray ray(p0.SpawnRayTo(p1));
-	Spectrum Tr(1.f);
-	while (true) {
-		SurfaceInteraction isect;
-		bool hitSurface = scene.hit(ray, isect);
-		//Handle opaque surface along ray¡¯s path 718
-		if (hitSurface && isect.mat_ptr != nullptr)
-			return Spectrum(0.0f);
-		//	Update transmittance for current ray segment 719
-		if (ray.medium)
-			Tr *= ray.medium->Tr(ray, sampler);
-		//	Generate next ray segment or return final transmittance 719
-		if (!hitSurface)
-			break;
-		ray = isect.SpawnRayTo(p1);
-	}
-	return Tr;
-}

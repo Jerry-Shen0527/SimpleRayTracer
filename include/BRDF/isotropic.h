@@ -16,7 +16,7 @@ public:
 	) const override {
 		srec.attenuation = albedo->value(rec.uv, rec.p);
 		srec.update();
-		srec.specular_ray = Ray(rec.p, random_in_unit_sphere(),Infinity, r_in.time());
+		srec.specular_ray = Ray(rec.p, random_in_unit_sphere(),Infinity, r_in.time);
 		srec.is_specular = true;
 		return true;
 	}

@@ -6,8 +6,8 @@
 
 bool sphere::hit(const Ray& r, SurfaceInteraction& rec) const {
 	Vector3f oc = r.origin() - center;
-	auto a = r.direction().LengthSquared();
-	auto half_b = Dot(oc, r.direction());
+	auto a = r.d.LengthSquared();
+	auto half_b = Dot(oc, r.d);
 	auto c = oc.LengthSquared() - radius * radius;
 	auto discriminant = half_b * half_b - a * c;
 
@@ -21,7 +21,7 @@ bool sphere::hit(const Ray& r, SurfaceInteraction& rec) const {
 			rec.p = r.at(rec.t);
 			rec.n = (rec.p - center) / radius;
 			Vector3f outward_normal = (rec.p - center) / radius;
-			rec.set_face_normal(r.direction(), outward_normal);
+			rec.set_face_normal(r.d, outward_normal);
 			get_sphere_uv((rec.p - center) / radius, rec.uv);
 			rec.mat_ptr = mat_ptr;
 			return true;
@@ -34,7 +34,7 @@ bool sphere::hit(const Ray& r, SurfaceInteraction& rec) const {
 			rec.p = r.at(rec.t);
 			rec.n = (rec.p - center) / radius;
 			Vector3f outward_normal = (rec.p - center) / radius;
-			rec.set_face_normal(r.direction(), outward_normal);
+			rec.set_face_normal(r.d, outward_normal);
 			get_sphere_uv((rec.p - center) / radius, rec.uv);
 			rec.mat_ptr = mat_ptr;
 			return true;

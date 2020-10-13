@@ -1,4 +1,5 @@
 #pragma once
+#include <config.h>
 
 struct Matrix4x4 {
 	Matrix4x4();

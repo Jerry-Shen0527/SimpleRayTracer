@@ -1,12 +1,8 @@
 #pragma once
-#include <Geometry/hittable.h>
-#include <Geometry/bvh.h>
-
-#include "Tools/Bound.h"
 #include "Tools/Math/matrix.h"
+#include <Tools/Bound.h>
 
-#undef min
-#undef max
+#include "Interaction.h"
 
 class Transform
 {
@@ -38,6 +34,16 @@ private:
 	Matrix4x4 m, mInv;
 };
 
+inline SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
+{
+	SurfaceInteraction ret;
+	//Transform pand pError in SurfaceInteraction 229
+	ret.p = (*this)(si.p);
+	ret.pError = (*this)(si.pError);
+	//	Transform remaining members of SurfaceInteraction
+	return ret;
+}
+
 template <typename T>
 Vector<T, 3> Transform::operator()(const Vector<T, 3>& v) const
 {
@@ -55,8 +61,8 @@ Point<T, 3> Transform::operator()(const Point<T, 3>& p) const
 	T yp = m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z + m.m[1][3];
 	T zp = m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z + m.m[2][3];
 	T wp = m.m[3][0] * x + m.m[3][1] * y + m.m[3][2] * z + m.m[3][3];
-	if (wp == 1) return Point<T,3>(xp, yp, zp);
-	else return Point<T,3>(xp, yp, zp) / wp;
+	if (wp == 1) return Point<T, 3>(xp, yp, zp);
+	else return Point<T, 3>(xp, yp, zp) / wp;
 }
 
 inline Transform Inverse(const Transform& t) {
@@ -66,40 +72,6 @@ inline Transform Inverse(const Transform& t) {
 inline Transform Transpose(const Transform& t) {
 	return Transform(Transpose(t.m), Transpose(t.mInv));
 }
-
-class translate : public hittable {
-public:
-	translate(std::shared_ptr<hittable> p, const Vector3f& displacement)
-		: ptr(p), offset(displacement) {}
-
-	virtual bool hit(
-		const Ray& r, SurfaceInteraction& rec) const override;
-
-	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
-
-public:
-	std::shared_ptr<hittable> ptr;
-	Vector3f offset;
-};
-
-class rotate_y : public hittable {
-public:
-	rotate_y(std::shared_ptr<hittable> p, float angle);
-
-	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
-
-	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override {
-		output_box = bbox;
-		return hasbox;
-	}
-
-public:
-	std::shared_ptr<hittable> ptr;
-	float sin_theta;
-	float cos_theta;
-	bool hasbox;
-	aabb bbox;
-};
 
 inline Transform Translate(const Vector3f& delta) {
 	Matrix4x4 m(1, 0, 0, delta.x(),

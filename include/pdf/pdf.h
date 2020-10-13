@@ -22,7 +22,7 @@ public:
 	}
 
 	virtual Vector3f generate() const override {
-		return uvw.local(random_cosine_direction());
+		return uvw.local(random_cosine_d());
 	}
 
 public:

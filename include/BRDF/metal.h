@@ -3,6 +3,7 @@
 #include "Material.h"
 #include "MicrofacetDistribution.h"
 #include "Fresnel/Fresnel.h"
+#include "Geometry/Interaction.h"
 
 Vector3f reflect(const Vector3f& v, const Vector3f& n);
 

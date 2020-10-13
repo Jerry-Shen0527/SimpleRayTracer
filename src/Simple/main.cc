@@ -4,6 +4,7 @@
 #include <Integrators/SamplerIntegrator.h>
 #include <Scene/WorldFactory.h>
 #include <Tools/Files/FileWrite.h>
+#include <Tools/camera.h>
 
 #include "Integrators/SpectrumIntegrator.h"
 
@@ -15,14 +16,16 @@ int main(int argc, char** argv) {
 
 	clock_t start, finish;
 
+	std::shared_ptr<Primitive> aggregate;
+	std::vector<std::shared_ptr<Light>> lights;
 	//World
-	Scene world;
+	Scene world(aggregate, lights);
 
 	camera cam;
-	WorldFactory world_factory;
+	//WorldFactory world_factory;
 	Color background;
 
-	world_factory.get_world(6, world, cam, background);
+	//world_factory.get_world(6, world, cam, background);
 
 	if (argc < 2)
 	{

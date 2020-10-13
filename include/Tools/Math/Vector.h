@@ -8,6 +8,13 @@ template<typename T, int n>
 class Vector {
 public:
 	Vector() : data{ 0 } {}
+	Vector(T x)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			data[i] = x;
+		}
+	}
 
 	Vector(T x, T y) { data[0] = x; data[1] = y; }
 	Vector(T x, T y, T z) { data[0] = x; data[1] = y; data[2] = z; }

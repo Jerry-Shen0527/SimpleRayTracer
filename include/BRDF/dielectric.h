@@ -4,7 +4,6 @@
 
 #include "metal.h"
 #include <pdf/scatter_record.h>
-#include <Geometry/hit_record.h>
 
 Vector3f refract(const Vector3f& uv, const Vector3f& n, float etai_over_etat);
 float schlick(float cosine, float ref_idx);

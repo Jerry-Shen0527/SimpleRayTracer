@@ -45,7 +45,7 @@ inline bool Quadratic(Float a, Float b, Float c, Float* t0, Float* t1) {
 	return true;
 }
 
-bool SolveLinearSystem2x2(const Float A[2][2],
+inline bool SolveLinearSystem2x2(const Float A[2][2],
 	const Float B[2], Float* x0, Float* x1) {
 	Float det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
 	if (std::abs(det) < 1e-10f)

@@ -1,7 +1,6 @@
 #include <BRDF/metal.h>
 
 #include "Tools/Math/Sampling.h"
-#include <Geometry/hit_record.h>
 
 Vector3f reflect(const Vector3f& v, const Vector3f& n) {
 	return v - 2 * Dot(v, n) * n;

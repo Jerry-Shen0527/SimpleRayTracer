@@ -3,11 +3,12 @@
 #include <list>
 #include <utility>
 
-void* AllocAligned(size_t size) {
+inline void* AllocAligned(size_t size) {
 	return _aligned_malloc(size, 64);
 }
 
-template <typename T> T* AllocAligned(size_t count) {
+template <typename T>
+inline T* AllocAligned(size_t count) {
 	return (T*)AllocAligned(count * sizeof(T));
 }
 
@@ -49,7 +50,7 @@ inline void* MemoryArena::Alloc(size_t nBytes)
 		}
 		//Get new block of memory for MemoryArena 1075
 		for (auto iter = availableBlocks.begin(); iter != availableBlocks.end();
-		     ++iter)
+			++iter)
 		{
 			if (iter->first >= nBytes)
 			{

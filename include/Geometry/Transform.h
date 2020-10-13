@@ -34,16 +34,6 @@ private:
 	Matrix4x4 m, mInv;
 };
 
-inline SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
-{
-	SurfaceInteraction ret;
-	//Transform pand pError in SurfaceInteraction 229
-	ret.p = (*this)(si.p);
-	ret.pError = (*this)(si.pError);
-	//	Transform remaining members of SurfaceInteraction
-	return ret;
-}
-
 template <typename T>
 Vector<T, 3> Transform::operator()(const Vector<T, 3>& v) const
 {

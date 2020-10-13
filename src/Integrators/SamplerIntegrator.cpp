@@ -4,7 +4,6 @@
 #include <pdf/hittable_pdf.h>
 #include <pdf/scatter_record.h>
 #include <BRDF/Material.h>
-#include <Geometry/hit_record.h>
 
 #include "Tools/camera.h"
 #include <Tools/Film.h>
@@ -93,10 +92,6 @@ Color SamplerIntegrator::ray_color(const Ray& r, const Color& background, const 
 	if (srec.is_specular) {
 		return srec.attenuation * ray_color(srec.specular_ray, background, world, depth - 1);
 	}
-
-	//mixture_pdf p(light_ptr, srec.pdf_ptr);
-
-	//mixture_pdf p(light_ptr, srec.pdf_ptr, 0.3);
 
 	Ray scattered = Ray(rec.p, srec.pdf_ptr->generate(), Infinity, r.time);
 	auto pdf_val = srec.pdf_ptr->value(scattered.d);

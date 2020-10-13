@@ -6,30 +6,29 @@
 #include <Tools/Math/onb.h>
 
 #include "Shape.h"
-#include "translation.h"
-
-class sphere : public hittable {
-public:
-	sphere() {}
-	sphere(Point3f cen, float r, std::shared_ptr<material> m, bool pdf = false)
-		: center(cen), radius(r), mat_ptr(m) {
-		pdf_enabled = pdf;
-	}
-
-	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
-
-	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
-
-	void get_sphere_uv(const Vector3f& p, Vector2f& uv) const;
-	float pdf_value(const Point3f& o, const Vector3f& v) const override;
-	Vector3f random(const Point3f& o) const override;
-
-public:
-
-	Point3f center;
-	float radius;
-	std::shared_ptr<material> mat_ptr;
-};
+//
+//class sphere : public hittable {
+//public:
+//	sphere() {}
+//	sphere(Point3f cen, float r, std::shared_ptr<material> m, bool pdf = false)
+//		: center(cen), radius(r), mat_ptr(m) {
+//		pdf_enabled = pdf;
+//	}
+//
+//	virtual bool hit(const Ray& r, SurfaceInteraction& rec) const override;
+//
+//	virtual bool bounding_box(float t0, float t1, aabb& output_box) const override;
+//
+//	void get_sphere_uv(const Vector3f& p, Vector2f& uv) const;
+//	float pdf_value(const Point3f& o, const Vector3f& v) const override;
+//	Vector3f random(const Point3f& o) const override;
+//
+//public:
+//
+//	Point3f center;
+//	float radius;
+//	std::shared_ptr<material> mat_ptr;
+//};
 
 class Sphere :public Shape
 {

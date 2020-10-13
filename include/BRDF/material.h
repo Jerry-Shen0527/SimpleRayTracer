@@ -4,6 +4,8 @@
 #include <ray.h>
 #include <pdf/scatter_record.h>
 
+enum class TransportMode;
+class MemoryArena;
 class SurfaceInteraction;
 class AreaLight;
 

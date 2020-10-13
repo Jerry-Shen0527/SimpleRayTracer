@@ -1,6 +1,8 @@
 #pragma once
-#include "Shape.h"
 #include <Tools/MemoryArena.h>
+
+#include "Shape.h"
+#include "Tools/Bound.h"
 
 class Primitive
 {
@@ -43,8 +45,7 @@ private:
 
 class TransformedPrimitive : public Primitive {
 public:
-	TransformedPrimitive(std::shared_ptr<Primitive>& primitive,
-		const AnimatedTransform& PrimitiveToWorld)
+	TransformedPrimitive(std::shared_ptr<Primitive>& primitive, const AnimatedTransform& PrimitiveToWorld)
 		: primitive(primitive), PrimitiveToWorld(PrimitiveToWorld) { }
 
 	Bounds3f WorldBound() const {

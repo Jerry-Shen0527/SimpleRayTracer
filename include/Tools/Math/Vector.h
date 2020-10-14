@@ -36,6 +36,7 @@ public:
 	}
 
 	Vector& operator+=(const Vector& v);
+	Vector& operator-=(const Vector& v);
 	Vector& operator*=(const T t);
 	Vector& operator/=(const T t);
 	bool operator==(const Vector& t)const;
@@ -118,6 +119,16 @@ Vector<T, n>& Vector<T, n>::operator+=(const Vector<T, n>& v)
 	for (int i = 0; i < n; ++i)
 	{
 		data[i] += v.data[i];
+	}
+	return *this;
+}
+
+template <typename T, int n>
+Vector<T, n>& Vector<T, n>::operator-=(const Vector& v)
+{
+	for (int i = 0; i < n; ++i)
+	{
+		data[i] -= v.data[i];
 	}
 	return *this;
 }

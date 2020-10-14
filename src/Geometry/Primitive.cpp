@@ -1,5 +1,10 @@
 #include <Geometry/Primitive.h>
 
+GeometricPrimitive::GeometricPrimitive(const std::shared_ptr<Shape>& shape, const std::shared_ptr<material>& material,
+	const std::shared_ptr<AreaLight>& areaLight) : shape(shape), m(material), areaLight(areaLight)
+{
+}
+
 bool GeometricPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) const
 {
 	Float tHit;
@@ -11,10 +16,30 @@ bool GeometricPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) cons
 	return true;
 }
 
-void GeometricPrimitive::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
+//void GeometricPrimitive::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
+//{
+//	if (m)
+//		m->ComputeScatteringFunctions(isect, arena, mode, allowMultipleLobes);
+//}
+
+Bounds3f GeometricPrimitive::WorldBound() const
 {
-	if (material)
-		material->ComputeScatteringFunctions(isect, arena, mode, allowMultipleLobes);
+	return shape->WorldBound();
+}
+
+bool GeometricPrimitive::IntersectP(const Ray& r) const
+{
+	return shape->IntersectP(r);
+}
+
+const AreaLight* GeometricPrimitive::GetAreaLight() const
+{
+	return areaLight.get();
+}
+
+const material* GeometricPrimitive::GetMaterial() const
+{
+	return m.get();
 }
 
 bool TransformedPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) const

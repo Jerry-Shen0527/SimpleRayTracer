@@ -13,7 +13,20 @@ struct Matrix4x4 {
 
 	Matrix4x4 Transpose(const Matrix4x4& m);
 
-	static Matrix4x4 multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
+	bool operator==(const Matrix4x4& m2) const {
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				if (m[i][j] != m2.m[i][j]) return false;
+		return true;
+	}
+	bool operator!=(const Matrix4x4& m2) const {
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				if (m[i][j] != m2.m[i][j]) return true;
+		return false;
+	}
+
+	static Matrix4x4 Mul(const Matrix4x4& m1, const Matrix4x4& m2) {
 		Matrix4x4 r;
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j)

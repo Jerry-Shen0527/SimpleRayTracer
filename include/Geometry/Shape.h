@@ -3,12 +3,13 @@
 
 class Shape {
 public:
-	Shape(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation = false) : ObjectToWorld(ObjectToWorld), WorldToObject(WorldToObject), reverseOrientation(reverseOrientation),
-		transformSwapsHandedness(ObjectToWorld->SwapsHandedness()) {
-	}
+	Shape(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation = false)
+		: ObjectToWorld(ObjectToWorld), WorldToObject(WorldToObject), reverseOrientation(reverseOrientation), transformSwapsHandedness(ObjectToWorld->SwapsHandedness()) {	}
 
 	virtual Float Area() const = 0;
 	virtual Bounds3f ObjectBound() const = 0;
+	Bounds3f WorldBound() const { return (*ObjectToWorld)(ObjectBound()); }
+
 	virtual bool Intersect(const Ray& ray, Float* tHit, SurfaceInteraction* isect, bool testAlphaTexture = true) const = 0;
 
 	virtual bool IntersectP(const Ray& ray, bool testAlphaTexture = true) const

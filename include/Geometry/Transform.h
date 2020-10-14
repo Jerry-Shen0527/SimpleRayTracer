@@ -15,6 +15,13 @@ public:
 	friend Transform Inverse(const Transform& t);
 	friend Transform Transpose(const Transform& t);
 
+	bool operator==(const Transform& t) const {
+		return t.m == m && t.mInv == mInv;
+	}
+	bool operator!=(const Transform& t) const {
+		return t.m != m || t.mInv != mInv;
+	}
+
 	template <typename T>
 	Vector<T, 3> operator()(const Vector<T, 3>& v) const;
 	template <typename T>
@@ -30,7 +37,6 @@ public:
 	bool SwapsHandedness() const;
 
 	bool IsIdentity() const;
-private:
 	Matrix4x4 m, mInv;
 };
 

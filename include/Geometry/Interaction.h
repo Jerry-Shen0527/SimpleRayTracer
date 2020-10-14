@@ -2,7 +2,6 @@
 #include "ray.h"
 #include <BRDF/Volume/Medium.h>
 #include <BRDF/material.h>
-#include <Tools/MemoryArena.h>
 
 class Shape;
 class Primitive;
@@ -56,6 +55,7 @@ public:
 	BSSRDF* bssrdf = nullptr;
 };
 
+class material;
 class SurfaceInteraction :public Interaction {
 public:
 	SurfaceInteraction() {}
@@ -67,15 +67,15 @@ public:
 	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape);
 
 	void ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes,
-	                                TransportMode mode);
+		TransportMode mode);
 
 	void ComputeDifferentials(const RayDifferential& ray) const;
 
 	void set_face_normal(const Vector3f& r_in, const Normal3f& outward_normal);
 
 	void SetShadingGeometry(const Vector3f& dpdus,
-	                        const Vector3f& dpdvs, const Normal3f& dndus,
-	                        const Normal3f& dndvs, bool orientationIsAuthoritative);
+		const Vector3f& dpdvs, const Normal3f& dndus,
+		const Normal3f& dndvs, bool orientationIsAuthoritative);
 
 	Point2f uv;
 	Vector3f dpdu, dpdv;

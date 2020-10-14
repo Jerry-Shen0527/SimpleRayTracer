@@ -4,6 +4,10 @@
 #include "BxDF.h"
 #include <Tools/Spectrum/SampledSpectrum.h>
 
+
+#include "Material.h"
+#include "texture.h"
+#include "Geometry/Interaction.h"
 #include "pdf/pdf.h"
 
 class lambertian : public material {

@@ -7,9 +7,7 @@
 
 #include "Primitive.h"
 #include "Tools/Bound.h"
-
-#undef min
-#undef max
+#include <Tools/MemoryArena.h>
 
 struct SurfaceInteraction;
 #include "hittable.h"

@@ -18,7 +18,7 @@ public:
 
 	virtual float value(const Vector3f& direction) const override {
 		auto cosine = Dot(unit_vector(direction), uvw.w());
-		return (cosine <= 0) ? 0 : cosine / pi;
+		return (cosine <= 0) ? 0 : cosine / Pi;
 	}
 
 	virtual Vector3f generate() const override {

@@ -28,7 +28,7 @@ public:
 		const Ray& r_in, const SurfaceInteraction& rec, const Ray& scattered
 	) const {
 		auto cosine = Dot(rec.n, unit_vector(scattered.d));
-		return cosine < 0 ? 0 : cosine / pi;
+		return cosine < 0 ? 0 : cosine / Pi;
 	}
 
 public:

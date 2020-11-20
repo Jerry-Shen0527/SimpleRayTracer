@@ -4,11 +4,11 @@
 #include <config.h>
 
 const Float Infinity = std::numeric_limits<Float>::infinity();
-const Float pi = 3.1415926535897932385f;
-const Float inv_pi = 1 / pi;
+const Float Pi = 3.1415926535897932385f;
+const Float inv_pi = 1 / Pi;
 
 inline Float degrees_to_radians(Float degrees) {
-	return degrees * pi / 180.0;
+	return degrees * Pi / 180.0;
 }
 
 namespace tool

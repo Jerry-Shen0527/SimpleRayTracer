@@ -68,7 +68,7 @@ public:
 
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const {
 		auto pow5 = [](Float v) { return (v * v) * (v * v) * v; };
-		Spectrum diffuse = (28.f / (23.f * pi)) * Rd *
+		Spectrum diffuse = (28.f / (23.f * Pi)) * Rd *
 			(Spectrum(1.f) - Rs) *
 			(1 - pow5(1 - .5f * AbsCosTheta(wi))) *
 			(1 - pow5(1 - .5f * AbsCosTheta(wo)));

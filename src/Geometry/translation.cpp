@@ -44,6 +44,11 @@ Ray Transform::operator()(const Ray& r) const
 	return Ray(o, d, r.tMax, r.time, r.medium);
 }
 
+Transform Transform::operator*(const Transform& t2) const
+{
+	return Transform(Matrix4x4::Mul(m, t2.m), Matrix4x4::Mul(t2.mInv, mInv));
+}
+
 SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 {
 	SurfaceInteraction ret;

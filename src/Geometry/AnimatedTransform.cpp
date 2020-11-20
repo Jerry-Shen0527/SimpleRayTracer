@@ -23,19 +23,19 @@ AnimatedTransform::AnimatedTransform(const Transform* startTransform,
         Float theta = std::acos(Clamp(cosTheta, -1, 1));
         Quaternion qperp = Normalize(R[1] - R[0] * cosTheta);
 
-        Float t0x = T[0].x;
-        Float t0y = T[0].y;
-        Float t0z = T[0].z;
-        Float t1x = T[1].x;
-        Float t1y = T[1].y;
-        Float t1z = T[1].z;
-        Float q0x = R[0].v.x;
-        Float q0y = R[0].v.y;
-        Float q0z = R[0].v.z;
+        Float t0x = T[0].x();
+        Float t0y = T[0].y();
+        Float t0z = T[0].z();
+        Float t1x = T[1].x();
+        Float t1y = T[1].y();
+        Float t1z = T[1].z();
+        Float q0x = R[0].v.x();
+        Float q0y = R[0].v.y();
+        Float q0z = R[0].v.z();
         Float q0w = R[0].w;
-        Float qperpx = qperp.v.x;
-        Float qperpy = qperp.v.y;
-        Float qperpz = qperp.v.z;
+        Float qperpx = qperp.v.x();
+        Float qperpy = qperp.v.y();
+        Float qperpz = qperp.v.z();
         Float qperpw = qperp.w;
         Float s000 = S[0].m[0][0];
         Float s001 = S[0].m[0][1];
@@ -711,9 +711,9 @@ AnimatedTransform::AnimatedTransform(const Transform* startTransform,
 void AnimatedTransform::Decompose(const Matrix4x4& m, Vector3f* T,
     Quaternion* Rquat, Matrix4x4* S) {
     // Extract translation _T_ from transformation matrix
-    T->x = m.m[0][3];
-    T->y = m.m[1][3];
-    T->z = m.m[2][3];
+    T->x() = m.m[0][3];
+    T->y() = m.m[1][3];
+    T->z() = m.m[2][3];
 
     // Compute new transformation matrix _M_ without translation
     Matrix4x4 M = m;

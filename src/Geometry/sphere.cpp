@@ -115,7 +115,7 @@ bool Sphere::Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, boo
 	pHit *= radius / (pHit - Point3f(0, 0, 0)).length();
 	if (pHit.x() == 0 && pHit.y() == 0) pHit.x() = 1e-5f * radius;
 	phi = std::atan2(pHit.y(), pHit.x());
-	if (phi < 0) phi += 2 * pi;
+	if (phi < 0) phi += 2 * Pi;
 	//	Test sphere intersection against clipping parameters 137
 
 	if (zMin > -radius && pHit.z() < zMin ||
@@ -130,7 +130,7 @@ bool Sphere::Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, boo
 		pHit *= radius / (pHit - Point3f(0, 0, 0)).length();
 		if (pHit.x() == 0 && pHit.y() == 0) pHit.x() = 1e-5f * radius;
 		phi = std::atan2(pHit.y(), pHit.x());
-		if (phi < 0) phi += 2 * pi;
+		if (phi < 0) phi += 2 * Pi;
 		if ((zMin > -radius && pHit.z() < zMin) || (zMax < radius && pHit.z() > zMax) || phi > phiMax)
 			return false;
 	}

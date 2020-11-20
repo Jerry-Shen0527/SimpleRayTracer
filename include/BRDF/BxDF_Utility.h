@@ -54,4 +54,4 @@ inline Vector3f CosineSampleHemisphere(const Point2f& u) {
 inline bool SameHemisphere(const Vector3f& w, const Vector3f& wp) {
 	return w.z() * wp.z() > 0;
 }
-inline Float Radians(Float deg) { return (pi / 180) * deg; }
+inline Float Radians(Float deg) { return (Pi / 180) * deg; }

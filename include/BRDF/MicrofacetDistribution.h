@@ -37,7 +37,7 @@ inline Float BeckmannDistribution::D(const Vector3f& wh) const
 	Float cos4Theta = Cos2Theta(wh) * Cos2Theta(wh);
 	return std::exp(-tan2Theta * (Cos2Phi(wh) / (alphax * alphax) +
 		Sin2Phi(wh) / (alphay * alphay))) /
-		(pi * alphax * alphay * cos4Theta);
+		(Pi * alphax * alphay * cos4Theta);
 }
 
 inline Float BeckmannDistribution::Lambda(const Vector3f& w) const
@@ -78,5 +78,5 @@ inline Float TrowbridgeReitzDistribution::D(const Vector3f& wh) const
 	const Float cos4Theta = Cos2Theta(wh) * Cos2Theta(wh);
 	Float e = (Cos2Phi(wh) / (alphax * alphax) +
 		Sin2Phi(wh) / (alphay * alphay)) * tan2Theta;
-	return 1 / (pi * alphax * alphay * cos4Theta * (1 + e) * (1 + e));
+	return 1 / (Pi * alphax * alphay * cos4Theta * (1 + e) * (1 + e));
 }

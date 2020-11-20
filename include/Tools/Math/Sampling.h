@@ -12,7 +12,7 @@ inline Vector3f random_in_unit_sphere() {
 }
 
 inline Vector3f random_unit_vector() {
-	auto a = random_float(0, 2 * pi);
+	auto a = random_float(0, 2 * Pi);
 	auto z = random_float(-1, 1);
 	auto r = sqrt(1 - z * z);
 	return Vector3f(r * std::cosf(a), r * std::sinf(a), z);
@@ -23,7 +23,7 @@ inline Vector3f random_cosine_d() {
 	auto r2 = random_float();
 	auto z = sqrt(1 - r2);
 
-	auto phi = 2 * pi * r1;
+	auto phi = 2 * Pi * r1;
 	auto x = cos(phi) * sqrt(r2);
 	auto y = sin(phi) * sqrt(r2);
 
@@ -35,7 +35,7 @@ inline Vector3f random_to_sphere(float radius, float distance_squared) {
 	auto r2 = random_float();
 	auto z = 1 + r2 * (sqrtf(1 - radius * radius / distance_squared) - 1);
 
-	auto phi = 2 * pi * r1;
+	auto phi = 2 * Pi * r1;
 	auto x = cosf(phi) * sqrtf(1 - z * z);
 	auto y = sinf(phi) * sqrtf(1 - z * z);
 

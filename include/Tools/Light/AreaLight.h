@@ -26,7 +26,7 @@ public:
 	}
 
 	Spectrum DiffuseAreaLight::Power() const {
-		return Lemit * area * pi;
+		return Lemit * area * Pi;
 	}
 
 protected:

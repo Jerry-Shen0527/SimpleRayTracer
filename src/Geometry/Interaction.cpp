@@ -3,8 +3,7 @@
 
 #include "Geometry/Primitive.h"
 
-void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena,
-                                                    bool allowMultipleLobes, TransportMode mode)
+void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes, TransportMode mode)
 {
 	ComputeDifferentials(ray);
 	//primitive->ComputeScatteringFunctions(this, arena, mode, allowMultipleLobes);
@@ -40,9 +39,9 @@ void SurfaceInteraction::ComputeDifferentials(const RayDifferential& ray) const
 			dim[0] = 0;
 			dim[1] = 1;
 		}
-		Float A[2][2] = {{dpdu[dim[0]], dpdv[dim[0]]}, {dpdu[dim[1]], dpdv[dim[1]]}};
-		Float Bx[2] = {px[dim[0]] - p[dim[0]], px[dim[1]] - p[dim[1]]};
-		Float By[2] = {py[dim[0]] - p[dim[0]], py[dim[1]] - p[dim[1]]};
+		Float A[2][2] = { {dpdu[dim[0]], dpdv[dim[0]]}, {dpdu[dim[1]], dpdv[dim[1]]} };
+		Float Bx[2] = { px[dim[0]] - p[dim[0]], px[dim[1]] - p[dim[1]] };
+		Float By[2] = { py[dim[0]] - p[dim[0]], py[dim[1]] - p[dim[1]] };
 
 		if (!SolveLinearSystem2x2(A, Bx, &dudx, &dvdx))
 			dudx = dvdx = 0;
@@ -58,7 +57,7 @@ void SurfaceInteraction::ComputeDifferentials(const RayDifferential& ray) const
 }
 
 void SurfaceInteraction::SetShadingGeometry(const Vector3f& dpdus, const Vector3f& dpdvs, const Normal3f& dndus,
-                                            const Normal3f& dndvs, bool orientationIsAuthoritative)
+	const Normal3f& dndvs, bool orientationIsAuthoritative)
 {
 	//Compute shading.n for SurfaceInteraction 119
 	shading.n = Normalize((Normal3f)Cross(dpdus, dpdvs));

@@ -25,8 +25,37 @@ int main(int argc, char** argv) {
 
 	clock_t start, finish;
 
+	std::vector<shared_ptr<Primitive>> geometries;
+
 	std::shared_ptr<Primitive> aggregate;
 	std::vector<std::shared_ptr<Light>> lights;
+
+	auto red = make_shared<lambertian>(Color(.65, .05, .05));
+	auto white = make_shared<lambertian>(Color(.73, .73, .73));
+	auto green = make_shared<lambertian>(Color(.12, .45, .15));
+	auto light = make_shared<diffuse_light>(Color(15, 15, 15));
+
+	geometries.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
+	geometries.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
+	geometries.add(make_shared<flip_face>(make_shared<xz_rect>(213, 343, 227, 332, 554, light, true)));
+	world.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
+	world.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
+	world.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
+
+	//shared_ptr<material> aluminum = make_shared<metal>(Color(0.8, 0.85, 0.88), 0.0);
+	shared_ptr<hittable> box1 = make_shared<box>(Point3f(0, 0, 0), Point3f(165, 330, 165), white);
+	box1 = make_shared<rotate_y>(box1, 15);
+	box1 = make_shared<translate>(box1, Vector3f(265, 0, 295));
+	world.add(box1);
+
+	//shared_ptr<hittable> box2 = make_shared<box>(Point3f(0, 0, 0), Point3f(165, 165, 165), white);
+	//box2 = make_shared<rotate_y>(box2, -18);
+	//box2 = make_shared<translate>(box2, Vector3f(130, 0, 65));
+	//world.add(box2);
+	shared_ptr<material> glass = make_shared<dielectric>(1.5);
+	shared_ptr<hittable> glass_sphere = make_shared<sphere>(Point3f(190, 90, 190), 90.0, glass);
+
+	world.add(glass_sphere);
 
 	Transform transform = Translate(Point3f(190, 90, 190));
 

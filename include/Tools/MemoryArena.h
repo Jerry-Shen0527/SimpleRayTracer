@@ -71,3 +71,4 @@ inline void* MemoryArena::Alloc(size_t nBytes)
 	currentBlockPos += nBytes;
 	return ret;
 }
+#define ARENA_ALLOC(arena, Type) new (arena.Alloc(sizeof(Type))) Type

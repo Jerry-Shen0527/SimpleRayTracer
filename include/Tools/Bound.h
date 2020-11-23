@@ -218,7 +218,9 @@ inline Bounds<T, n>	Expand(const Bounds<T, n>& b, U delta) {
 		b.pMax + Vector<T, n>(delta));
 }
 
-typedef Bounds<Float, 2> Bounds2f;
-typedef Bounds<int, 2> Bounds2i;
-typedef Bounds<Float, 3> Bounds3f;
-typedef Bounds<int, 3> Bounds3i;
+
+
+using Bounds2f = Bounds<Float, 2>;
+using Bounds2i = Bounds<int, 2>;
+using Bounds3f = Bounds<Float, 3>;
+using Bounds3i = Bounds<int, 3>;

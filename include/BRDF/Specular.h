@@ -1,6 +1,8 @@
 #pragma once
 #include "BxDF.h"
-#include "Fresnel/Fresnel.h"
+#include "Dielectric.h"
+#include "Geometry/Interaction.h"
+
 class SpecularReflection : public BxDF {
 public:
 	SpecularReflection(const Spectrum& R, Fresnel* fresnel)
@@ -49,7 +51,7 @@ inline bool Refract(const Vector3f& wi, const Normal3f& n, Float eta,
 	Vector3f& wt) {
 	//Compute cos ¦Èt using Snell¡¯s law 531
 
-	Float cosThetaI = dot(n, wi);
+	Float cosThetaI = Dot(n, wi);
 	Float sin2ThetaI = std::max(0.f, 1.f - cosThetaI * cosThetaI);
 	Float sin2ThetaT = eta * eta * sin2ThetaI;
 

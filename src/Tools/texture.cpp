@@ -1,59 +1,43 @@
-#include <texture.h>
+#include <Tools/Texture.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <Tools/Files/rtw_stb_image.h>
+TextureMapping2D::~TextureMapping2D() { }
 
-#include "Tools/Math/math_tools.h"
-
-Color checker_texture::value(const Vector2f& uv, const Point3f& p) const
-{
-	auto sines = sin(10 * p.x()) * sin(10 * p.y()) * sin(10 * p.z());
-	if (sines < 0)
-		return odd->value(uv, p);
-	else
-		return even->value(uv, p);
+UVMapping2D::UVMapping2D(Float su, Float sv, Float du, Float dv)
+    : su(su), sv(sv), du(du), dv(dv) {}
+Point2f UVMapping2D::Map(const SurfaceInteraction& si, Vector2f* dstdx,
+    Vector2f* dstdy) const {
+    // Compute texture differentials for 2D identity mapping
+    *dstdx = Vector2f(su * si.dudx, sv * si.dvdx);
+    *dstdy = Vector2f(su * si.dudy, sv * si.dvdy);
+    return Point2f(su * si.uv[0] + du, sv * si.uv[1] + dv);
 }
 
-Color noise_texture::value(const Vector2f& uv, const Point3f& p) const
-{
-	return Color(1, 1, 1) * 0.5 * (1 + sin(scale * p.z() + 10 * noise.turb(p)));
+
+Point2f SphericalMapping2D::Map(const SurfaceInteraction& si, Vector2f* dstdx,
+    Vector2f* dstdy) const {
+    Point2f st = sphere(si.p);
+    // Compute texture coordinate differentials for sphere $(u,v)$ mapping
+    const Float delta = .1f;
+    Point2f stDeltaX = sphere(si.p + delta * si.dpdx);
+    *dstdx = (stDeltaX - st) / delta;
+    Point2f stDeltaY = sphere(si.p + delta * si.dpdy);
+    *dstdy = (stDeltaY - st) / delta;
+
+    // Handle sphere mapping discontinuity for coordinate differentials
+    if ((*dstdx)[1] > .5)
+        (*dstdx)[1] = 1 - (*dstdx)[1];
+    else if ((*dstdx)[1] < -.5f)
+        (*dstdx)[1] = -((*dstdx)[1] + 1);
+    if ((*dstdy)[1] > .5)
+        (*dstdy)[1] = 1 - (*dstdy)[1];
+    else if ((*dstdy)[1] < -.5f)
+        (*dstdy)[1] = -((*dstdy)[1] + 1);
+    return st;
 }
 
-image_texture::image_texture(const std::string& filename)
-{
-	auto components_per_pixel = bytes_per_pixel;
 
-	data = stbi_load(
-		filename.c_str(), &width, &height, &components_per_pixel, components_per_pixel);
-
-	if (!data)
-	{
-		std::cerr << "ERROR: Could not load texture image file '" << filename << "'.\n";
-		width = height = 0;
-	}
-
-	bytes_per_scanline = bytes_per_pixel * width;
-}
-
-Color image_texture::value(const Vector2f& uv, const Point3f& p) const
-{
-	// If we have no texture data, then return solid cyan as a debugging aid.
-	if (data == nullptr)
-		return Color(0, 1, 1);
-
-	// Clamp input texture coordinates to [0,1] x [1,0]
-	auto x = Clamp(uv.x(), 0.0, 1.0);
-	auto y = 1.0 - Clamp(uv.y(), 0.0, 1.0); // Flip V to image coordinates
-
-	auto i = static_cast<int>(x * width);
-	auto j = static_cast<int>(y * height);
-
-	// Clamp integer mapping, since actual coordinates should be less than 1.0
-	if (i >= width) i = width - 1;
-	if (j >= height) j = height - 1;
-
-	const auto Color_scale = 1.0 / 255.0;
-	auto pixel = data + j * bytes_per_scanline + i * bytes_per_pixel;
-
-	return Color(Color_scale * pixel[0], Color_scale * pixel[1], Color_scale * pixel[2]);
+Point2f SphericalMapping2D::sphere(const Point3f& p) const {
+    Vector3f vec = Normalize(WorldToTexture(p) - Point3f(0, 0, 0));
+    Float theta = SphericalTheta(vec), phi = SphericalPhi(vec);
+    return Point2f(theta * InvPi, phi * Inv2Pi);
 }

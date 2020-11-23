@@ -4,6 +4,8 @@
 class MicrofacetDistribution
 {
 public:
+	MicrofacetDistribution(bool sampleVisibleArea)
+		: sampleVisibleArea(sampleVisibleArea) {}
 	virtual Float D(const Vector3f& wh) const = 0;
 	virtual Float Lambda(const Vector3f& w) const = 0;
 
@@ -15,16 +17,15 @@ public:
 		return 1 / (1 + Lambda(w));
 	}
 protected:
+	const bool sampleVisibleArea;
 };
 
 class BeckmannDistribution : public MicrofacetDistribution {
 public:
-	//BeckmannDistribution Public Methods
 
 	Float D(const Vector3f& wh) const override;
 
 	Float Lambda(const Vector3f& w) const;
-	
 
 private:
 	const Float alphax, alphay;
@@ -57,6 +58,12 @@ class TrowbridgeReitzDistribution : public MicrofacetDistribution {
 public:
 	static inline Float RoughnessToAlpha(Float roughness);
 
+	TrowbridgeReitzDistribution(Float alphax, Float alphay,
+		bool samplevis = true)
+		: MicrofacetDistribution(samplevis),
+		alphax(std::max(Float(0.001), alphax)),
+		alphay(std::max(Float(0.001), alphay)) {}
+
 	Float D(const Vector3f& wh) const;
 
 	Float Lambda(const Vector3f& w) const {
@@ -80,3 +87,51 @@ inline Float TrowbridgeReitzDistribution::D(const Vector3f& wh) const
 		Sin2Phi(wh) / (alphay * alphay)) * tan2Theta;
 	return 1 / (Pi * alphax * alphay * cos4Theta * (1 + e) * (1 + e));
 }
+
+class MicrofacetReflection : public BxDF {
+public:
+	// MicrofacetReflection Public Methods
+	MicrofacetReflection(const Spectrum& R,
+		MicrofacetDistribution* distribution, Fresnel* fresnel)
+		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_GLOSSY)),
+		R(R),
+		distribution(distribution),
+		fresnel(fresnel) {}
+	Spectrum f(const Vector3f& wo, const Vector3f& wi) const;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& u,
+		Float* pdf, BxDFType* sampledType) const;
+	Float Pdf(const Vector3f& wo, const Vector3f& wi) const;
+
+private:
+	// MicrofacetReflection Private Data
+	const Spectrum R;
+	const MicrofacetDistribution* distribution;
+	const Fresnel* fresnel;
+};
+
+class MicrofacetTransmission : public BxDF {
+public:
+	// MicrofacetTransmission Public Methods
+	MicrofacetTransmission(const Spectrum& T,
+		MicrofacetDistribution* distribution, Float etaA,
+		Float etaB, TransportMode mode)
+		: BxDF(BxDFType(BSDF_TRANSMISSION | BSDF_GLOSSY)),
+		T(T),
+		distribution(distribution),
+		etaA(etaA),
+		etaB(etaB),
+		fresnel(etaA, etaB),
+		mode(mode) {}
+	Spectrum f(const Vector3f& wo, const Vector3f& wi) const;
+	Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& u,
+		Float* pdf, BxDFType* sampledType) const;
+	Float Pdf(const Vector3f& wo, const Vector3f& wi) const;
+
+private:
+	// MicrofacetTransmission Private Data
+	const Spectrum T;
+	const MicrofacetDistribution* distribution;
+	const Float etaA, etaB;
+	const FresnelDielectric fresnel;
+	const TransportMode mode;
+};

@@ -13,7 +13,7 @@ public:
 	virtual const AreaLight* GetAreaLight() const = 0;
 	virtual const material* GetMaterial() const = 0;
 
-	//virtual void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
+	virtual void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 };
 
 class	GeometricPrimitive :public Primitive

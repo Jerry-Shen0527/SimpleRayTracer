@@ -1,39 +1,6 @@
 #pragma once
-#include <memory>
-
 #include "BxDF.h"
-#include <Tools/Spectrum/SampledSpectrum.h>
 
-
-#include "Material.h"
-#include "texture.h"
-#include "Geometry/Interaction.h"
-#include "pdf/pdf.h"
-
-class lambertian : public material {
-public:
-	lambertian(const Color& a) : albedo(std::make_shared<solid_Color>(a)) {}
-	lambertian(shared_ptr<texture> a) : albedo(a) {}
-	virtual bool scatter(
-		const Ray& r_in, const SurfaceInteraction& rec, scatter_record& srec
-	) const override {
-		srec.is_specular = false;
-		srec.attenuation = albedo->value(rec.uv, rec.p);
-		srec.update();
-		srec.pdf_ptr = std::make_shared< cosine_pdf>(rec.n);
-		return true;
-	}
-
-	float scattering_pdf(
-		const Ray& r_in, const SurfaceInteraction& rec, const Ray& scattered
-	) const {
-		auto cosine = Dot(rec.n, unit_vector(scattered.d));
-		return cosine < 0 ? 0 : cosine / Pi;
-	}
-
-public:
-	shared_ptr<texture> albedo;
-};
 
 class LambertianReflection : public BxDF {
 public:
@@ -52,7 +19,7 @@ private:
 
 inline Spectrum LambertianReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
-	return R * inv_pi;
+	return R * InvPi;
 }
 
 inline Spectrum LambertianReflection::rho(const Vector3f& wo, int nSamples, const Point2f* samples) const

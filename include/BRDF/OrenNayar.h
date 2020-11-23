@@ -1,10 +1,10 @@
 #pragma once
 #include "BxDF.h"
 
-class OrenNayer :public BxDF
+class OrenNayar :public BxDF
 {
 public:
-	OrenNayer(const Spectrum& R, Float sigma)
+	OrenNayar(const Spectrum& R, Float sigma)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), R(R) {
 		sigma = Radians(sigma);
 		Float sigma2 = sigma * sigma;
@@ -19,7 +19,7 @@ private:
 	Float A, B;
 };
 
-inline Spectrum OrenNayer::f(const Vector3f& wo, const Vector3f& wi) const
+inline Spectrum OrenNayar::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	Float sinThetaI = SinTheta(wi);
 	Float sinThetaO = SinTheta(wo);
@@ -41,5 +41,5 @@ inline Spectrum OrenNayer::f(const Vector3f& wo, const Vector3f& wi) const
 		sinAlpha = sinThetaI;
 		tanBeta = sinThetaO / AbsCosTheta(wo);
 	}
-	return R * inv_pi * (A + B * maxCos * sinAlpha * tanBeta);
+	return R * InvPi * (A + B * maxCos * sinAlpha * tanBeta);
 }

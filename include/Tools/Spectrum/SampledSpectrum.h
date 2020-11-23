@@ -5,9 +5,9 @@
 #include "CoefficientSpecturm.h"
 #include "RGBSpectrum.h"
 #include <vector>
-#include <Tools/Math/Vector3.h>
 
 #include "BRDF/BxDF_Utility.h"
+#include "Geometry/Vector3.h"
 static const int sampledLambdaStart = 400;
 static const int sampledLambdaEnd = 700;
 static  const int nSpectralSamples = 30;
@@ -34,7 +34,7 @@ public:
 
 	void ToXYZ(Vector3f& xyz) const;
 	void ToRGB(Vector3f& rgb) const;
-	float y() const;
+	Float y() const;
 
 private:
 	static SampledSpectrum X, Y, Z;

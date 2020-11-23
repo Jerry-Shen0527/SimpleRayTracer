@@ -10,7 +10,7 @@ Spectrum BxDF::Sample_f(const Vector3f& wo, Vector3f& wi, const Point2f& sample,
 
 float BxDF::pdf(const Vector3f& wo, const Vector3f& wi)
 {
-	return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * inv_pi : 0;
+	return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;
 }
 
 

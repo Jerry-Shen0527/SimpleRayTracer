@@ -1,13 +1,13 @@
 #pragma once
 #include "ray.h"
-#include <BRDF/Volume/Medium.h>
-#include <BRDF/material.h>
+#include "BRDF/Medium.h"
 
-class Shape;
 class Primitive;
-const Float ShadowEpsilon = 0.0001f;
+class MemoryArena;
+class Shape;
 class BSDF;
 class BSSRDF;
+const Float ShadowEpsilon = 0.0001f;
 
 enum class TransportMode { Radiance, Importance };
 

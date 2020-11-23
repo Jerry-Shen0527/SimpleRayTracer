@@ -6,7 +6,7 @@
 void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes, TransportMode mode)
 {
 	ComputeDifferentials(ray);
-	//primitive->ComputeScatteringFunctions(this, arena, mode, allowMultipleLobes);
+	primitive->ComputeScatteringFunctions(this, arena, mode, allowMultipleLobes);
 }
 
 void SurfaceInteraction::ComputeDifferentials(const RayDifferential& ray) const

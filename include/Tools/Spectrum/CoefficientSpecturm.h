@@ -32,7 +32,7 @@ public:
 	CoefficientSpectrum Clamp(Float low = 0, Float high = INFINITY) const;
 
 	void print() const;
-	bool is_black() const;
+	bool IsBlack() const;
 	bool has_nans() const;
 
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Sqrt(const CoefficientSpectrum<nSamples>& s);
@@ -170,7 +170,7 @@ void CoefficientSpectrum<nSamples>::print() const
 }
 
 template <int nSamples>
-bool CoefficientSpectrum<nSamples>::is_black() const
+bool CoefficientSpectrum<nSamples>::IsBlack() const
 {
 	for (int i = 0; i < nSamples; ++i)
 	{

@@ -3,9 +3,12 @@
 // Constants
 #include <config.h>
 
+#include "Vector3.h"
+
 const Float Infinity = std::numeric_limits<Float>::infinity();
 const Float Pi = 3.1415926535897932385f;
-const Float inv_pi = 1 / Pi;
+const Float InvPi = 1 / Pi;
+const Float Inv2Pi = 1 / Pi / 2.0;
 
 inline Float degrees_to_radians(Float degrees) {
 	return degrees * Pi / 180.0;
@@ -41,7 +44,7 @@ inline bool Quadratic(Float a, Float b, Float c, Float* t0, Float* t1) {
 	else q = -.5 * (b + rootDiscrim);
 	*t0 = q / a;
 	*t1 = c / q;
-	if (*t0 > * t1) std::swap(*t0, *t1);
+	if (*t0 > *t1) std::swap(*t0, *t1);
 	return true;
 }
 
@@ -55,4 +58,13 @@ inline bool SolveLinearSystem2x2(const Float A[2][2],
 	if (std::isnan(*x0) || std::isnan(*x1))
 		return false;
 	return true;
+}
+
+inline Float SphericalTheta(const Vector3f& v) {
+	return std::acos(Clamp(v.z(), -1, 1));
+}
+
+inline Float SphericalPhi(const Vector3f& v) {
+	Float p = std::atan2(v.y(), v.x());
+	return (p < 0) ? (p + 2 * Pi) : p;
 }

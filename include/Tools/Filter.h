@@ -1,12 +1,12 @@
 #pragma once
-#include "Math/Vector3.h"
+#include "Geometry/Vector3.h"
 
 class Filter {
 public:
     // Filter Interface
     virtual ~Filter();
     Filter(const Vector2f& radius)
-        : radius(radius), invRadius(Vector2f(1 / radius.x, 1 / radius.y)) {}
+        : radius(radius), invRadius(Vector2f(1 / radius.x(), 1 / radius.y())) {}
     virtual Float Evaluate(const Point2f& p) const = 0;
 
     // Filter Public Data
@@ -32,8 +32,8 @@ public:
     GaussianFilter(const Vector2f& radius, Float alpha)
         : Filter(radius),
         alpha(alpha),
-        expX(std::exp(-alpha * radius.x * radius.x)),
-        expY(std::exp(-alpha * radius.y * radius.y)) {}
+        expX(std::exp(-alpha * radius.x() * radius.x())),
+        expY(std::exp(-alpha * radius.y() * radius.y())) {}
     Float Evaluate(const Point2f& p) const;
 
 private:

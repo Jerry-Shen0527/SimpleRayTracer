@@ -2,6 +2,8 @@
 #include <BRDF/BxDF_Utility.h>
 
 #include "ray.h"
+#include "Geometry/Vector.h"
+#include "Geometry/Vector3.h"
 
 template<typename T, int n> class Bounds;
 template<typename T, int n> bool Inside(const Vector<T, n>& p, const Bounds<T, n>& b);
@@ -46,8 +48,8 @@ public:
 	bool IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const;
 	bool IntersectP(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const;
 
-	Vector<T, n> pMin;
-	Vector<T, n> pMax;
+	Point<T, n> pMin;
+	Point<T, n> pMax;
 };
 
 template <typename T, int n>
@@ -218,9 +220,14 @@ inline Bounds<T, n>	Expand(const Bounds<T, n>& b, U delta) {
 		b.pMax + Vector<T, n>(delta));
 }
 
+template<int n>
+using Boundsf = Bounds<Float, n>;
 
+template<int n>
+using Boundsi = Bounds<int, n>;
 
-using Bounds2f = Bounds<Float, 2>;
-using Bounds2i = Bounds<int, 2>;
+using Bounds2f = Boundsf<2>;
+using Bounds2i = Boundsi<2>;
+
 using Bounds3f = Bounds<Float, 3>;
 using Bounds3i = Bounds<int, 3>;

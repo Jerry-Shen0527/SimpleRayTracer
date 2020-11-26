@@ -33,7 +33,7 @@ class Point :public Vector<T, n>
 {
 public:
 	Point() :Vector() {}
-	Point(const Vector<T, n>& vec)
+	Point(const Point<T, n>& vec)
 	{
 		for (int i = 0; i < n; ++i)
 		{
@@ -45,6 +45,26 @@ public:
 	Point(T x, T y, T z) { data[0] = x; data[1] = y; data[2] = z; }
 	Point(T x, T y, T z, T w) { data[0] = x; data[1] = y; data[2] = z; data[3] = w; }
 };
+
+template<typename T, int n>
+inline Point<T, n> operator+(const Point<T, n>& u, const Vector<T, n>& v) {
+	Point<T, n> rst;
+	for (int i = 0; i < n; ++i)
+	{
+		rst.data[i] = u.data[i] + v.data[i];
+	}
+	return rst;
+}
+
+template<typename T, int n>
+inline Point<T, n> operator-(const Point<T, n>& u, const Vector<T, n>& v) {
+	Point<T, n> rst;
+	for (int i = 0; i < n; ++i)
+	{
+		rst.data[i] = u.data[i] - v.data[i];
+	}
+	return rst;
+}
 
 using Point2i = Point<int, 2>;
 using Point2f = Point<Float, 2>;
@@ -85,26 +105,26 @@ CoordinateSystem(const Vector<T, 3>& v1, Vector<T, 3>* v2, Vector<T, 3>* v3) {
 	*v3 = Cross(v1, *v2);
 }
 template <typename T>
-Point<T,2> Floor(const Point<T,2>& p) {
-	return Point<T,2>(std::floor(p.x), std::floor(p.y));
+Point<int, 2> Floor(const Point<T, 2>& p) {
+	return Point<T, 2>(std::floor(p.x), std::floor(p.y));
 }
 
 template <typename T>
-Point<T,2> Ceil(const Point<T,2>& p) {
-	return Point<T,2>(std::ceil(p.x), std::ceil(p.y));
+Point<int, 2> Ceil(const Point<T, 2>& p) {
+	return Point<T, 2>(std::ceil(p.x), std::ceil(p.y));
 }
 
 template <typename T>
-Point<T,2> Lerp(Float t, const Point<T,2>& v0, const Point<T,2>& v1) {
+Point<T, 2> Lerp(Float t, const Point<T, 2>& v0, const Point<T, 2>& v1) {
 	return (1 - t) * v0 + t * v1;
 }
 
 template <typename T>
-Point<T,2> Min(const Point<T,2>& pa, const Point<T,2>& pb) {
-	return Point<T,2>(std::min(pa.x, pb.x), std::min(pa.y, pb.y));
+Point<int, 2> Min(const Point<T, 2>& pa, const Point<T, 2>& pb) {
+	return Point<T, 2>(std::min(pa.x, pb.x), std::min(pa.y, pb.y));
 }
 
 template <typename T>
-Point<T,2> Max(const Point<T,2>& pa, const Point<T,2>& pb) {
-	return Point<T,2>(std::max(pa.x, pb.x), std::max(pa.y, pb.y));
+Point<int, 2> Max(const Point<T, 2>& pa, const Point<T, 2>& pb) {
+	return Point<T, 2>(std::max(pa.x, pb.x), std::max(pa.y, pb.y));
 }

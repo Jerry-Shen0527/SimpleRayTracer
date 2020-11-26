@@ -38,6 +38,7 @@ public:
 
 private:
 	// Film Private Data
+	
 	struct Pixel {
 		Pixel() { xyz[0] = xyz[1] = xyz[2] = filterWeightSum = 0; }
 		Float xyz[3];
@@ -45,6 +46,7 @@ private:
 		AtomicFloat splatXYZ[3];
 		Float pad;
 	};
+	
 	std::unique_ptr<Pixel[]> pixels;
 	static constexpr int filterTableWidth = 16;
 	Float filterTable[filterTableWidth * filterTableWidth];
@@ -81,9 +83,8 @@ public:
 			L *= maxSampleLuminance / L.y();
 		// Compute sample's raster bounds
 		Point2f pFilmDiscrete = pFilm - Vector2f(0.5f, 0.5f);
-		Point2i p0 = (Point2i)Ceil(pFilmDiscrete - filterRadius);
-		Point2i p1 =
-			(Point2i)Floor(pFilmDiscrete + filterRadius) + Point2i(1, 1);
+		Point2i p0 = Ceil(pFilmDiscrete - filterRadius);
+		Point2i p1 = Floor(pFilmDiscrete + filterRadius) + Point2i(1, 1);
 		p0 = Max(p0, pixelBounds.pMin);
 		p1 = Min(p1, pixelBounds.pMax);
 

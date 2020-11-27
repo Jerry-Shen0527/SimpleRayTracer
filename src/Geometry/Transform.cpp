@@ -57,8 +57,8 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 
 	// Transform remaining members of _SurfaceInteraction_
 	const Transform& t = *this;
-	ret.n = (t(si.n)).normalize();
-	ret.ray_in = (t(si.ray_in)).normalize();
+	ret.n = (t(si.n)).Normalize();
+	ret.ray_in = (t(si.ray_in)).Normalize();
 	ret.time = si.time;
 	ret.mediumInterface = si.mediumInterface;
 	ret.uv = si.uv;
@@ -67,7 +67,7 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 	ret.dpdv = t(si.dpdv);
 	ret.dndu = t(si.dndu);
 	ret.dndv = t(si.dndv);
-	ret.shading.n = t(si.shading.n).normalize();
+	ret.shading.n = t(si.shading.n).Normalize();
 	ret.shading.dpdu = t(si.shading.dpdu);
 	ret.shading.dpdv = t(si.shading.dpdv);
 	ret.shading.dndu = t(si.shading.dndu);

@@ -16,3 +16,12 @@ class Interaction;
 class SurfaceInteraction;
 class Scene;
 class VisibilityTester;
+class SampledSpectrum;
+using Spectrum = SampledSpectrum;
+
+class AnimatedTransform;
+class RayDifferential;
+class Ray;
+struct CameraSample;
+class Medium;
+class Film;

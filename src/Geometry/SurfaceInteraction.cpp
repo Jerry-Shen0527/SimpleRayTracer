@@ -35,7 +35,7 @@ void SurfaceInteraction::set_face_normal(const Vector3f& r_in, const Normal3f& o
 	n = front_face ? outward_normal : -outward_normal;
 }
 
-SurfaceInteraction::SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape) : Interaction(p, Normal3f((Cross(dpdu, dpdv)).normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
+SurfaceInteraction::SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape) : Interaction(p, Normal3f((Cross(dpdu, dpdv)).Normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
 {
 	set_face_normal(wo, n);
 

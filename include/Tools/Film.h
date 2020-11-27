@@ -1,10 +1,14 @@
 #pragma once
-#include "Bound.h"
-#include "common.h"
-#include "Filter.h"
-#include <mutex>
+
+#include <common.h>
+#include <vector>
 
 #include "Atomic.h"
+#include "Bound.h"
+#include <Tools/Filter.h>
+#include <mutex>
+
+#include "Spectrum/SampledSpectrum.h"
 
 struct FilmTilePixel {
 	Spectrum contribSum = 0.f;
@@ -38,7 +42,7 @@ public:
 
 private:
 	// Film Private Data
-	
+
 	struct Pixel {
 		Pixel() { xyz[0] = xyz[1] = xyz[2] = filterWeightSum = 0; }
 		Float xyz[3];
@@ -46,7 +50,7 @@ private:
 		AtomicFloat splatXYZ[3];
 		Float pad;
 	};
-	
+
 	std::unique_ptr<Pixel[]> pixels;
 	static constexpr int filterTableWidth = 16;
 	Float filterTable[filterTableWidth * filterTableWidth];
@@ -77,57 +81,12 @@ public:
 		maxSampleLuminance(maxSampleLuminance) {
 		pixels = std::vector<FilmTilePixel>(std::max(0, pixelBounds.Volume()));
 	}
-	void AddSample(const Point2f& pFilm, Spectrum L,
-		Float sampleWeight = 1.) {
-		if (L.y() > maxSampleLuminance)
-			L *= maxSampleLuminance / L.y();
-		// Compute sample's raster bounds
-		Point2f pFilmDiscrete = pFilm - Vector2f(0.5f, 0.5f);
-		Point2i p0 = Ceil(pFilmDiscrete - filterRadius);
-		Point2i p1 = Floor(pFilmDiscrete + filterRadius) + Point2i(1, 1);
-		p0 = Max(p0, pixelBounds.pMin);
-		p1 = Min(p1, pixelBounds.pMax);
 
-		// Loop over filter support and add sample to pixel arrays
+	void AddSample(const Point2f& pFilm, Spectrum L, Float sampleWeight = 1.);
 
-		// Precompute $x$ and $y$ filter table offsets
-		int* ifx = ALLOCA(int, p1.x() - p0.x());
-		for (int x = p0.x(); x < p1.x(); ++x) {
-			Float fx = std::abs((x - pFilmDiscrete.x()) * invFilterRadius.x() *
-				filterTableSize);
-			ifx[x - p0.x()] = std::min((int)std::floor(fx), filterTableSize - 1);
-		}
-		int* ify = ALLOCA(int, p1.y() - p0.y());
-		for (int y = p0.y(); y < p1.y(); ++y) {
-			Float fy = std::abs((y - pFilmDiscrete.y()) * invFilterRadius.y() *
-				filterTableSize);
-			ify[y - p0.y()] = std::min((int)std::floor(fy), filterTableSize - 1);
-		}
-		for (int y = p0.y(); y < p1.y(); ++y) {
-			for (int x = p0.x(); x < p1.x(); ++x) {
-				// Evaluate filter value at $(x,y)$ pixel
-				int offset = ify[y - p0.y()] * filterTableSize + ifx[x - p0.x()];
-				Float filterWeight = filterTable[offset];
+	FilmTilePixel& GetPixel(const Point2i& p);
 
-				// Update pixel values with filtered sample contribution
-				FilmTilePixel& pixel = GetPixel(Point2i(x, y));
-				pixel.contribSum += L * sampleWeight * filterWeight;
-				pixel.filterWeightSum += filterWeight;
-			}
-		}
-	}
-	FilmTilePixel& GetPixel(const Point2i& p) {
-		int width = pixelBounds.pMax.x() - pixelBounds.pMin.x();
-		int offset =
-			(p.x() - pixelBounds.pMin.x()) + (p.y() - pixelBounds.pMin.y()) * width;
-		return pixels[offset];
-	}
-	const FilmTilePixel& GetPixel(const Point2i& p) const {
-		int width = pixelBounds.pMax.x() - pixelBounds.pMin.x();
-		int offset =
-			(p.x() - pixelBounds.pMin.x()) + (p.y() - pixelBounds.pMin.y()) * width;
-		return pixels[offset];
-	}
+	const FilmTilePixel& GetPixel(const Point2i& p) const;
 	Bounds2i GetPixelBounds() const { return pixelBounds; }
 
 private:

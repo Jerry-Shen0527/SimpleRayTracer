@@ -116,7 +116,7 @@ public:
 			(1 - pow5(1 - .5f * AbsCosTheta(wo)));
 		Vector3f wh = wi + wo;
 		if (wh.x() == 0 && wh.y() == 0 && wh.z() == 0) return Spectrum(0);
-		wh = wh.normalize();
+		wh = wh.Normalize();
 		Spectrum specular = distribution->D(wh) /
 			(4 * abs(Dot(wi, wh)) *
 				std::max(AbsCosTheta(wi), AbsCosTheta(wo))) *

@@ -44,7 +44,7 @@ bool Sphere::Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, boo
 	//	Compute sphere hit position and ¦Õ 137
 	pHit = r.at((Float)tShapeHit);
 	//Refine sphere intersection point 225
-	pHit *= radius / (pHit - Point3f(0, 0, 0)).length();
+	pHit *= radius / (pHit - Point3f(0, 0, 0)).Length();
 	if (pHit.x() == 0 && pHit.y() == 0) pHit.x() = 1e-5f * radius;
 	phi = std::atan2(pHit.y(), pHit.x());
 	if (phi < 0) phi += 2 * Pi;
@@ -59,7 +59,7 @@ bool Sphere::Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, boo
 		//Compute sphere hit positionand ¦Õ 137
 		pHit = r.at((Float)tShapeHit);
 		//Refine sphere intersection point 225
-		pHit *= radius / (pHit - Point3f(0, 0, 0)).length();
+		pHit *= radius / (pHit - Point3f(0, 0, 0)).Length();
 		if (pHit.x() == 0 && pHit.y() == 0) pHit.x() = 1e-5f * radius;
 		phi = std::atan2(pHit.y(), pHit.x());
 		if (phi < 0) phi += 2 * Pi;
@@ -78,7 +78,7 @@ bool Sphere::Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, boo
 	Vector3f dpdv = (thetaMax - thetaMin) * Vector3f(pHit.z() * cosPhi, pHit.z() * sinPhi, -radius * std::sin(theta));
 
 	//	Compute error bounds for sphere intersection 225
-	Vector3f pError = gamma(5) * pHit.abs();
+	Vector3f pError = gamma(5) * pHit.Abs();
 
 	Vector3f d2Pduu = -phiMax * phiMax * Vector3f(pHit.x(), pHit.y(), 0);
 	Vector3f d2Pduv = (thetaMax - thetaMin) * pHit.z() * phiMax *
@@ -89,7 +89,7 @@ bool Sphere::Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, boo
 	Float E = Dot(dpdu, dpdu);
 	Float F = Dot(dpdu, dpdv);
 	Float G = Dot(dpdv, dpdv);
-	Vector3f N = Cross(dpdu, dpdv).normalize();
+	Vector3f N = Cross(dpdu, dpdv).Normalize();
 	Float e = Dot(N, d2Pduu);
 	Float f = Dot(N, d2Pduv);
 	Float g = Dot(N, d2Pdvv);

@@ -1,4 +1,4 @@
-#include <BRDF/metal.h>
+#include <BRDF/MicrofacetDistribution.h>
 
 #include "Tools/Math/Sampling.h"
 
@@ -9,7 +9,7 @@ Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 	//Handle degenerate cases for microfacet reflection 547
 	if (cosThetaI == 0 || cosThetaO == 0) return Spectrum(0.);
 	if (wh.x() == 0 && wh.y() == 0 && wh.z() == 0) return Spectrum(0.);
-	wh = wh.normalize();
+	wh = wh.Normalize();
 	Spectrum F = fresnel->Evaluate(Dot(wi, wh));
 	return R * distribution->D(wh) * distribution->G(wo, wi) * F /
 		(4 * cosThetaI * cosThetaO);
@@ -25,7 +25,7 @@ Spectrum MicrofacetTransmission::f(const Vector3f& wo, const Vector3f& wi) const
 
 	// Compute $\wh$ from $\wo$ and $\wi$ for microfacet transmission
 	Float eta = CosTheta(wo) > 0 ? (etaB / etaA) : (etaA / etaB);
-	Vector3f wh = (wo + wi * eta).normalize();
+	Vector3f wh = (wo + wi * eta).Normalize();
 	if (wh.z() < 0) wh = -wh;
 
 	// Same side?

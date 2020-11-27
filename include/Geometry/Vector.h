@@ -1,5 +1,6 @@
 #pragma once
 #include <ostream>
+#include <Tools/Math/rng.h>
 
 template<typename T, int n>
 class Vector {
@@ -38,15 +39,14 @@ public:
 	Vector& operator/=(const T t);
 	bool operator==(const Vector& t)const;
 	bool operator!=(const Vector& t)const;
-	Vector normalize() const;
-	Vector abs() const;
+	Vector Normalize() const;
+	Vector Abs() const;
 
-	float length() const;
-	float LengthSquared() const;
+	Float Length() const;
+	Float LengthSquared() const;
 
 	T min();
 	T max();
-
 	T x() const;
 	T& x();
 	T y() const;
@@ -166,19 +166,19 @@ bool Vector<T, n>::operator!=(const Vector& t) const
 }
 
 template<typename T, int n>
-Vector<T, n> Vector<T, n>::normalize() const
+Vector<T, n> Vector<T, n>::Normalize() const
 {
-	return *this / length();
+	return *this / Length();
 }
 
 template<typename T, int n>
 Vector<T, n> Normalize(const Vector<T, n>& rhs)
 {
-	return rhs.normalize();
+	return rhs.Normalize();
 }
 
 template<typename T, int n>
-Vector<T, n> Vector<T, n>::abs() const
+Vector<T, n> Vector<T, n>::Abs() const
 {
 	Vector temp;
 	for (int i = 0; i < n; ++i)
@@ -191,11 +191,11 @@ Vector<T, n> Vector<T, n>::abs() const
 template<typename T, int n>
 Vector<T, n> Abs(const Vector<T, n>& v)
 {
-	return  v.abs();
+	return  v.Abs();
 }
 
 template<typename T, int n>
-float Vector<T, n>::length() const
+float Vector<T, n>::Length() const
 {
 	return sqrt(LengthSquared());
 }

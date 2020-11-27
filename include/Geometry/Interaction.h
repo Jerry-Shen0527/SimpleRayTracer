@@ -60,7 +60,7 @@ public:
 
 	std::shared_ptr<Material> mat_ptr;
 
-	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :Interaction(p, Normal3f((Cross(dpdu, dpdv)).normalize()), pError, r_in, time) {}
+	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :Interaction(p, Normal3f((Cross(dpdu, dpdv)).Normalize()), pError, r_in, time) {}
 
 	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape);
 

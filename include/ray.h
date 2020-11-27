@@ -1,7 +1,6 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "BRDF/BxDF_Utility.h"
 #include "Tools/Math/EFloat.h"
 
 class Medium;
@@ -29,7 +28,7 @@ public:
 };
 
 inline Point3f OffsetRayOrigin(const Point3f& p, const Vector3f& pError, const Normal3f& n, const Vector3f& w) {
-	Float d = Dot(n.abs(), pError);
+	Float d = Dot(n.Abs(), pError);
 	Vector3f offset = d * Vector3f(n);
 	if (Dot(w, n) < 0)
 		offset = -offset;

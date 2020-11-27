@@ -1,7 +1,7 @@
 #include <Tools/Filter.h>
 
 Float GaussianFilter::Evaluate(const Point2f& p) const {
-	return Gaussian(p.x, expX) * Gaussian(p.y, expY);
+	return Gaussian(p.x(), expX) * Gaussian(p.y(), expY);
 }
 
 Float BoxFilter::Evaluate(const Point2f& p) const { return 1.; }

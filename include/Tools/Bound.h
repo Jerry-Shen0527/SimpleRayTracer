@@ -19,7 +19,7 @@ public:
 
 	Bounds(const Point<T, n>& p1, const Point<T, n>& p2) : pMin(minimum(p1, p2)), pMax(maximum(p1, p2)) {	}
 
-	Point<T, n> Diagonal() const { return pMax - pMin; }
+	Vector<T, n> Diagonal() const { return pMax - pMin; }
 
 	T SurfaceArea() const;
 	T Volume() const;
@@ -230,3 +230,53 @@ using Bounds2i = Boundsi<2>;
 
 using Bounds3f = Boundsf<3>;
 using Bounds3i = Boundsi<3>;
+
+class Bounds2iIterator : public std::forward_iterator_tag {
+public:
+	Bounds2iIterator(const Bounds2i& b, const Point2i& pt)
+		: p(pt), bounds(&b) {}
+	Bounds2iIterator operator++() {
+		advance();
+		return *this;
+	}
+	Bounds2iIterator operator++(int) {
+		Bounds2iIterator old = *this;
+		advance();
+		return old;
+	}
+	bool operator==(const Bounds2iIterator& bi) const {
+		return p == bi.p && bounds == bi.bounds;
+	}
+	bool operator!=(const Bounds2iIterator& bi) const {
+		return p != bi.p || bounds != bi.bounds;
+	}
+
+	Point2i operator*() const { return p; }
+
+private:
+	void advance() {
+		++p.x();
+		if (p.x() == bounds->pMax.x()) {
+			p.x() = bounds->pMin.x();
+			++p.y();
+		}
+	}
+	Point2i p;
+	const Bounds2i* bounds;
+};
+
+inline Bounds2iIterator begin(const Bounds2i& b) {
+	return Bounds2iIterator(b, b.pMin);
+}
+
+inline Bounds2iIterator end(const Bounds2i& b) {
+	// Normally, the ending point is at the minimum x value and one past
+	// the last valid y value.
+	Point2i pEnd(b.pMin.x(), b.pMax.y());
+	// However, if the bounds are degenerate, override the end point to
+	// equal the start point so that any attempt to iterate over the bounds
+	// exits out immediately.
+	if (b.pMin.x() >= b.pMax.x() || b.pMin.y() >= b.pMax.y())
+		pEnd = b.pMin;
+	return Bounds2iIterator(b, pEnd);
+}

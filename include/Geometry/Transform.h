@@ -66,9 +66,9 @@ Point<T, 3> Transform::operator()(const Point<T, 3>& p) const
 }
 
 template <typename T>
-Point3<T> Transform::operator()(const Point3<T>& pt, Vector3<T>* absError) const
+Point3<T> Transform::operator()(const Point3<T>& p, Vector3<T>* pError) const
 {
-	T x = p.x, y = p.y, z = p.z;
+	T x = p.x(), y = p.y(), z = p.z();
 	// Compute transformed coordinates from point _pt_
 	T xp = (m.m[0][0] * x + m.m[0][1] * y) + (m.m[0][2] * z + m.m[0][3]);
 	T yp = (m.m[1][0] * x + m.m[1][1] * y) + (m.m[1][2] * z + m.m[1][3]);
@@ -133,7 +133,7 @@ inline Transform RotateX(Float theta) {
 
 //Here theta is measured by degrees.
 inline Transform Rotate(Float theta, const Vector3f& axis) {
-	Vector3f a = axis.normalize();
+	Vector3f a = axis.Normalize();
 	Float sinTheta = std::sin(Radians(theta));
 	Float cosTheta = std::cos(Radians(theta));
 	Matrix4x4 m;

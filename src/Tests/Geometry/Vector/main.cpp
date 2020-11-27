@@ -10,7 +10,7 @@ int main()
 	a += b;
 	std::cout << 2 * a << std::endl;
 	std::cout << -a / 2 << std::endl;
-	std::cout << a.length() << std::endl;
+	std::cout << a.Length() << std::endl;
 	std::cout << a + b << std::endl;
 	std::cout << b - a << std::endl;
 	std::cout << a * b << std::endl;

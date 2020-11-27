@@ -2,7 +2,8 @@
 
 #include <common.h>
 #include <ray.h>
-#include <Tools/Sampler/Sampler.h>
+
+class Sampler;
 
 class PhaseFunction
 {

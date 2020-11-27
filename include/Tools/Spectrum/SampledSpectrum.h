@@ -183,7 +183,7 @@ inline SampledSpectrum SampledSpectrum::FromRGB(const Vector3f& rgb, SpectrumTyp
 		}
 		r *= .86445f;
 	}
-	return r.Clamp();
+	return r.clamp();
 }
 
 inline SampledSpectrum SampledSpectrum::FromXYZ(const Vector3f& xyz, SpectrumType type)

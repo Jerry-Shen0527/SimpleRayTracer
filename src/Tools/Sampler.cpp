@@ -1,4 +1,4 @@
-#include <Tools/Sampler/StratifiedSampler.h>
+#include <Tools/Sampler.h>
 
 template <typename T>
 void Shuffle(T* samp, int count, int nDimensions) {
@@ -125,4 +125,76 @@ std::unique_ptr<Sampler> PixelSampler::Clone(int seed)
 {
 	PixelSampler* ss = new PixelSampler(*this);
 	return std::unique_ptr<Sampler>(ss);
+}
+
+void Sampler::StartPixel(const Point2i& p)
+{
+	currentPixel = p;
+	currentPixelSampleIndex = 0;
+	array1DOffset = array2DOffset = 0;
+}
+
+void Sampler::Request1DArray(int n)
+{
+	samples1DArraySizes.push_back(n);
+	sampleArray1D.push_back(std::vector<Float>(n * samplesPerPixel));
+}
+
+void Sampler::Request2DArray(int n)
+{
+	samples2DArraySizes.push_back(n);
+	sampleArray2D.push_back(std::vector<Point2f>(n * samplesPerPixel));
+}
+
+const Float* Sampler::Get1DArray(int n)
+{
+	if (array1DOffset == sampleArray1D.size())
+		return nullptr;
+	return &sampleArray1D[array1DOffset++][currentPixelSampleIndex * n];
+}
+
+const Point2f* Sampler::Get2DArray(int n)
+{
+	if (array2DOffset == sampleArray2D.size())
+		return nullptr;
+	return &sampleArray2D[array2DOffset++][currentPixelSampleIndex * n];
+}
+
+bool Sampler::StartNextSample()
+{
+	array1DOffset = array2DOffset = 0;
+	return ++currentPixelSampleIndex < samplesPerPixel;
+}
+
+bool Sampler::SetSampleNumber(int64_t sampleNum)
+{
+	array1DOffset = array2DOffset = 0;
+	currentPixelSampleIndex = sampleNum;
+	return currentPixelSampleIndex < samplesPerPixel;
+}
+
+inline bool GlobalSampler::StartNextSample() {
+	dimension = 0;
+	intervalSampleIndex = GetIndexForSample(currentPixelSampleIndex + 1);
+	return Sampler::StartNextSample();
+}
+
+inline bool GlobalSampler::SetSampleNumber(int64_t sampleNum) {
+	dimension = 0;
+	intervalSampleIndex = GetIndexForSample(sampleNum);
+	return Sampler::SetSampleNumber(sampleNum);
+}
+
+inline Float GlobalSampler::Get1D() {
+	if (dimension >= arrayStartDim && dimension < arrayEndDim)
+		dimension = arrayEndDim;
+	return SampleDimension(intervalSampleIndex, dimension++);
+}
+
+inline Point2f GlobalSampler::Get2D() {
+	if (dimension + 1 >= arrayStartDim && dimension < arrayEndDim)
+		dimension = arrayEndDim;
+	Point2f p{ SampleDimension(intervalSampleIndex, dimension), SampleDimension(intervalSampleIndex, dimension + 1) };
+	dimension += 2;
+	return p;
 }

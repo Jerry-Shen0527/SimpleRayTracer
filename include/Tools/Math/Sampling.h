@@ -4,9 +4,7 @@
 
 #include "Geometry/Vector3.h"
 
-
-
-Point2f ConcentricSampleDisk(const Point2f& u) {
+inline Point2f ConcentricSampleDisk(const Point2f& u) {
 	// Map uniform random numbers to $[-1,1]^2$
 	Point2f uOffset = 2.f * u - Vector2f(1, 1);
 

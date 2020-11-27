@@ -16,6 +16,10 @@ using Vector4f = Vector4<Float>;
 using Vector3f = Vector3<Float>;
 using Vector2f = Vector2<Float>;
 
+using Vector4i = Vector4<int>;
+using Vector3i = Vector3<int>;
+using Vector2i = Vector2<int>;
+
 inline Vector3f Cross(const Vector3f& u, const Vector3f& v) {
 	return Vector3f(u.data[1] * v.data[2] - u.data[2] * v.data[1],
 		u.data[2] * v.data[0] - u.data[0] * v.data[2],
@@ -123,22 +127,22 @@ int MaxDimension(const Vector<T, n>& v)
 
 template <typename T> inline void
 CoordinateSystem(const Vector<T, 3>& v1, Vector<T, 3>* v2, Vector<T, 3>* v3) {
-	if (std::abs(v1.x) > std::abs(v1.y))
-		*v2 = Vector3<T>(-v1.z, 0, v1.x) /
-		std::sqrt(v1.x * v1.x + v1.z * v1.z);
+	if (std::abs(v1.x()) > std::abs(v1.y()))
+		*v2 = Vector3<T>(-v1.z(), 0, v1.x()) /
+		std::sqrt(v1.x() * v1.x() + v1.z() * v1.z());
 	else
-		*v2 = Vector3<T>(0, v1.z, -v1.y) /
-		std::sqrt(v1.y * v1.y + v1.z * v1.z);
+		*v2 = Vector3<T>(0, v1.z(), -v1.y()) /
+		std::sqrt(v1.y() * v1.y() + v1.z() * v1.z());
 	*v3 = Cross(v1, *v2);
 }
 template <typename T>
 Point<int, 2> Floor(const Point<T, 2>& p) {
-	return Point<T, 2>(std::floor(p.x), std::floor(p.y));
+	return Point<T, 2>(std::floor(p.x()), std::floor(p.y()));
 }
 
 template <typename T>
 Point<int, 2> Ceil(const Point<T, 2>& p) {
-	return Point<T, 2>(std::ceil(p.x), std::ceil(p.y));
+	return Point<T, 2>(std::ceil(p.x()), std::ceil(p.y()));
 }
 
 template <typename T>
@@ -148,10 +152,10 @@ Point<T, 2> Lerp(Float t, const Point<T, 2>& v0, const Point<T, 2>& v1) {
 
 template <typename T>
 Point<int, 2> Min(const Point<T, 2>& pa, const Point<T, 2>& pb) {
-	return Point<T, 2>(std::min(pa.x, pb.x), std::min(pa.y, pb.y));
+	return Point<T, 2>(std::min(pa.x(), pb.x()), std::min(pa.y(), pb.y()));
 }
 
 template <typename T>
 Point<int, 2> Max(const Point<T, 2>& pa, const Point<T, 2>& pb) {
-	return Point<T, 2>(std::max(pa.x, pb.x), std::max(pa.y, pb.y));
+	return Point<T, 2>(std::max(pa.x(), pb.x()), std::max(pa.y(), pb.y()));
 }

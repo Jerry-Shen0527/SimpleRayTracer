@@ -1,6 +1,5 @@
 #pragma once
 #include <Tools/Math/Sampling.h>
-#include <Tools/Math/Vector3.h>
 
 inline float CosTheta(const Vector3f& w) { return w.z(); }
 inline float Cos2Theta(const Vector3f& w) { return w.z() * w.z(); }

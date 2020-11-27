@@ -3,9 +3,18 @@
 #include "config.h"
 #include "Vector.h"
 
-using Vector4f = Vector<Float, 4>;
-using Vector3f = Vector<Float, 3>;
-using Vector2f = Vector<Float, 2>;
+template<typename T>
+using Vector2 = Vector<T, 2>;
+
+template<typename T>
+using Vector3 = Vector<T, 3>;
+
+template<typename T>
+using Vector4 = Vector<T, 4>;
+
+using Vector4f = Vector4<Float>;
+using Vector3f = Vector3<Float>;
+using Vector2f = Vector2<Float>;
 
 inline Vector3f Cross(const Vector3f& u, const Vector3f& v) {
 	return Vector3f(u.data[1] * v.data[2] - u.data[2] * v.data[1],
@@ -33,7 +42,19 @@ class Point :public Vector<T, n>
 {
 public:
 	Point() :Vector() {}
-	Point(const Point<T, n>& vec)
+
+	Point(T num) :Vector(num) {}
+	template<typename U>
+	Point(const Point<U, n>& vec)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			data[i] = vec[i];
+		}
+	}
+
+	template<typename U>
+	Point(const Vector<U, n>& vec)
 	{
 		for (int i = 0; i < n; ++i)
 		{
@@ -66,10 +87,16 @@ inline Point<T, n> operator-(const Point<T, n>& u, const Vector<T, n>& v) {
 	return rst;
 }
 
-using Point2i = Point<int, 2>;
-using Point2f = Point<Float, 2>;
-using Point3i = Point<int, 3>;
-using Point3f = Point<Float, 3>;
+template<typename T>
+using Point3 = Point<T, 3>;
+
+template<typename T>
+using Point2 = Point<T, 2>;
+
+using Point2i = Point2<int>;
+using Point2f = Point2<Float>;
+using Point3i = Point3<int>;
+using Point3f = Point3<Float>;
 
 using Color = Vector3f;
 

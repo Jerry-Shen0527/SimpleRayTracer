@@ -1,5 +1,5 @@
+#include "Geometry/Interaction.h"
 #include "Geometry/Transform.h"
-#include "Tools/Math/math_tools.h"
 
 Transform::Transform(const Float mat[4][4])
 {
@@ -31,17 +31,17 @@ Bounds3f Transform::operator()(const Bounds3f& b) const
 Ray Transform::operator()(const Ray& r) const
 {
 	Vector3f oError;
-	Point3f o = (*this)(r.o);
+	Point3f o = (*this)(r.o, &oError);
 	Vector3f d = (*this)(r.d);
-	//TODO:Offset ray origin to edge of error boundsand compute tMax 233
-	//Float lengthSquared = d.length_squared();
-	//Float tMax = r.tMax;
-	//if (lengthSquared > 0) {
-	//	Float dt = dot(abs(d), oError) / lengthSquared;
-	//	o += d * dt;
-	//	tMax -= dt;
-	//}
-	return Ray(o, d, r.tMax, r.time, r.medium);
+	// Offset ray origin to edge of error bounds and compute _tMax_
+	Float lengthSquared = d.LengthSquared();
+	Float tMax = r.tMax;
+	if (lengthSquared > 0) {
+		Float dt = Dot(Abs(d), oError) / lengthSquared;
+		o += d * dt;
+		tMax -= dt;
+	}
+	return Ray(o, d, tMax, r.time, r.medium);
 }
 
 Transform Transform::operator*(const Transform& t2) const

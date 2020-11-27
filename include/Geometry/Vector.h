@@ -1,7 +1,4 @@
 #pragma once
-#include <cassert>
-#include <cstdarg>
-#include <initializer_list>
 #include <ostream>
 
 template<typename T, int n>

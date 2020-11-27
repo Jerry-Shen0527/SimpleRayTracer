@@ -1,7 +1,9 @@
 #include <Geometry/Primitive.h>
 
-GeometricPrimitive::GeometricPrimitive(const std::shared_ptr<Shape>& shape, const std::shared_ptr<material>& material,
-	const std::shared_ptr<AreaLight>& areaLight) : shape(shape), m(material), areaLight(areaLight)
+#include "BRDF/Material.h"
+
+GeometricPrimitive::GeometricPrimitive(const std::shared_ptr<Shape>& shape, const std::shared_ptr<Material>& material,
+                                       const std::shared_ptr<AreaLight>& areaLight) : shape(shape), m(material), areaLight(areaLight)
 {
 }
 
@@ -37,7 +39,7 @@ const AreaLight* GeometricPrimitive::GetAreaLight() const
 	return areaLight.get();
 }
 
-const material* GeometricPrimitive::GetMaterial() const
+const Material* GeometricPrimitive::GetMaterial() const
 {
 	return m.get();
 }

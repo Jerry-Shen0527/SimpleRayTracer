@@ -3,26 +3,24 @@
 // Constants
 #include <config.h>
 
-#include "Vector3.h"
+#include "Geometry/Vector3.h"
 
-const Float Infinity = std::numeric_limits<Float>::infinity();
-const Float Pi = 3.1415926535897932385f;
-const Float InvPi = 1 / Pi;
-const Float Inv2Pi = 1 / Pi / 2.0;
+constexpr Float Infinity = std::numeric_limits<Float>::infinity();
+constexpr Float Pi = 3.1415926535897932385f;
+constexpr Float InvPi = 1 / Pi;
+constexpr Float Inv2Pi = 1 / Pi / 2.0;
+constexpr Float PiOver4 = Pi / 4.0;
+constexpr Float PiOver2 = Pi / 2.0;
 
 inline Float degrees_to_radians(Float degrees) {
 	return degrees * Pi / 180.0;
 }
 
-namespace tool
-{
-	inline Float Clamp(Float x, Float min, Float max) {
-		if (x < min) return min;
-		if (x > max) return max;
-		return x;
-	}
+inline Float Clamp(Float x, Float min, Float max) {
+	if (x < min) return min;
+	if (x > max) return max;
+	return x;
 }
-using namespace tool;
 
 inline void idx_to_ij(int idx, int& i, int& j, int width)
 {

@@ -1,12 +1,10 @@
 #pragma once
+#include <cassert>
+
 #include "ray.h"
 #include "BRDF/Medium.h"
 
-class Primitive;
-class MemoryArena;
-class Shape;
-class BSDF;
-class BSSRDF;
+
 const Float ShadowEpsilon = 0.0001f;
 
 enum class TransportMode { Radiance, Importance };
@@ -55,12 +53,12 @@ public:
 	BSSRDF* bssrdf = nullptr;
 };
 
-class material;
+class Material;
 class SurfaceInteraction :public Interaction {
 public:
 	SurfaceInteraction() {}
 
-	std::shared_ptr<material> mat_ptr;
+	std::shared_ptr<Material> mat_ptr;
 
 	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :Interaction(p, Normal3f((Cross(dpdu, dpdv)).normalize()), pError, r_in, time) {}
 

@@ -2,7 +2,6 @@
 #include "BRDF/Material.h"
 
 #include "BRDF/Lambertian.h"
-#include "BRDF/metal.h"
 #include "BRDF/MicrofacetDistribution.h"
 #include "BRDF/Specular.h"
 #include "BRDF/OrenNayar.h"

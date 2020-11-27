@@ -1,7 +1,10 @@
 #pragma once
 #include <Geometry/Shape.h>
 
+
+#include "common.h"
 #include "Light.h"
+
 class AreaLight :public Light
 {
 public:

@@ -1,5 +1,6 @@
 #pragma once
 #include "BxDF_Utility.h"
+#include "Dielectric.h"
 
 class MicrofacetDistribution
 {

@@ -1,9 +1,6 @@
-#include <iostream>
-#include <Tools/Math/Vector3.h>
+#include <Geometry/Vector3.h>
 
-#include "Tools/Math/Sampling.h"
-
-void Vector3f_test()
+int main()
 {
 	Vector3f a(3, 4, 5);
 	Vector3f b(4, 5, 6);
@@ -25,6 +22,4 @@ void Vector3f_test()
 	std::cout << a.x() << ' ' << a.y() << ' ' << a.z() << std::endl;
 	std::cout << a.random() << std::endl;
 	std::cout << a.random(1, 2) << std::endl;
-	std::cout << random_in_unit_sphere() << std::endl;
-	std::cout << random_unit_vector() << "length=" << random_unit_vector().length() << std::endl;
 }

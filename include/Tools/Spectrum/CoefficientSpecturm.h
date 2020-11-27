@@ -2,7 +2,6 @@
 #include <vector>
 
 #include "config.h"
-#include "Tools/Math/Vector3.h"
 #include <Tools/Math/math_tools.h>
 
 template<int nSamples>

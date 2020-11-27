@@ -2,7 +2,7 @@
 #include "Tools/Math/matrix.h"
 #include <Tools/Bound.h>
 
-#include "Interaction.h"
+class SurfaceInteraction;
 
 class Transform
 {
@@ -26,6 +26,8 @@ public:
 	Vector<T, 3> operator()(const Vector<T, 3>& v) const;
 	template <typename T>
 	inline Point<T, 3> operator()(const Point<T, 3>& p) const;
+	template<typename T>
+	inline Point3<T> operator()(const Point3<T>& pt, Vector3<T>* absError) const;
 
 	Bounds3f operator()(const Bounds3f& b) const;
 	Ray operator()(const Ray& r) const;
@@ -61,6 +63,30 @@ Point<T, 3> Transform::operator()(const Point<T, 3>& p) const
 	T wp = m.m[3][0] * x + m.m[3][1] * y + m.m[3][2] * z + m.m[3][3];
 	if (wp == 1) return Point<T, 3>(xp, yp, zp);
 	else return Point<T, 3>(xp, yp, zp) / wp;
+}
+
+template <typename T>
+Point3<T> Transform::operator()(const Point3<T>& pt, Vector3<T>* absError) const
+{
+	T x = p.x, y = p.y, z = p.z;
+	// Compute transformed coordinates from point _pt_
+	T xp = (m.m[0][0] * x + m.m[0][1] * y) + (m.m[0][2] * z + m.m[0][3]);
+	T yp = (m.m[1][0] * x + m.m[1][1] * y) + (m.m[1][2] * z + m.m[1][3]);
+	T zp = (m.m[2][0] * x + m.m[2][1] * y) + (m.m[2][2] * z + m.m[2][3]);
+	T wp = (m.m[3][0] * x + m.m[3][1] * y) + (m.m[3][2] * z + m.m[3][3]);
+
+	// Compute absolute error for transformed point
+	T xAbsSum = (std::abs(m.m[0][0] * x) + std::abs(m.m[0][1] * y) +
+		std::abs(m.m[0][2] * z) + std::abs(m.m[0][3]));
+	T yAbsSum = (std::abs(m.m[1][0] * x) + std::abs(m.m[1][1] * y) +
+		std::abs(m.m[1][2] * z) + std::abs(m.m[1][3]));
+	T zAbsSum = (std::abs(m.m[2][0] * x) + std::abs(m.m[2][1] * y) +
+		std::abs(m.m[2][2] * z) + std::abs(m.m[2][3]));
+	*pError = gamma(3) * Vector3<T>(xAbsSum, yAbsSum, zAbsSum);
+	if (wp == 1)
+		return Point3<T>(xp, yp, zp);
+	else
+		return Point3<T>(xp, yp, zp) / wp;
 }
 
 inline Transform Inverse(const Transform& t) {

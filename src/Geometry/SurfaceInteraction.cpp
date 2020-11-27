@@ -1,8 +1,13 @@
 #include <Tools/Light/AreaLight.h>
 
+#include "common.h"
+#include "Geometry/Interaction.h"
+#include "Geometry/Primitive.h"
+
 Spectrum SurfaceInteraction::Le(const Vector3f& w) const
 {
-	const AreaLight* area = mat_ptr->GetAreaLight();
+	const AreaLight* area = primitive->GetAreaLight();
+
 	return area ? area->L(*this, w) : Spectrum(0.f);
 }
 

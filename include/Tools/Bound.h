@@ -2,51 +2,50 @@
 #include <BRDF/BxDF_Utility.h>
 
 #include "ray.h"
-#include "Geometry/Vector.h"
 #include "Geometry/Vector3.h"
 
 template<typename T, int n> class Bounds;
-template<typename T, int n> bool Inside(const Vector<T, n>& p, const Bounds<T, n>& b);
+template<typename T, int n> bool Inside(const Point<T, n>& p, const Bounds<T, n>& b);
 
 template < typename T, int n> class Bounds {
 public:
 	Bounds() {
 		T minNum = std::numeric_limits<T>::lowest();
 		T maxNum = std::numeric_limits<T>::max();
-		pMin = Vector<T, n>(maxNum);
-		pMax = Vector<T, n>(minNum);
+		pMin = Point<T, n>(maxNum);
+		pMax = Point<T, n>(minNum);
 	}
-	Bounds(const Vector<T, n>& p) : pMin(p), pMax(p) { }
+	Bounds(const Point<T, n>& p) : pMin(p), pMax(p) { }
 
-	Bounds(const Vector<T, n>& p1, const Vector<T, n>& p2) : pMin(minimum(p1, p2)), pMax(maximum(p1, p2)) {	}
+	Bounds(const Point<T, n>& p1, const Point<T, n>& p2) : pMin(minimum(p1, p2)), pMax(maximum(p1, p2)) {	}
 
-	Vector<T, n> Diagonal() const { return pMax - pMin; }
+	Point<T, n> Diagonal() const { return pMax - pMin; }
 
 	T SurfaceArea() const;
 	T Volume() const;
 
 	int MaximumExtent() const;
 
-	Vector<T, n> Lerp(const Vector<T, n>& t) const {
-		return t * pMin + (Vector<T, n>(1) - t) * pMax;
+	Point<T, n> Lerp(const Point<T, n>& t) const {
+		return t * pMin + (Point<T, n>(1) - t) * pMax;
 	}
 
-	Vector<T, n> Offset(const Vector<T, n>& p) const {
-		Vector<T, n>o = p - pMin;
+	Point<T, n> Offset(const Point<T, n>& p) const {
+		Point<T, n>o = p - pMin;
 		return o / (pMax - pMin);
 	}
 
-	void BoundingSphere(Vector<T, n>* center, Float* radius) const {
+	void BoundingSphere(Point<T, n>* center, Float* radius) const {
 		*center = (pMin + pMax) / 2;
 		*radius = Inside(*center, *this) ? (*center - pMax).length() : 0;
 	}
 
-	const Vector<T, n>& operator[](int i) const;
-	Vector<T, n>& operator[](int i);
-	Vector<T, n> Corner(int corner) const;
+	const Point<T, n>& operator[](int i) const;
+	Point<T, n>& operator[](int i);
+	Point<T, n> Corner(int corner) const;
 
 	bool IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const;
-	bool IntersectP(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const;
+	bool IntersectP(const Ray& ray, const Point3f& invDir, const int dirIsNeg[3]) const;
 
 	Point<T, n> pMin;
 	Point<T, n> pMax;
@@ -55,7 +54,7 @@ public:
 template <typename T, int n>
 T Bounds<T, n>::SurfaceArea() const
 {
-	Vector<T, n> d = Diagonal();
+	Point<T, n> d = Diagonal();
 	T rst = 0;
 	for (int i = 0; i < n; ++i)
 	{
@@ -70,7 +69,7 @@ T Bounds<T, n>::SurfaceArea() const
 template <typename T, int n>
 T Bounds<T, n>::Volume() const
 {
-	Vector<T, n> d = Diagonal();
+	Point<T, n> d = Diagonal();
 	T temp = 1;
 	for (int i = 0; i < n; ++i)
 		temp *= d[i];
@@ -80,7 +79,7 @@ T Bounds<T, n>::Volume() const
 template <typename T, int n>
 int Bounds<T, n>::MaximumExtent() const
 {
-	Vector<T, n> d = Diagonal();
+	Point<T, n> d = Diagonal();
 	int i = 0;
 	T temp = d[0];
 	for (int j = 0; j < n; ++j)
@@ -91,7 +90,7 @@ int Bounds<T, n>::MaximumExtent() const
 }
 
 template <typename T, int n>
-const Vector<T, n>& Bounds<T, n>::operator[](int i) const
+const Point<T, n>& Bounds<T, n>::operator[](int i) const
 {
 	if (i == 0)
 		return pMin;
@@ -99,7 +98,7 @@ const Vector<T, n>& Bounds<T, n>::operator[](int i) const
 }
 
 template <typename T, int n>
-Vector<T, n>& Bounds<T, n>::operator[](int i)
+Point<T, n>& Bounds<T, n>::operator[](int i)
 {
 	if (i == 0)
 		return pMin;
@@ -107,10 +106,10 @@ Vector<T, n>& Bounds<T, n>::operator[](int i)
 }
 
 template <typename T, int n>
-Vector<T, n> Bounds<T, n>::Corner(int corner) const
+Point<T, n> Bounds<T, n>::Corner(int corner) const
 {
 	int bit = 1;
-	Vector<T, n> temp(0);
+	Point<T, n> temp(0);
 	for (int i = 0; i < n; ++i)
 	{
 		temp[i] = (*this)[(corner & bit) ? 1 : 0][i];
@@ -145,7 +144,7 @@ bool Bounds<T, n>::IntersectP(const Ray& ray, Float* hitt0, Float* hitt1) const
 }
 
 template <typename T, int n>
-bool Bounds<T, n>::IntersectP(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const
+bool Bounds<T, n>::IntersectP(const Ray& ray, const Point3f& invDir, const int dirIsNeg[3]) const
 {
 	const Bounds& bounds = *this;
 	Float tMin = (bounds[dirIsNeg[0]].x() - ray.o.x()) * invDir.x();
@@ -195,7 +194,7 @@ bool Overlaps(const Bounds<T, n>& b1, const Bounds<T, n>& b2)
 }
 
 template <typename T, int n>
-bool Inside(const Vector<T, n>& p, const Bounds<T, n>& b)
+bool Inside(const Point<T, n>& p, const Bounds<T, n>& b)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -205,7 +204,7 @@ bool Inside(const Vector<T, n>& p, const Bounds<T, n>& b)
 }
 
 template <typename T, int n>
-bool InsideExclusive(const Vector<T, n>& p, const Bounds<T, n>& b)
+bool InsideExclusive(const Point<T, n>& p, const Bounds<T, n>& b)
 {
 	for (int i = 0; i < n; ++i)
 	{
@@ -216,8 +215,8 @@ bool InsideExclusive(const Vector<T, n>& p, const Bounds<T, n>& b)
 
 template <typename T, typename U, int n>
 inline Bounds<T, n>	Expand(const Bounds<T, n>& b, U delta) {
-	return Bounds<T, n>(b.pMin - Vector<T, n>(delta),
-		b.pMax + Vector<T, n>(delta));
+	return Bounds<T, n>(b.pMin - Point<T, n>(delta),
+		b.pMax + Point<T, n>(delta));
 }
 
 template<int n>
@@ -229,5 +228,5 @@ using Boundsi = Bounds<int, n>;
 using Bounds2f = Boundsf<2>;
 using Bounds2i = Boundsi<2>;
 
-using Bounds3f = Bounds<Float, 3>;
-using Bounds3i = Bounds<int, 3>;
+using Bounds3f = Boundsf<3>;
+using Bounds3i = Boundsi<3>;

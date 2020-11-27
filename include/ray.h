@@ -1,8 +1,6 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include <Tools/Math/Vector3.h>
-
 #include "BRDF/BxDF_Utility.h"
 #include "Tools/Math/EFloat.h"
 
@@ -19,7 +17,7 @@ public:
 
 	Point3f at(Float t) const
 	{
-		return  t * d + o;
+		return   o + t * d;
 	}
 
 public:

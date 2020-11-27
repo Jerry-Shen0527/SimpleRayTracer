@@ -4,8 +4,11 @@ project(RayTracer VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) 
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-set(CMAKE_DEBUG_POSTFIX _d)
-add_subdirectory(src)
+include(cmake/InitUCMake.cmake)
+Ubpa_InitUCMake()
+
+Ubpa_InitProject()
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+Ubpa_AddSubDirsRec(src)

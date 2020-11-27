@@ -34,7 +34,7 @@ Film::Film(const Point2i& resolution, const Bounds2f& cropWindow,
 std::unique_ptr<FilmTile> Film::GetFilmTile(const Bounds2i &sampleBounds) {
     // Bound image pixels that samples in _sampleBounds_ contribute to
     Vector2f halfPixel = Vector2f(0.5f, 0.5f);
-    Bounds2f floatBounds = (Bounds2f)sampleBounds;
+    Bounds2f floatBounds = Bounds2f(sampleBounds.pMin,sampleBounds.pMax);
     Point2i p0 = (Point2i)Ceil(floatBounds.pMin - halfPixel - filter->radius);
     Point2i p1 = (Point2i)Floor(floatBounds.pMax - halfPixel + filter->radius) +
                  Point2i(1, 1);

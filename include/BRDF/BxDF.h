@@ -1,6 +1,5 @@
 #pragma once
 #include "common.h"
-#include <Tools/Math/Vector3.h>
 #include <Tools/Spectrum/SampledSpectrum.h>
 
 enum BxDFType {

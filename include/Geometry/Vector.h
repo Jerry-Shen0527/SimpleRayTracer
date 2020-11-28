@@ -55,6 +55,9 @@ public:
 	T& z();
 	T w() const;
 	T& w();
+
+	void print(std::ostream& o);
+
 public:
 	T data[n];
 private:
@@ -67,6 +70,15 @@ void Vector<T, n>::set_value(T x, T y)
 {
 	data[0] = x;
 	data[1] = y;
+}
+
+template <typename T, int n>
+void Vector<T, n>::print(std::ostream& o)
+{
+	for (int i = 0; i < n; ++i)
+	{
+		o << data[i] << ' ';
+	}
 }
 
 template <typename T, int n>
@@ -380,7 +392,7 @@ inline Vector<T, n> maximum(const Vector<T, n>& v1, const Vector<T, n>& v2)
 	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)
 	{
-		rst[i] = v1[i] < v2[i] ? v1[i] : v2[i];
+		rst[i] = v1[i] > v2[i] ? v1[i] : v2[i];
 	}
 	return  rst;
 }

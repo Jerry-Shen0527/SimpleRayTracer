@@ -40,12 +40,16 @@ void SamplerIntegrator::Render(const Scene& scene)
 					Spectrum L(0.f);
 					if (rayWeight > 0)
 						L = Li(ray, scene, *tileSampler, arena);
-					
+
 					//	Add camera ray¡¯s contribution to image 32
 					filmTile->AddSample(cameraSample.pFilm, L, rayWeight);
-					
+
 					//	Free MemoryArena memory from computing image sample value 32
+					arena.Reset();
 				} while (tileSampler->StartNextSample());
 			}
+			camera->film->MergeFilmTile(std::move(filmTile));
 		}, nTiles);
+
+	camera->film->WriteImage();
 }

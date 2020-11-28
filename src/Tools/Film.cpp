@@ -31,17 +31,32 @@ Film::Film(const Point2i& resolution, const Bounds2f& cropWindow,
 	}
 }
 
-std::unique_ptr<FilmTile> Film::GetFilmTile(const Bounds2i &sampleBounds) {
-    // Bound image pixels that samples in _sampleBounds_ contribute to
-    Vector2f halfPixel = Vector2f(0.5f, 0.5f);
-    Bounds2f floatBounds = Bounds2f(sampleBounds.pMin,sampleBounds.pMax);
-    Point2i p0 = (Point2i)Ceil(floatBounds.pMin - halfPixel - filter->radius);
-    Point2i p1 = (Point2i)Floor(floatBounds.pMax - halfPixel + filter->radius) +
-                 Point2i(1, 1);
-    Bounds2i tilePixelBounds = Intersect(Bounds2i(p0, p1), croppedPixelBounds);
-    return std::unique_ptr<FilmTile>(new FilmTile(
-        tilePixelBounds, filter->radius, filterTable, filterTableWidth,
-        maxSampleLuminance));
+Bounds2i Film::GetSampleBounds() const
+{
+	Bounds2f floatBounds(Floor(Point2f(croppedPixelBounds.pMin) + Vector2f(0.5f, 0.5f) - filter->radius),
+		Ceil(Point2f(croppedPixelBounds.pMax) - Vector2f(0.5f, 0.5f) + filter->radius));
+	return (Bounds2i)floatBounds;
+}
+
+Bounds2f Film::GetPhysicalExtent() const
+{
+	Float aspect = (Float)fullResolution.y() / (Float)fullResolution.x();
+	Float x = std::sqrt(diagonal * diagonal / (1 + aspect * aspect));
+	Float y = aspect * x;
+	return Bounds2f(Point2f(-x / 2, -y / 2), Point2f(x / 2, y / 2));
+}
+
+std::unique_ptr<FilmTile> Film::GetFilmTile(const Bounds2i& sampleBounds) {
+	// Bound image pixels that samples in _sampleBounds_ contribute to
+	Vector2f halfPixel = Vector2f(0.5f, 0.5f);
+	Bounds2f floatBounds = Bounds2f(sampleBounds.pMin, sampleBounds.pMax);
+	Point2i p0 = (Point2i)Ceil(floatBounds.pMin - halfPixel - filter->radius);
+	Point2i p1 = (Point2i)Floor(floatBounds.pMax - halfPixel + filter->radius) +
+		Point2i(1, 1);
+	Bounds2i tilePixelBounds = Intersect(Bounds2i(p0, p1), croppedPixelBounds);
+	return std::unique_ptr<FilmTile>(new FilmTile(
+		tilePixelBounds, filter->radius, filterTable, filterTableWidth,
+		maxSampleLuminance));
 }
 
 void FilmTile::AddSample(const Point2f& pFilm, Spectrum L, Float sampleWeight)

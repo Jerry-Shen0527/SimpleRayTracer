@@ -15,6 +15,10 @@ public:
 		pMin = Point<T, n>(maxNum);
 		pMax = Point<T, n>(minNum);
 	}
+	template<typename U>
+	Bounds(const Bounds<U,n>& b) : pMin(b.pMin), pMax(b.pMax) { }
+
+	
 	Bounds(const Point<T, n>& p) : pMin(p), pMax(p) { }
 
 	Bounds(const Point<T, n>& p1, const Point<T, n>& p2) : pMin(minimum(p1, p2)), pMax(maximum(p1, p2)) {	}

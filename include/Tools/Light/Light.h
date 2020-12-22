@@ -20,7 +20,7 @@ public:
 	Light(int flags, const Transform& LightToWorld, const MediumInterface& mediumInterface, int nSamples = 1)
 		: flags(flags), nSamples(std::max(1, nSamples)), mediumInterface(mediumInterface), LightToWorld(LightToWorld), WorldToLight(Inverse(LightToWorld)) {	}
 
-	virtual Spectrum Sample_Li(const Interaction& ref, const Point2f& u, Vector3f& wi, Float& pdf, VisibilityTester* vis) const = 0;
+	virtual Spectrum Sample_Li(const Interaction& ref, const Point2f& u, Vector3f* wi, Float* pdf, VisibilityTester* vis) const = 0;
 
 	virtual Spectrum Power() const = 0;
 	virtual void Preprocess(const Scene& scene) { }
@@ -36,6 +36,7 @@ protected:
 
 class VisibilityTester {
 public:
+	VisibilityTester() {}
 	VisibilityTester(const Interaction& p0, const Interaction& p1) : p0(p0), p1(p1) { }
 
 	const Interaction& P0() const { return p0; }

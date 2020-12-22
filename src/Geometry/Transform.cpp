@@ -58,7 +58,7 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 	// Transform remaining members of _SurfaceInteraction_
 	const Transform& t = *this;
 	ret.n = (t(si.n)).Normalize();
-	ret.ray_in = (t(si.ray_in)).Normalize();
+	ret.wo = (t(si.wo)).Normalize();
 	ret.time = si.time;
 	ret.mediumInterface = si.mediumInterface;
 	ret.uv = si.uv;

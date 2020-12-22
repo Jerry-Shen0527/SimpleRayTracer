@@ -8,7 +8,7 @@ int main()
 	ParallelInit();
 
 	ParallelFor2D([&](Point2i p) {
-		for (int i = 1; i < 10; ++i)
+		for (int i = 1; i < 10000000; ++i)
 		{
 			arr[p.x()][p.y()] += i;
 		}}, b);

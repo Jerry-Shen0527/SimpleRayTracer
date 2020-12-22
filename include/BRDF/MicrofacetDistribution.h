@@ -17,6 +17,9 @@ public:
 	Float G1(const Vector3f& w) const {
 		return 1 / (1 + Lambda(w));
 	}
+
+	virtual Vector3f Sample_wh(const Vector3f& wo, const Point2f& u) const = 0;
+
 protected:
 	const bool sampleVisibleArea;
 };
@@ -28,6 +31,15 @@ public:
 
 	Float Lambda(const Vector3f& w) const;
 
+	Vector3f Sample_wh(const Vector3f& wo, const Point2f& u) const override;
+
+	Float Pdf(const Vector3f& wo,
+		const Vector3f& wh) const {
+		if (sampleVisibleArea)
+			return D(wh) * G1(wo) * AbsDot(wo, wh) / AbsCosTheta(wo);
+		else
+			return D(wh) * AbsCosTheta(wh);
+	}
 private:
 	const Float alphax, alphay;
 };

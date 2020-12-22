@@ -54,3 +54,8 @@ inline bool SameHemisphere(const Vector3f& w, const Vector3f& wp) {
 	return w.z() * wp.z() > 0;
 }
 inline Float Radians(Float deg) { return (Pi / 180) * deg; }
+
+inline Vector3f SphericalDirection(Float sinTheta, Float cosTheta, Float phi) {
+	return Vector3f(sinTheta * std::cos(phi), sinTheta * std::sin(phi),
+		cosTheta);
+}

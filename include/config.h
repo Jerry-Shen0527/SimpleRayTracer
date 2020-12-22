@@ -4,7 +4,8 @@
 
 using Float = float;
 
-enum class TransportMode;
+enum class TransportMode { Radiance, Importance };
+
 class Primitive;
 class MemoryArena;
 class Shape;

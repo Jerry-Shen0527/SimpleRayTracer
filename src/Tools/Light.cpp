@@ -1,5 +1,6 @@
 #include <Tools/Light/Light.h>
-#include <Scene/Scene.h>
+
+#include "Geometry/Scene.h"
 
 bool VisibilityTester::Unoccluded(const Scene& scene) const {
 	return !scene.IntersectP(p0.SpawnRayTo(p1.p));

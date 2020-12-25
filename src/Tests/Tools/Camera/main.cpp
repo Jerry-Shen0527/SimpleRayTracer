@@ -35,6 +35,7 @@ int main()
 	//	cout << "Intersect!" << endl;
 	//else cout << "Not intersect!" << endl;
 
+	Sampler
 	camera.GenerateRay()
 	
 }

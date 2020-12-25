@@ -1,5 +1,7 @@
 #include <Tools/camera.h>
 
+#include "Tools/Sampler.h"
+
 PerspectiveCamera::PerspectiveCamera(const AnimatedTransform& CameraToWorld, const Bounds2f& screenWindow, Float shutterOpen, Float shutterClose, Float lensRadius, Float focalDistance, Float fov, Film* film, const Medium* medium)
 	: ProjectiveCamera(CameraToWorld, Perspective(fov, 1e-2f, 1000.f),
 		screenWindow, shutterOpen, shutterClose, lensRadius,
@@ -13,10 +15,10 @@ PerspectiveCamera::PerspectiveCamera(const AnimatedTransform& CameraToWorld, con
 	// Compute image plane bounds at $z=1$ for _PerspectiveCamera_
 	Point2i res = film->fullResolution;
 	Point3f pMin = RasterToCamera(Point3f(0, 0, 0));
-	Point3f pMax = RasterToCamera(Point3f(res.x, res.y, 0));
-	pMin /= pMin.z;
-	pMax /= pMax.z;
-	A = std::abs((pMax.x - pMin.x) * (pMax.y - pMin.y));
+	Point3f pMax = RasterToCamera(Point3f(res.x(), res.y(), 0));
+	pMin /= pMin.z();
+	pMax /= pMax.z();
+	A = std::abs((pMax.x() - pMin.x()) * (pMax.y() - pMin.y()));
 }
 
 Float Camera::GenerateRayDifferential(const CameraSample& sample, RayDifferential* rd) const
@@ -28,7 +30,7 @@ Float Camera::GenerateRayDifferential(const CameraSample& sample, RayDifferentia
 	Float wtx;
 	for (Float eps : { .05, -.05 }) {
 		CameraSample sshift = sample;
-		sshift.pFilm.x += eps;
+		sshift.pFilm.x() += eps;
 		Ray rx;
 		wtx = GenerateRay(sshift, &rx);
 		rd->rxOrigin = rd->o + (rx.o - rd->o) / eps;
@@ -43,7 +45,7 @@ Float Camera::GenerateRayDifferential(const CameraSample& sample, RayDifferentia
 	Float wty;
 	for (Float eps : { .05, -.05 }) {
 		CameraSample sshift = sample;
-		sshift.pFilm.y += eps;
+		sshift.pFilm.y() += eps;
 		Ray ry;
 		wty = GenerateRay(sshift, &ry);
 		rd->ryOrigin = rd->o + (ry.o - rd->o) / eps;
@@ -60,7 +62,7 @@ Float Camera::GenerateRayDifferential(const CameraSample& sample, RayDifferentia
 
 Float PerspectiveCamera::GenerateRay(const CameraSample& sample, Ray* ray) const
 {
-	Point3f pFilm = Point3f(sample.pFilm.x, sample.pFilm.y, 0);
+	Point3f pFilm = Point3f(sample.pFilm.x(), sample.pFilm.y(), 0);
 	Point3f pCamera = RasterToCamera(pFilm);
 	*ray = Ray(Point3f(0, 0, 0), Normalize(Vector3f(pCamera)));
 	// Modify ray for depth of field
@@ -69,11 +71,11 @@ Float PerspectiveCamera::GenerateRay(const CameraSample& sample, Ray* ray) const
 		Point2f pLens = lensRadius * ConcentricSampleDisk(sample.pLens);
 
 		// Compute point on plane of focus
-		Float ft = focalDistance / ray->d.z;
+		Float ft = focalDistance / ray->d.z();
 		Point3f pFocus = (*ray)(ft);
 
 		// Update ray for effect of lens
-		ray->o = Point3f(pLens.x, pLens.y, 0);
+		ray->o = Point3f(pLens.x(), pLens.y(), 0);
 		ray->d = Normalize(pFocus - ray->o);
 	}
 	ray->time = Lerp(sample.time, shutterOpen, shutterClose);

@@ -1,7 +1,5 @@
 #pragma once
-
-#include <Scene/Scene.h>
-
+#include <Geometry/Scene.h>
 class Integrator
 {
 public:

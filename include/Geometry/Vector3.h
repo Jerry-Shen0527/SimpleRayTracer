@@ -91,6 +91,16 @@ inline Point<T, n> operator-(const Point<T, n>& u, const Vector<T, n>& v) {
 	return rst;
 }
 
+template<typename T, int n>
+inline Vector<T, n> operator-(const Point<T, n>& u, const Point<T, n>& v) {
+	Vector<T, n> rst;
+	for (int i = 0; i < n; ++i)
+	{
+		rst.data[i] = u.data[i] - v.data[i];
+	}
+	return rst;
+}
+
 template<typename T>
 using Point3 = Point<T, 3>;
 

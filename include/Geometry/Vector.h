@@ -341,6 +341,16 @@ inline Vector<T, n> operator*(const Vector<T, n>& u, const Vector<T, n>& v) {
 }
 
 template<typename T, int n>
+inline Vector<T, n> operator/(const Vector<T, n>& u, const Vector<T, n>& v) {
+	Vector<T, n> rst;
+	for (int i = 0; i < n; ++i)
+	{
+		rst.data[i] = u.data[i] / v.data[i];
+	}
+	return rst;
+}
+
+template<typename T, int n>
 inline Vector<T, n> operator*(float t, const Vector<T, n>& v) {
 	Vector<T, n> rst;
 	for (int i = 0; i < n; ++i)

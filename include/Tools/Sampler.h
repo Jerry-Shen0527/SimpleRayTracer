@@ -3,13 +3,13 @@
 #include <vector>
 #include <BRDF/BxDF_Utility.h>
 
-static const Float OneMinusEpsilon = 0x1.fffffep-1;
-
 struct CameraSample {
 	Point2f pFilm;
 	Point2f pLens;
 	Float time;
 };
+
+static const Float OneMinusEpsilon = 0x1.fffffep-1;
 
 class Sampler
 {
@@ -37,7 +37,7 @@ public:
 
 	virtual bool SetSampleNumber(int64_t sampleNum);
 
-	CameraSample Sampler::GetCameraSample(const Point2i& pRaster) {
+	CameraSample GetCameraSample(const Point2i& pRaster) {
 		CameraSample cs;
 		auto p = Get2D();
 		cs.pFilm = Point2f(p.x() + pRaster.x(), p.y() + pRaster.y());
@@ -119,3 +119,8 @@ private:
 	static const int arrayStartDim = 5;
 	int arrayEndDim;
 };
+
+inline Float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf) {
+	Float f = nf * fPdf, g = ng * gPdf;
+	return (f * f) / (f * f + g * g);
+}

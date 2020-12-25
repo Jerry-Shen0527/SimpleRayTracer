@@ -3,7 +3,7 @@
 #include "BRDF/Material.h"
 
 GeometricPrimitive::GeometricPrimitive(const std::shared_ptr<Shape>& shape, const std::shared_ptr<Material>& material,
-                                       const std::shared_ptr<AreaLight>& areaLight) : shape(shape), m(material), areaLight(areaLight)
+	const std::shared_ptr<AreaLight>& areaLight) : shape(shape), material(material), areaLight(areaLight)
 {
 }
 
@@ -17,12 +17,6 @@ bool GeometricPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) cons
 	//Initialize SurfaceInteraction::mediumInterface after Shape intersection 685
 	return true;
 }
-
-//void GeometricPrimitive::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
-//{
-//	if (m)
-//		m->ComputeScatteringFunctions(isect, arena, mode, allowMultipleLobes);
-//}
 
 Bounds3f GeometricPrimitive::WorldBound() const
 {
@@ -41,7 +35,15 @@ const AreaLight* GeometricPrimitive::GetAreaLight() const
 
 const Material* GeometricPrimitive::GetMaterial() const
 {
-	return m.get();
+	return material.get();
+}
+
+void GeometricPrimitive::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode,
+	bool allowMultipleLobes) const
+{
+	if (material)
+		material->ComputeScatteringFunctions(isect, arena, mode,
+			allowMultipleLobes);
 }
 
 bool TransformedPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) const
@@ -56,4 +58,19 @@ bool TransformedPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) co
 	if (!InterpolatedPrimToWorld.IsIdentity())
 		*isect = InterpolatedPrimToWorld(*isect);
 	return true;
+}
+
+const AreaLight* Aggregate::GetAreaLight() const
+{
+	return nullptr;
+}
+
+const Material* Aggregate::GetMaterial() const
+{
+	return nullptr;
+}
+
+void Aggregate::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode,
+	bool allowMultipleLobes) const
+{
 }

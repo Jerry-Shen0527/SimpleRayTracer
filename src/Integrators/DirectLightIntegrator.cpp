@@ -1,18 +1,31 @@
 #include <Integrators/DirectLightIntegrator.h>
 
 #include "BRDF/BSDF.h"
+#include "Tools/Light/Light.h"
 
-Spectrum DirectLightingIntegrator::Li(const RayDifferential& ray, const Scene& scene, Sampler& sampler,
-	MemoryArena& arena, int depth) const
+Spectrum DirectLightingIntegrator::Li(const RayDifferential& ray, const Scene& scene, Sampler& sampler, MemoryArena& arena, int depth) const
 {
+	Spectrum L(0.f);
+	SurfaceInteraction isect;
+	// Find closest ray intersection or return background radiance
+	if (!scene.Intersect(ray, &isect)) {
+		for (const auto& light : scene.lights) L += light->Le(ray);
+		return L;
+	}
+
+	isect.ComputeScatteringFunctions(ray, arena);
+
+	//What happens when the bsdf is nullptr?
+	if (!isect.bsdf)
+		return Li(isect.SpawnRay(ray.d), scene, sampler, arena, depth);
+
 	if (strategy == LightStrategy::UniformSampleAll)
-		L += UniformSampleAllLights(isect, scene, arena, sampler,
-			nLightSamples);
+		L += UniformSampleAllLights(isect, scene, arena, sampler, nLightSamples);
 	else
 		L += UniformSampleOneLight(isect, scene, arena, sampler);
 }
 
-Spectrum DirectLightingIntegrator::UniformSampleAllLights(const Interaction& it, const Scene& scene, MemoryArena& arena,
+Spectrum UniformSampleAllLights(const Interaction& it, const Scene& scene, MemoryArena& arena,
 	Sampler& sampler, const std::vector<int>& nLightSamples,
 	bool handleMedia)
 {
@@ -42,8 +55,7 @@ Spectrum DirectLightingIntegrator::UniformSampleAllLights(const Interaction& it,
 	return L;
 }
 
-Spectrum DirectLightingIntegrator::UniformSampleOneLight(const Interaction& it, const Scene& scene, MemoryArena& arena,
-	Sampler& sampler, bool handleMedia)
+Spectrum UniformSampleOneLight(const Interaction& it, const Scene& scene, MemoryArena& arena, Sampler& sampler, bool handleMedia)
 {
 	//Randomly choose a single light to sample, light 856
 	int nLights = int(scene.lights.size());
@@ -56,7 +68,7 @@ Spectrum DirectLightingIntegrator::UniformSampleOneLight(const Interaction& it, 
 	return (Float)nLights * EstimateDirect(it, uScattering, *light, uLight, scene, sampler, arena, handleMedia);
 }
 
-Spectrum DirectLightingIntegrator::EstimateDirect(const Interaction& it, const Point2f& uScattering, const Light& light, const Point2f& uLight, const Scene& scene, Sampler& sampler,
+Spectrum EstimateDirect(const Interaction& it, const Point2f& uScattering, const Light& light, const Point2f& uLight, const Scene& scene, Sampler& sampler,
 	MemoryArena& arena, bool handleMedia, bool specular)
 {
 	BxDFType bsdfFlags = specular ? BSDF_ALL : BxDFType(BSDF_ALL & ~BSDF_SPECULAR);

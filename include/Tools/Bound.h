@@ -16,9 +16,8 @@ public:
 		pMax = Point<T, n>(minNum);
 	}
 	template<typename U>
-	Bounds(const Bounds<U,n>& b) : pMin(b.pMin), pMax(b.pMax) { }
+	Bounds(const Bounds<U, n>& b) : pMin(b.pMin), pMax(b.pMax) { }
 
-	
 	Bounds(const Point<T, n>& p) : pMin(p), pMax(p) { }
 
 	Bounds(const Point<T, n>& p1, const Point<T, n>& p2) : pMin(minimum(p1, p2)), pMax(maximum(p1, p2)) {	}
@@ -87,9 +86,10 @@ int Bounds<T, n>::MaximumExtent() const
 	int i = 0;
 	T temp = d[0];
 	for (int j = 0; j < n; ++j)
-		if (d[j] > temp)
+		if (d[j] > temp) {
 			temp = d[j];
-	i = j;
+			i = j;
+		}
 	return i;
 }
 
@@ -153,8 +153,8 @@ bool Bounds<T, n>::IntersectP(const Ray& ray, const Point3f& invDir, const int d
 	const Bounds& bounds = *this;
 	Float tMin = (bounds[dirIsNeg[0]].x() - ray.o.x()) * invDir.x();
 	Float tMax = (bounds[1 - dirIsNeg[0]].x() - ray.o.x()) * invDir.x();
-	Float tyMin = (bounds[dirIsNeg[1]].y - ray.o.y) * invDir.y;
-	Float tyMax = (bounds[1 - dirIsNeg[1]].y - ray.o.y) * invDir.y;
+	Float tyMin = (bounds[dirIsNeg[1]].y() - ray.o.y()) * invDir.y();
+	Float tyMax = (bounds[1 - dirIsNeg[1]].y() - ray.o.y()) * invDir.y();
 	//TODO:Update tMax and tyMax to ensure robust bounds intersection
 	if (tMin > tyMax || tyMin > tMax)
 		return false;

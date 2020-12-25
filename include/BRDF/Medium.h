@@ -1,7 +1,6 @@
 #pragma once
 
 #include <common.h>
-#include <ray.h>
 
 class Sampler;
 
@@ -11,7 +10,7 @@ public:
 	virtual Float p(const Vector3f& wo, const Vector3f& wi) const = 0;
 };
 
-Float Inv4Pi = 1 / Pi / 4.0;
+inline Float Inv4Pi = 1 / Pi / 4.0;
 
 inline Float PhaseHG(Float cosTheta, Float g) {
 	Float denom = 1 + g * g + 2 * g * cosTheta;

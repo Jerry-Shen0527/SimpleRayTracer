@@ -12,6 +12,8 @@ public:
 	Ray(const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float time = 0.f, const Medium* medium = nullptr)
 		: o(o), d(d), tMax(tMax), time(time), medium(medium) { }
 
+	Point3f operator()(Float t) const { return o + d * t; }
+
 	Point3f origin() const { return o; }
 
 	Point3f at(Float t) const

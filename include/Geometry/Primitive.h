@@ -4,8 +4,6 @@
 
 #include "BRDF/Medium.h"
 
-
-
 class Primitive
 {
 public:
@@ -18,7 +16,7 @@ public:
 	virtual void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 };
 
-class	GeometricPrimitive :public Primitive
+class GeometricPrimitive :public Primitive
 {
 public:
 	GeometricPrimitive(const std::shared_ptr<Shape>& shape,
@@ -34,9 +32,11 @@ public:
 	bool IntersectP(const Ray& r) const override;
 	const AreaLight* GetAreaLight() const override;
 	const Material* GetMaterial() const override;
+	void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode,
+		bool allowMultipleLobes) const override;
 private:
 	std::shared_ptr<Shape> shape;
-	std::shared_ptr<Material> m;
+	std::shared_ptr<Material> material;
 	std::shared_ptr<AreaLight> areaLight;
 	MediumInterface mediumInterface;
 };

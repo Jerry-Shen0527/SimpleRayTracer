@@ -21,6 +21,8 @@ public:
 		: flags(flags), nSamples(std::max(1, nSamples)), mediumInterface(mediumInterface), LightToWorld(LightToWorld), WorldToLight(Inverse(LightToWorld)) {	}
 
 	virtual Spectrum Sample_Li(const Interaction& ref, const Point2f& u, Vector3f* wi, Float* pdf, VisibilityTester* vis) const = 0;
+	virtual Float Pdf_Li(const Interaction& ref, const Vector3f& wi) const = 0;
+	virtual Spectrum Le(const RayDifferential& r) const { return  Spectrum(0); }
 
 	virtual Spectrum Power() const = 0;
 	virtual void Preprocess(const Scene& scene) { }
@@ -42,6 +44,9 @@ public:
 	const Interaction& P0() const { return p0; }
 	const Interaction& P1() const { return p1; }
 	bool Unoccluded(const Scene& scene) const;
+
+	virtual Spectrum Le(const RayDifferential& ray) const { return Spectrum(0.f); }
+
 	Spectrum Tr(const Scene& scene, Sampler& sampler) const;
 private:
 	Interaction p0, p1;

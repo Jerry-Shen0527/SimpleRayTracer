@@ -6,8 +6,10 @@
 
 class SamplerIntegrator : public Integrator {
 public:
-	SamplerIntegrator(std::shared_ptr<const Camera> camera, std::shared_ptr<Sampler> sampler)
-		: camera(camera), sampler(sampler) { }
+	SamplerIntegrator(std::shared_ptr<const Camera> camera,
+		std::shared_ptr<Sampler> sampler,
+		const Bounds2i& pixelBounds)
+		: camera(camera), sampler(sampler), pixelBounds(pixelBounds) {}
 	virtual void Preprocess(const Scene& scene, Sampler& sampler) { }
 	void Render(const Scene& scene) override;
 
@@ -18,4 +20,5 @@ protected:
 private:
 	std::shared_ptr<Sampler> sampler;
 	std::shared_ptr<const Camera> camera;
+	const Bounds2i pixelBounds;
 };

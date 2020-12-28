@@ -20,20 +20,20 @@ public:
 		: CoefficientSpectrum<nSpectralSamples>(v) {}
 	SampledSpectrum(const RGBSpectrum& r, SpectrumType t)
 	{
-		Vector3f rgb;
+		Float rgb[3];
 		r.ToRGB(rgb);
 		*this = SampledSpectrum::FromRGB(rgb, t);
 	}
 
 	static float AverageSpectrumSamples(const float* lambda, const float* vals, int n, float lambda0, float lambda1);
 	static SampledSpectrum FromSampled(const float* lambda, const float* v, int n);
-	static SampledSpectrum FromRGB(const Vector3f& rgb, SpectrumType type = SpectrumType::Illuminant);
-	static SampledSpectrum FromXYZ(const Vector3f& xyz, SpectrumType type = SpectrumType::Reflectance);
+	static SampledSpectrum FromRGB(const Float rgb[], SpectrumType type = SpectrumType::Illuminant);
+	static SampledSpectrum FromXYZ(Float xyz[], SpectrumType type = SpectrumType::Reflectance);
 
 	static void Init();
 
-	void ToXYZ(Vector3f& xyz) const;
-	void ToRGB(Vector3f& rgb) const;
+	void ToXYZ(Float xyz[]) const;
+	void ToRGB(Float rgb[]) const;
 	Float y() const;
 
 private:
@@ -100,7 +100,7 @@ inline SampledSpectrum SampledSpectrum::FromSampled(const float* lambda, const f
 	return r;
 }
 
-inline SampledSpectrum SampledSpectrum::FromRGB(const Vector3f& rgb, SpectrumType type)
+inline SampledSpectrum SampledSpectrum::FromRGB(const Float rgb[3], SpectrumType type)
 {
 	SampledSpectrum r;
 	if (type == SpectrumType::Reflectance) {
@@ -186,9 +186,9 @@ inline SampledSpectrum SampledSpectrum::FromRGB(const Vector3f& rgb, SpectrumTyp
 	return r.clamp();
 }
 
-inline SampledSpectrum SampledSpectrum::FromXYZ(const Vector3f& xyz, SpectrumType type)
+inline SampledSpectrum SampledSpectrum::FromXYZ(Float xyz[3], SpectrumType type)
 {
-	Vector3f rgb;
+	Float rgb[3];
 	XYZToRGB(xyz, rgb);
 	return FromRGB(rgb, type);
 }
@@ -260,7 +260,7 @@ inline void SampledSpectrum::Init()
 	}
 }
 
-inline void SampledSpectrum::ToXYZ(Vector3f& xyz) const
+inline void SampledSpectrum::ToXYZ(Float xyz[3]) const
 {
 	xyz[0] = xyz[1] = xyz[2] = 0.f;
 	for (int i = 0; i < nSpectralSamples; ++i)
@@ -274,9 +274,9 @@ inline void SampledSpectrum::ToXYZ(Vector3f& xyz) const
 	xyz[2] /= yint;
 }
 
-inline void SampledSpectrum::ToRGB(Vector3f& rgb) const
+inline void SampledSpectrum::ToRGB(Float rgb[3]) const
 {
-	Vector3f xyz;
+	Float xyz[3];
 	ToXYZ(xyz);
 	XYZToRGB(xyz, rgb);
 }

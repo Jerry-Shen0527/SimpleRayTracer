@@ -51,6 +51,7 @@ protected:
 	Point2i currentPixel;
 	int64_t currentPixelSampleIndex;
 
+	// Don't know where this will be used.
 	std::vector<int> samples1DArraySizes, samples2DArraySizes;
 	std::vector<std::vector<Float>> sampleArray1D;
 	std::vector<std::vector<Point2f>> sampleArray2D;

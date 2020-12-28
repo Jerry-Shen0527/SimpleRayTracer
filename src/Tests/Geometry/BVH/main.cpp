@@ -19,7 +19,7 @@ int main()
 
 	BVHAccel bvh(primitives, 3, SplitMethod::Middle);
 
-	Ray ray(Point3f(0.5, 0.501, -1), Vector3f(0, 0, 1));
+	Ray ray(Point3f(0.25, 0.2501, -1), Vector3f(0, 0, 1));
 
 	SurfaceInteraction isect;
 

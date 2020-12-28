@@ -7,11 +7,13 @@ int main()
 
 	ParallelInit();
 
-	ParallelFor2D([&](Point2i p) {
+	ParallelFor2D(
+		[&](Point2i p) {
 		for (int i = 1; i < 10000000; ++i)
 		{
 			arr[p.x()][p.y()] += i;
-		}}, b);
+		}}, b
+	);
 
 	ParallelCleanup();
 	for (int i = 0; i < 6; ++i)

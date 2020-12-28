@@ -1,6 +1,6 @@
 #include "Tools/Film.h"
 #include <Tools/Files/rtw_stb_image.h>
-
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "Tools/Files/stb_image_write.h"
 
 Film::Film(const Point2i& resolution, const Bounds2f& cropWindow,
@@ -76,7 +76,7 @@ void Film::MergeFilmTile(std::unique_ptr<FilmTile> tile)
 	}
 }
 
-void Film::WriteImage(Float splatScale)
+void Film::WriteImage(Float splatScale, bool timeStamp)
 {
 	std::unique_ptr<Float[]> rgb(new Float[3 * croppedPixelBounds.Volume()]);
 	int offset = 0;
@@ -112,9 +112,32 @@ void Film::WriteImage(Float splatScale)
 		++offset;
 	}
 
-	stbi_write_png(filename.c_str(), , int h, int comp, const void* data, int stride_in_bytes);
-}
+	std::unique_ptr<char[]> rgb_char(new char[3 * croppedPixelBounds.Volume()]);
 
+	offset = 0;
+	for (Point2i p : croppedPixelBounds) {
+		// Scale pixel value by _scale_
+		rgb_char[3 * offset]     = static_cast<char>(Clamp(rgb[3 * offset], 0, 255.0));
+		rgb_char[3 * offset + 1] = static_cast<char>(Clamp(rgb[3 * offset + 1], 0, 255.0));
+		rgb_char[3 * offset + 2] = static_cast<char>(Clamp(rgb[3 * offset + 2], 0, 255.0));
+		++offset;
+	}
+
+	auto out_put = croppedPixelBounds.Diagonal();
+
+	if (timeStamp)
+	{
+		struct tm* tm = new struct tm;
+		auto tme = time(nullptr);
+		localtime_s(tm, &tme);
+		auto time_s = std::to_string(tm->tm_mon) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + "-" + std::to_string(tm->tm_min) + "-" + std::to_string(tm->tm_sec) + "-";
+		stbi_write_png((time_s + filename).c_str(), out_put.x(), out_put.y(), 3, &rgb_char[0], 0);
+		delete tm;
+	}
+	else {
+		stbi_write_png(filename.c_str(), out_put.x(), out_put.y(), 3, &rgb_char[0], 0);
+	}
+}
 void FilmTile::AddSample(const Point2f& pFilm, Spectrum L, Float sampleWeight)
 {
 	if (L.y() > maxSampleLuminance)

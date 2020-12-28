@@ -34,7 +34,7 @@ int main()
 	AnimatedTransform transform(&t, 0, &t, 0);
 	PerspectiveCamera camera(transform, Bounds2f(Point2f(0, 0), Point2f(1, 1)), 0, 0.0, 0, 4.0, 40.0, &film, nullptr);
 
-	StratifiedSampler sampler(1, 1	, true, 2);
+	StratifiedSampler sampler(1, 1, true, 2);
 
 	Bounds2i sampleBounds = camera.film->GetSampleBounds();
 	Vector2i sampleExtent = sampleBounds.Diagonal();

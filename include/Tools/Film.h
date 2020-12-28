@@ -28,9 +28,9 @@ public:
 	Bounds2f GetPhysicalExtent() const;
 	std::unique_ptr<FilmTile> GetFilmTile(const Bounds2i& sampleBounds);
 	void MergeFilmTile(std::unique_ptr<FilmTile> tile);
+	void WriteImage(Float splatScale = 1, bool timeStamp = false);
 	void SetImage(const Spectrum* img) const;
 	void AddSplat(const Point2f& p, Spectrum v);
-	void WriteImage(Float splatScale = 1);
 	void Clear();
 
 	// Film Public Data

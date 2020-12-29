@@ -4,6 +4,12 @@
 #include "config.h"
 #include <Tools/Math/math_tools.h>
 
+inline Float clamp(Float x, Float min, Float max) {
+	if (x < min) return min;
+	if (x > max) return max;
+	return x;
+}
+
 template<int nSamples>
 class CoefficientSpectrum
 {
@@ -28,7 +34,7 @@ public:
 	CoefficientSpectrum operator*(Float x) const;
 	CoefficientSpectrum operator/(Float x) const;
 
-	CoefficientSpectrum clamp(Float low = 0, Float high = INFINITY) const;
+	CoefficientSpectrum Clamp(Float low = 0, Float high = INFINITY) const;
 
 	void print() const;
 	bool IsBlack() const;
@@ -151,11 +157,11 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(Float x) 
 }
 
 template <int nSamples>
-CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::clamp(Float low, Float high) const
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::Clamp(Float low, Float high) const
 {
 	CoefficientSpectrum ret;
 	for (int i = 0; i < nSamples; ++i)
-		ret.c[i] = Clamp(c[i], low, high);
+		ret.c[i] = clamp(c[i], low, high);
 	return ret;
 }
 

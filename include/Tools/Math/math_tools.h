@@ -16,6 +16,7 @@ inline Float degrees_to_radians(Float degrees) {
 	return degrees * Pi / 180.0;
 }
 
+
 inline Float Clamp(Float x, Float min, Float max) {
 	if (x < min) return min;
 	if (x > max) return max;

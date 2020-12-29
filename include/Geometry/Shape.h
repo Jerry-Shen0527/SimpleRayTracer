@@ -14,6 +14,15 @@ public:
 
 	virtual bool IntersectP(const Ray& ray, bool testAlphaTexture = true) const;
 
+	virtual Interaction Sample(const Point2f& u, Float* pdf) const = 0;
+	virtual Float Pdf(const Interaction&) const { return 1 / Area(); }
+
+	// Sample a point on the shape given a reference point |ref| and
+	// return the PDF with respect to solid angle from |ref|.
+	virtual Interaction Sample(const Interaction& ref, const Point2f& u,
+		Float* pdf) const;
+	virtual Float Pdf(const Interaction& ref, const Vector3f& wi) const;
+
 	const Transform* ObjectToWorld;
 	const Transform* WorldToObject;
 	const bool reverseOrientation;
@@ -32,6 +41,10 @@ public:
 	bool Intersect(const Ray& r, Float* tHit, SurfaceInteraction* isect, bool testAlphaTexture) const;
 
 	Float Area() const override;
+
+
+
+	
 private:
 	const Float radius;
 	const Float zMin, zMax;

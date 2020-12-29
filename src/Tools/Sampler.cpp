@@ -1,5 +1,7 @@
 #include <Tools/Sampler.h>
 
+#include "common.h"
+
 template <typename T>
 void Shuffle(T* samp, int count, int nDimensions) {
 	for (int i = 0; i < count; ++i) {

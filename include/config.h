@@ -4,6 +4,7 @@
 
 using Float = float;
 
+
 enum class TransportMode { Radiance, Importance };
 
 class Primitive;

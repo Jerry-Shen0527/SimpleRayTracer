@@ -9,7 +9,6 @@ struct CameraSample {
 	Float time;
 };
 
-static const Float OneMinusEpsilon = 0x1.fffffep-1;
 
 class Sampler
 {

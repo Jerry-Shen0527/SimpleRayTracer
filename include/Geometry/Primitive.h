@@ -1,8 +1,8 @@
 #pragma once
-#include "Tools/Light/AreaLight.h"
 #include <Geometry/AnimatedTransform.h>
 
 #include "BRDF/Medium.h"
+#include "Tools/Light/Light.h"
 
 class Primitive
 {

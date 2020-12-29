@@ -183,7 +183,7 @@ inline SampledSpectrum SampledSpectrum::FromRGB(const Float rgb[3], SpectrumType
 		}
 		r *= .86445f;
 	}
-	return r.clamp();
+	return r.Clamp();
 }
 
 inline SampledSpectrum SampledSpectrum::FromXYZ(Float xyz[3], SpectrumType type)

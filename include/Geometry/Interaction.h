@@ -4,9 +4,7 @@
 #include "ray.h"
 #include "BRDF/Medium.h"
 
-
 const Float ShadowEpsilon = 0.0001f;
-
 
 class Interaction
 {
@@ -63,8 +61,7 @@ public:
 
 	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape);
 
-	void ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes,
-		TransportMode mode);
+	void ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes = false, TransportMode mode = TransportMode::Radiance);
 
 	void ComputeDifferentials(const RayDifferential& ray) const;
 

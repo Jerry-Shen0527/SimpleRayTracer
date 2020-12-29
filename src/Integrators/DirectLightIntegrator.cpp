@@ -6,23 +6,35 @@
 Spectrum DirectLightingIntegrator::Li(const RayDifferential& ray, const Scene& scene, Sampler& sampler, MemoryArena& arena, int depth) const
 {
 	Spectrum L(0.f);
-	SurfaceInteraction isect;
 	// Find closest ray intersection or return background radiance
+	SurfaceInteraction isect;
 	if (!scene.Intersect(ray, &isect)) {
 		for (const auto& light : scene.lights) L += light->Le(ray);
 		return L;
 	}
 
+	// Compute scattering functions for surface interaction
 	isect.ComputeScatteringFunctions(ray, arena);
 
-	//What happens when the bsdf is nullptr?
 	if (!isect.bsdf)
 		return Li(isect.SpawnRay(ray.d), scene, sampler, arena, depth);
-
-	if (strategy == LightStrategy::UniformSampleAll)
-		L += UniformSampleAllLights(isect, scene, arena, sampler, nLightSamples);
-	else
-		L += UniformSampleOneLight(isect, scene, arena, sampler);
+	Vector3f wo = isect.wo;
+	// Compute emitted light if ray hit an area light source
+	L += isect.Le(wo);
+	if (scene.lights.size() > 0) {
+		// Compute direct lighting for _DirectLightingIntegrator_ integrator
+		if (strategy == LightStrategy::UniformSampleAll)
+			L += UniformSampleAllLights(isect, scene, arena, sampler,
+				nLightSamples);
+		else
+			L += UniformSampleOneLight(isect, scene, arena, sampler);
+	}
+	//if (depth + 1 < maxDepth) {
+	//	// Trace rays for specular reflection and refraction
+	//	L += SpecularReflect(ray, isect, scene, sampler, arena, depth);
+	//	L += SpecularTransmit(ray, isect, scene, sampler, arena, depth);
+	//}
+	return L;
 }
 
 Spectrum UniformSampleAllLights(const Interaction& it, const Scene& scene, MemoryArena& arena,

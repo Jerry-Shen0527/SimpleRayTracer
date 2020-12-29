@@ -25,3 +25,19 @@ inline Point2f ConcentricSampleDisk(const Point2f& u)
 	}
 	return r * Point2f(std::cos(theta), std::sin(theta));
 }
+
+inline Vector3f UniformSampleHemisphere(const Point2f& u) {
+	Float z = u[0];
+	Float r = std::sqrt(std::max((Float)0, (Float)1. - z * z));
+	Float phi = 2 * Pi * u[1];
+	return Vector3f(r * std::cos(phi), r * std::sin(phi), z);
+}
+
+inline Float UniformHemispherePdf() { return Inv2Pi; }
+
+inline Vector3f UniformSampleSphere(const Point2f& u) {
+	Float z = 1 - 2 * u[0];
+	Float r = std::sqrt(std::max((Float)0, (Float)1 - z * z));
+	Float phi = 2 * Pi * u[1];
+	return Vector3f(r * std::cos(phi), r * std::sin(phi), z);
+}

@@ -5,15 +5,30 @@
 #include "Tools/Parallel.h"
 #include "Tools/Sampler.h"
 
-int indices[] = { 0,1,2 };
-Point3f points[] = { Point3f(-3,-3,0),Point3f(5,0,0),Point3f(0,5,0) };
+int indices[] = {
+	0,2,3,
+	0,1,3,
+	2,3,6,
+	3,6,7,
+	4,5,7,
+	4,6,7,
+	1,3,5,
+	3,5,7,
+	0,1,4,4,5,1 };
+Point3f points[] = {
+	Point3f(0, 0, 0),Point3f(0, 0, 555),
+	Point3f(0, 555, 0),Point3f(0, 555, 555),
+	Point3f(555, 0, 0),Point3f(555, 0, 555),
+	Point3f(555, 555, 0),Point3f(555, 555, 555),
+};
 Float rgbcolor[] = { 0,256,256 };
 
 int main()
 {
 	SampledSpectrum::Init();
-	Transform identity;
-	auto mesh = CreateTriangleMesh(&identity, &identity, false, 1, indices, 3, points);
+	auto t = Translate(Vector3f(-278, -278, 0));
+	auto wto = Inverse(t);
+	auto mesh = CreateTriangleMesh(&wto, &t, true, 10, indices, 8, points);
 
 	using namespace  std;
 	vector<shared_ptr<Primitive>> primitives;
@@ -28,11 +43,9 @@ int main()
 	SurfaceInteraction isect;
 
 	Film film(Point2i(600, 600), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(1.0, 1.0)), 1, "test.png", 1);
-	Transform trans = Translate(Vector3f(-8, -8, -40));
-	Transform r = RotateX(90);
-	auto t = r * trans;
-	AnimatedTransform transform(&t, 0, &t, 0);
-	PerspectiveCamera camera(transform, Bounds2f(Point2f(0, 0), Point2f(1, 1)), 0, 0.0, 0, 4.0, 40.0, &film, nullptr);
+	Transform trans = Translate(Vector3f(0, 0, -3000));
+	AnimatedTransform transform(&trans, 0, &trans, 0);
+	PerspectiveCamera camera(transform, Bounds2f(Point2f(0, 0), Point2f(1, 1)), 0, 0.0, 0, 10.0, 40.0, &film, nullptr);
 
 	StratifiedSampler sampler(1, 1, true, 2);
 

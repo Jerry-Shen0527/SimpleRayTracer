@@ -130,7 +130,7 @@ void Film::WriteImage(Float splatScale, bool timeStamp)
 		struct tm* tm = new struct tm;
 		auto tme = time(nullptr);
 		localtime_s(tm, &tme);
-		auto time_s = std::to_string(tm->tm_mon) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + "-" + std::to_string(tm->tm_min) + "-" + std::to_string(tm->tm_sec) + "-";
+		auto time_s = std::to_string(tm->tm_mon+1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + "-" + std::to_string(tm->tm_min) + "-" + std::to_string(tm->tm_sec) + "-";
 		stbi_write_png((time_s + filename).c_str(), out_put.x(), out_put.y(), 3, &rgb_char[0], 0);
 		delete tm;
 	}

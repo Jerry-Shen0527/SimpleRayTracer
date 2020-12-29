@@ -14,7 +14,9 @@ int indices[] = {
 	4,6,7,
 	1,3,5,
 	3,5,7,
-	0,1,4,4,5,1 };
+	1,0,4,
+	1,4,5
+};
 Point3f points[] = {
 	Point3f(0, 0, 0),Point3f(0, 0, 555),
 	Point3f(0, 555, 0),Point3f(0, 555, 555),
@@ -26,9 +28,9 @@ Float rgbcolor[] = { 0,256,256 };
 int main()
 {
 	SampledSpectrum::Init();
-	auto t = Translate(Vector3f(-278, -278, 0));
+	auto t = Rotate(0,Vector3f(0,1,0));
 	auto wto = Inverse(t);
-	auto mesh = CreateTriangleMesh(&wto, &t, true, 10, indices, 8, points);
+	auto mesh = CreateTriangleMesh(&t, &wto, false, sizeof(indices)/sizeof(int)/3, indices, 8, points);
 
 	using namespace  std;
 	vector<shared_ptr<Primitive>> primitives;
@@ -38,16 +40,17 @@ int main()
 		primitives.emplace_back(make_shared<GeometricPrimitive>(triangle, nullptr, nullptr));
 	}
 
-	BVHAccel bvh(primitives, 3, SplitMethod::Middle);
+	BVHAccel bvh(primitives, 3, SplitMethod::SAH);
 
 	SurfaceInteraction isect;
 
-	Film film(Point2i(600, 600), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(1.0, 1.0)), 1, "test.png", 1);
-	Transform trans = Translate(Vector3f(0, 0, -3000));
-	AnimatedTransform transform(&trans, 0, &trans, 0);
-	PerspectiveCamera camera(transform, Bounds2f(Point2f(0, 0), Point2f(1, 1)), 0, 0.0, 0, 10.0, 40.0, &film, nullptr);
 
-	StratifiedSampler sampler(1, 1, true, 2);
+	Film film(Point2i(400, 400), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
+	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
+	AnimatedTransform transform(&trans, 0, &trans, 0);
+	PerspectiveCamera camera(transform, Bounds2f(Point2f(-1, -1), Point2f(1, 1)), 0, 1.0, 0, 10.0, 40.0, &film, nullptr);
+
+	StratifiedSampler sampler(2, 2, true, 2);
 
 	Bounds2i sampleBounds = camera.film->GetSampleBounds();
 	Vector2i sampleExtent = sampleBounds.Diagonal();
@@ -79,8 +82,13 @@ int main()
 					Float rayWeight = camera.GenerateRayDifferential(cameraSample, &ray);
 					ray.ScaleDifferentials(1 / std::sqrt(tileSampler->samplesPerPixel));
 					//	Evaluate radiance along camera ray 31
+					if (ray.d.y()<-0.3)
+					{
+						arena.Reset();
+					}
+					
 					Spectrum L(0.f);
-					if (rayWeight > 0)
+			 		if (rayWeight > 0)
 						if (bvh.Intersect(ray, &isect))
 							L = Spectrum::FromRGB(rgbcolor);
 
@@ -93,6 +101,8 @@ int main()
 			}
 			camera.film->MergeFilmTile(std::move(filmTile));
 		}, nTiles);
+	cout << bvh.Intersect(Ray(Point3f(277, 277, -800), Vector3f(-0.28, -0.28, 0.898).Normalize()), &isect);
+	cout << bvh.Intersect(Ray(Point3f(277, 277, -800), Vector3f(-0.28, 0.28, 0.898).Normalize()),&isect);
 
 	camera.film->WriteImage(1, true);
 }

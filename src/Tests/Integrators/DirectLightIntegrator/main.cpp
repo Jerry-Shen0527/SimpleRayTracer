@@ -1,3 +1,11 @@
+#ifdef _WIN32
+#include <crtdbg.h>
+#ifdef _DEBUG
+
+#define new new(_NORMAL_BLOCK,__FILE__,__LINE__)
+#endif
+#endif
+
 #include <Geometry/TriangleMesh.h>
 #include <Geometry/bvh.h>
 #include <Integrators/DirectLightIntegrator.h>
@@ -73,7 +81,9 @@ int main()
 
 	for (auto light_tri : light_mesh)
 	{
-		lights.push_back(make_shared<DiffuseAreaLight>(light_t, MediumInterface(), Spectrum::FromRGB(white) * 10000, 1, light_tri));
+		auto light_ptr = make_shared<DiffuseAreaLight>(light_t, MediumInterface(), Spectrum::FromRGB(white) * 20000, 1, light_tri);
+		lights.push_back(light_ptr);
+		primitives.push_back(make_shared<GeometricPrimitive>(light_tri, white_material, light_ptr));
 	}
 
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[0], green_material, nullptr));
@@ -87,9 +97,9 @@ int main()
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[8], white_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[9], white_material, nullptr));
 
-	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::SAH);
+	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::Middle);
 
-	Film film(Point2i(400, 400), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
+	Film film(Point2i(600, 600), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
 	AnimatedTransform transform(&trans, 0, &trans, 0);
 
@@ -103,11 +113,15 @@ int main()
 	//(+tilesize-1)/tileSize: max groups
 	Point2i nTiles((sampleExtent.x() + tileSize - 1) / tileSize, (sampleExtent.y() + tileSize - 1) / tileSize);
 
-	DirectLightingIntegrator integrator(LightStrategy::UniformSampleAll, 50, camera, sampler, Bounds2i(600, 600));
+	DirectLightingIntegrator integrator(LightStrategy::UniformSampleOne, 1, camera, sampler, Bounds2i());
 
 	Scene scene(bvh, lights);
 
 	integrator.Render(scene);
 
 	camera->film->WriteImage(1, true);
+
+#ifdef _WIN32
+	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+#endif
 }

@@ -6,12 +6,14 @@
 
 void SamplerIntegrator::Render(const Scene& scene)
 {
+	ParallelInit();
 	Preprocess(scene, *sampler);
 	Bounds2i sampleBounds = camera->film->GetSampleBounds();
 	Vector2i sampleExtent = sampleBounds.Diagonal();
 	const int tileSize = 16;
 	//(+tilesize-1)/tileSize: max groups
 	Point2i nTiles((sampleExtent.x() + tileSize - 1) / tileSize, (sampleExtent.y() + tileSize - 1) / tileSize);
+	
 	ParallelFor2D(
 		[&](Point2i tile) {
 			MemoryArena arena;
@@ -50,6 +52,6 @@ void SamplerIntegrator::Render(const Scene& scene)
 			}
 			camera->film->MergeFilmTile(std::move(filmTile));
 		}, nTiles);
-
+	ParallelCleanup();
 	camera->film->WriteImage();
 }

@@ -44,6 +44,11 @@ inline T* AllocAligned(size_t count) {
 	return (T*)AllocAligned(count * sizeof(T));
 }
 
+inline void FreeAligned(void* ptr) {
+	if (!ptr) return;
+	_aligned_free(ptr);
+}
+
 class MemoryArena {
 public:
 	MemoryArena(size_t blockSize = 262144) : blockSize(blockSize) { }
@@ -53,6 +58,14 @@ public:
 	T* Alloc(size_t n = 1, bool runConstructor = true);
 
 	void Reset();
+
+
+	~MemoryArena() {
+		FreeAligned(currentBlock);
+		for (auto& block : usedBlocks) FreeAligned(block.second);
+		for (auto& block : availableBlocks) FreeAligned(block.second);
+	}
+	
 private:
 	size_t currentBlockPos = 0, currentAllocSize = 0;
 	uint8_t* currentBlock = nullptr;

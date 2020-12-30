@@ -87,6 +87,10 @@ void StratifiedSampler::LatinHypercube(Float* samples, int nSamples, int nDim)
 	}
 }
 
+PixelSampler::~PixelSampler()
+{
+}
+
 Float PixelSampler::Get1D()
 {
 	if (current1DDimension < samples1D.size())

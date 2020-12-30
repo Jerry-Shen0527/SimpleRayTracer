@@ -199,6 +199,11 @@ BVHBuildNode* BVHAccel::recursiveBuild(MemoryArena& arena, std::vector<BVHPrimit
 	return node;
 }
 
+BVHAccel::~BVHAccel()
+{
+	FreeAligned(nodes);
+}
+
 Bounds3f BVHAccel::WorldBound() const
 {
 	return nodes ? nodes[0].bounds : Bounds3f();

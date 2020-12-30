@@ -79,7 +79,8 @@ public:
 
 inline std::vector<std::shared_ptr<Shape>> CreateTriangleMesh(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, int nTriangles, const int* vertexIndices, int nVertices, const Point3f* p,
 	const Vector3f* s = nullptr, const Normal3f* n = nullptr, const Point2f* uv = nullptr,
-	const std::shared_ptr<Texture<Float>>& alphaMask = nullptr) {
+	const std::shared_ptr<Texture<Float>>& alphaMask = nullptr)
+{
 	std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(*ObjectToWorld, nTriangles, vertexIndices, nVertices, p, s, n, uv, alphaMask);
 	std::vector<std::shared_ptr<Shape>> tris;
 	for (int i = 0; i < nTriangles; ++i)

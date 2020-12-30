@@ -70,7 +70,7 @@ public:
 	                             std::vector<BVHPrimitiveInfo>& primitiveInfo, int start,
 	                             int end, int* totalNodes,
 	                             std::vector<std::shared_ptr<Primitive>>& orderedPrims);
-
+	~BVHAccel();
 	Bounds3f WorldBound() const override;
 	bool Intersect(const Ray& r, SurfaceInteraction*) const override;
 	bool IntersectP(const Ray& r) const override;

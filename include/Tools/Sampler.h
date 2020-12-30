@@ -15,6 +15,8 @@ class Sampler
 public:
 	Sampler::Sampler(int64_t samplesPerPixel) : samplesPerPixel(samplesPerPixel) { }
 
+	virtual ~Sampler(){}
+
 	virtual void StartPixel(const Point2i& p);
 
 	virtual Float Get1D() = 0;
@@ -66,6 +68,8 @@ public:
 			samples2D.push_back(std::vector<Point2f>(samplesPerPixel));
 		}
 	}
+
+	virtual ~PixelSampler();
 
 	Float Get1D() override;
 	Point2f Get2D() override;

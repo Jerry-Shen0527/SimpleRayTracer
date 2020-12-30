@@ -48,8 +48,7 @@ Point3f light_points[] = {
 
 int light_indices[] =
 {
-	0,1,2,
-2,1,3
+	0,1,2,2,1,3
 };
 
 int main()
@@ -99,13 +98,13 @@ int main()
 
 	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::Middle);
 
-	Film film(Point2i(600, 600), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
+	Film film(Point2i(800, 800), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
 	AnimatedTransform transform(&trans, 0, &trans, 0);
 
 	auto camera = make_shared<PerspectiveCamera>(transform, Bounds2f(Point2f(-1, -1), Point2f(1, 1)), 0, 1.0, 0, 10.0, 40.0, &film, nullptr);
 
-	shared_ptr<Sampler> sampler = make_shared<StratifiedSampler>(2, 2, true, 2);
+	shared_ptr<Sampler> sampler = make_shared<StratifiedSampler>(5, 5, true, 2);
 
 	Bounds2i sampleBounds = camera->film->GetSampleBounds();
 	Vector2i sampleExtent = sampleBounds.Diagonal();
@@ -113,7 +112,7 @@ int main()
 	//(+tilesize-1)/tileSize: max groups
 	Point2i nTiles((sampleExtent.x() + tileSize - 1) / tileSize, (sampleExtent.y() + tileSize - 1) / tileSize);
 
-	DirectLightingIntegrator integrator(LightStrategy::UniformSampleOne, 1, camera, sampler, Bounds2i());
+	DirectLightingIntegrator integrator(LightStrategy::UniformSampleAll, 1, camera, sampler, Bounds2i());
 
 	Scene scene(bvh, lights);
 

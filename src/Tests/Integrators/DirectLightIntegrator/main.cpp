@@ -32,16 +32,16 @@ Float white[] = { .73, .73, .73 };
 Float green[] = { .12, .45, .15 };
 
 Point3f light_points[] = {
-	Point3f(213,227,554),
-	Point3f(213,343,554),
-	Point3f(332,227,554),
-	Point3f(332,343,554)
+	Point3f(213,554,227),
+	Point3f(213,554,343),
+	Point3f(332,554,227),
+	Point3f(332,554,343)
 };
 
 int light_indices[] =
 {
 	0,1,2,
-	2,3,4
+2,1,3
 };
 
 int main()
@@ -52,7 +52,7 @@ int main()
 
 	auto mesh = CreateTriangleMesh(&t, &wto, false, sizeof(indices) / sizeof(int) / 3, indices, 8, points);
 
-	auto light_mesh = CreateTriangleMesh(&t, &wto, false, sizeof(light_indices) / sizeof(int) / 3, light_indices, 8, light_points);
+	auto light_mesh = CreateTriangleMesh(&t, &wto, true, sizeof(light_indices) / sizeof(int) / 3, light_indices, 8, light_points);
 
 	using namespace  std;
 	vector<shared_ptr<Primitive>> primitives;
@@ -73,9 +73,8 @@ int main()
 
 	for (auto light_tri : light_mesh)
 	{
-		lights.push_back(make_shared<DiffuseAreaLight>(light_t, MediumInterface(), Spectrum::FromRGB(white), 1, light_tri));
+		lights.push_back(make_shared<DiffuseAreaLight>(light_t, MediumInterface(), Spectrum::FromRGB(white) * 10000, 1, light_tri));
 	}
-
 
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[0], green_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[1], green_material, nullptr));
@@ -88,8 +87,7 @@ int main()
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[8], white_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[9], white_material, nullptr));
 
-
-	BVHAccel bvh(primitives, 3, SplitMethod::SAH);
+	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::SAH);
 
 	Film film(Point2i(400, 400), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
@@ -107,7 +105,7 @@ int main()
 
 	DirectLightingIntegrator integrator(LightStrategy::UniformSampleAll, 50, camera, sampler, Bounds2i(600, 600));
 
-	Scene scene(shared_ptr<Primitive>(&bvh), lights);
+	Scene scene(bvh, lights);
 
 	integrator.Render(scene);
 

@@ -64,7 +64,7 @@ inline int BSDF::NumComponents(BxDFType flags) const
 inline Float BSDF::Pdf(const Vector3f& woWorld, const Vector3f& wiWorld, BxDFType flags) const
 {
 	if (nBxDFs == 0.f) return 0.f;
-	Vector3f wo = WorldToLocal(wo), wi = WorldToLocal(wi);
+	Vector3f wo = WorldToLocal(woWorld), wi = WorldToLocal(wiWorld);
 	if (wo.z() == 0) return 0.;
 	Float pdf = 0.f;
 	int matchingComps = 0;

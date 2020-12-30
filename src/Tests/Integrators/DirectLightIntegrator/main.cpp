@@ -96,7 +96,26 @@ int main()
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[8], white_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[9], white_material, nullptr));
 
-	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::Middle);
+	auto tb1 = Translate(Vector3f(265, 0, 295));
+	tb1 = tb1 * Rotate(15, Vector3f(0, 1, 0));
+
+	auto tb2 = Translate(Vector3f(130, 0, 65));
+	tb2 = tb2 * Rotate(-18, Vector3f(0, 1, 0));
+
+	auto Box1 = CreateBox(&tb1, &Inverse(tb1), false, Point3f(0, 0, 0), Point3f(165, 330, 165));
+	auto Box2 = CreateBox(&tb2, &Inverse(tb2), false, Point3f(0, 0, 0), Point3f(165, 165, 165));
+
+	for (auto&& tri : Box1)
+	{
+		primitives.push_back(make_shared<GeometricPrimitive>(tri, white_material, nullptr));
+	}
+
+	for (auto&& tri : Box2)
+	{
+		primitives.push_back(make_shared<GeometricPrimitive>(tri, white_material, nullptr));
+	}
+
+	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::SAH);
 
 	Film film(Point2i(800, 800), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(0.5, 0.5)), 1., "test.png", 1.);
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
@@ -112,7 +131,7 @@ int main()
 	//(+tilesize-1)/tileSize: max groups
 	Point2i nTiles((sampleExtent.x() + tileSize - 1) / tileSize, (sampleExtent.y() + tileSize - 1) / tileSize);
 
-	DirectLightingIntegrator integrator(LightStrategy::UniformSampleAll, 1, camera, sampler, Bounds2i());
+	DirectLightingIntegrator integrator(LightStrategy::UniformSampleAll, 1, camera, sampler);
 
 	Scene scene(bvh, lights);
 

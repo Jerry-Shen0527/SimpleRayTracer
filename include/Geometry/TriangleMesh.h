@@ -76,7 +76,6 @@ public:
 	Interaction Sample(const Point2f& u, Float* pdf) const override;
 };
 
-
 inline std::vector<std::shared_ptr<Shape>> CreateTriangleMesh(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, int nTriangles, const int* vertexIndices, int nVertices, const Point3f* p,
 	const Vector3f* s = nullptr, const Normal3f* n = nullptr, const Point2f* uv = nullptr,
 	const std::shared_ptr<Texture<Float>>& alphaMask = nullptr)
@@ -84,6 +83,44 @@ inline std::vector<std::shared_ptr<Shape>> CreateTriangleMesh(const Transform* O
 	std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(*ObjectToWorld, nTriangles, vertexIndices, nVertices, p, s, n, uv, alphaMask);
 	std::vector<std::shared_ptr<Shape>> tris;
 	for (int i = 0; i < nTriangles; ++i)
+		tris.push_back(std::make_shared<Triangle>(ObjectToWorld, WorldToObject, reverseOrientation, mesh, i));
+	return tris;
+}
+
+static int box_indices[] = {
+	0,2,3,
+	0,3,1,
+	2,6,3,
+	3,6,7,
+	4,5,7,
+	4,7,6,
+	1,3,5,
+	3,7,5,
+	1,5,4,
+	1,4,0,
+	0,6,2,
+	0,4,6
+};
+
+inline std::vector<std::shared_ptr<Shape>> CreateBox(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, const Point3f& p1, const Point3f& p2,
+	const Vector3f* s = nullptr, const Normal3f* n = nullptr, const Point2f* uv = nullptr,
+	const std::shared_ptr<Texture<Float>>& alphaMask = nullptr)
+{
+	auto p = ALLOCA(Point3f, 8);
+
+	for (int i = 0; i < 8; ++i)
+	{
+		Float x_v = (i >> 2) % 2 ? p1.x() : p2.x();
+		Float y_v = (i >> 1) % 2 ? p1.y() : p2.y();
+		Float z_v = (i >> 0) % 2 ? p1.z() : p2.z();
+
+		p[i] = Point3f(x_v, y_v, z_v);
+	}
+
+	std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(*ObjectToWorld, 12, box_indices, 8, p, s, n, uv, alphaMask);
+
+	std::vector<std::shared_ptr<Shape>> tris;
+	for (int i = 0; i < 12; ++i)
 		tris.push_back(std::make_shared<Triangle>(ObjectToWorld, WorldToObject, reverseOrientation, mesh, i));
 	return tris;
 }

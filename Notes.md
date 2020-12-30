@@ -1,0 +1,3 @@
+#### 通过级数展开进行的渲染方法
+
+> Indeed, this sort of series expansion and inversion can be used in the general case, where quantities like the BSDF are expressed in terms of general operators that map incident radiance functions to exitant radiance functions. This approach forms the foundation for applying sophisticated tools from analysis to the light transport problem. See Arvo’s thesis (Arvo 1995a) and Veach’s thesis (Veach 1997) for further information.

@@ -139,3 +139,33 @@ Float PerspectiveCamera::GenerateRayDifferential(const CameraSample& sample, Ray
 	ray->hasDifferentials = true;
 	return 1;
 }
+
+Spectrum PerspectiveCamera::We(const Ray& ray, Point2f* pRaster2) const
+{
+	//Interpolate camera matrix and check if ¦Ø is forward - facing 950
+	Transform c2w;
+	CameraToWorld.Interpolate(ray.time, &c2w);
+	Float cosTheta = Dot(ray.d, c2w(Vector3f(0, 0, 1)));
+	if (cosTheta <= 0)
+		return 0;
+	//	Map ray(p, ¦Ø) onto the raster grid 950
+	Point3f pFocus = ray((lensRadius > 0 ? focalDistance : 1) / cosTheta);
+	Point3f pRaster = Inverse(RasterToCamera)(Inverse(c2w)(pFocus));
+	//	Return raster position if requested 950
+	if (pRaster2) *pRaster2 = Point2f(pRaster.x(), pRaster.y());
+	//	Return zero importance for out of bounds points 951
+	Bounds2i sampleBounds = film->GetSampleBounds();
+	if (pRaster.x() < sampleBounds.pMin.x() || pRaster.x() >= sampleBounds.pMax.x() ||
+		pRaster.y() < sampleBounds.pMin.y() || pRaster.y() >= sampleBounds.pMax.y())
+		return 0;
+	//	Compute lens area of perspective camera 953
+	Float lensArea = lensRadius != 0 ? (Pi * lensRadius * lensRadius) : 1;
+	//	Return importance for point on image plane 953
+	Float cos2Theta = cosTheta * cosTheta;
+	return Spectrum(1 / (A * lensArea * cos2Theta * cos2Theta));
+}
+
+void PerspectiveCamera::Pdf_We(const Ray& ray, Float* pdfPos, Float* pdfDir) const
+{
+	
+}

@@ -55,3 +55,4 @@ void SamplerIntegrator::Render(const Scene& scene)
 	ParallelCleanup();
 	camera->film->WriteImage();
 }
+

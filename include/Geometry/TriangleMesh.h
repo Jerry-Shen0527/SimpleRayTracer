@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <Geometry/Shape.h>
 
 #include "Tools/Texture.h"
@@ -77,8 +78,8 @@ public:
 };
 
 inline std::vector<std::shared_ptr<Shape>> CreateTriangleMesh(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, int nTriangles, const int* vertexIndices, int nVertices, const Point3f* p,
-	const Vector3f* s = nullptr, const Normal3f* n = nullptr, const Point2f* uv = nullptr,
-	const std::shared_ptr<Texture<Float>>& alphaMask = nullptr)
+                                                              const Vector3f* s = nullptr, const Normal3f* n = nullptr, const Point2f* uv = nullptr,
+                                                              const std::shared_ptr<Texture<Float>>& alphaMask = nullptr)
 {
 	std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(*ObjectToWorld, nTriangles, vertexIndices, nVertices, p, s, n, uv, alphaMask);
 	std::vector<std::shared_ptr<Shape>> tris;
@@ -88,18 +89,18 @@ inline std::vector<std::shared_ptr<Shape>> CreateTriangleMesh(const Transform* O
 }
 
 static int box_indices[] = {
-	0,2,3,
-	0,3,1,
-	2,6,3,
-	3,6,7,
-	4,5,7,
-	4,7,6,
-	1,3,5,
-	3,7,5,
-	1,5,4,
-	1,4,0,
-	0,6,2,
-	0,4,6
+	2,0,3,
+	3,0,1,
+	6,2,3,
+	6,3,7,
+	5,4,7,
+	7,4,6,
+	3,1,5,
+	7,3,5,
+	5,1,4,
+	4,1,0,
+	6,0,2,
+	4,0,6
 };
 
 inline std::vector<std::shared_ptr<Shape>> CreateBox(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, const Point3f& p1, const Point3f& p2,
@@ -110,9 +111,9 @@ inline std::vector<std::shared_ptr<Shape>> CreateBox(const Transform* ObjectToWo
 
 	for (int i = 0; i < 8; ++i)
 	{
-		Float x_v = (i >> 2) % 2 ? p1.x() : p2.x();
-		Float y_v = (i >> 1) % 2 ? p1.y() : p2.y();
-		Float z_v = (i >> 0) % 2 ? p1.z() : p2.z();
+		Float x_v = (i >> 2) % 2 ? p2.x() : p1.x();
+		Float y_v = (i >> 1) % 2 ? p2.y() : p1.y();
+		Float z_v = (i >> 0) % 2 ? p2.z() : p1.z();
 
 		p[i] = Point3f(x_v, y_v, z_v);
 	}

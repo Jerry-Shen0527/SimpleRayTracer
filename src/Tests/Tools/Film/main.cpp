@@ -39,7 +39,7 @@ int main()
 
 	auto bound = film_tile.GetPixelBounds();
 
-	Vector3f rst;
+	Float rst[3];
 
 	SampledSpectrum::Init();
 
@@ -48,9 +48,6 @@ int main()
 		for (int j = 1; j < 7; ++j)
 		{
 			film_tile.GetPixel(Point2i(i, j)).contribSum.ToXYZ(rst);
-			std::cout << '(';
-			rst.print(std::cout);
-			std::cout << ')';
 		}
 		std::cout << std::endl;
 	}

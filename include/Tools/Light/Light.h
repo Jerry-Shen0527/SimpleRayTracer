@@ -2,10 +2,10 @@
 #include <algorithm>
 #include <Geometry/hittable_list.h>
 
-#include "common.h"
 #include "BRDF/Medium.h"
 #include "Geometry/Interaction.h"
 #include "Geometry/Transform.h"
+#include "Tools/Spectrum/SampledSpectrum.h"
 
 enum class LightFlags : int { DeltaPosition = 1, DeltaDirection = 2, Area = 4, Infinite = 8 };
 

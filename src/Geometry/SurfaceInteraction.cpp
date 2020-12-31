@@ -1,4 +1,3 @@
-#include "common.h"
 #include "Geometry/Interaction.h"
 #include "Geometry/Primitive.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "SamplerIntegrator.h"
 
-class PathIntegrator:SamplerIntegrator
+class PathIntegrator:public SamplerIntegrator
 {
 public:
 	PathIntegrator(int maxDepth, std::shared_ptr<const Camera> camera,

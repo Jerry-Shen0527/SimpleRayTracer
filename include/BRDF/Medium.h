@@ -1,7 +1,7 @@
 #pragma once
 
-#include <common.h>
-
+#include <config.h>
+#include <Geometry/Vector3.h>
 class Sampler;
 
 class PhaseFunction

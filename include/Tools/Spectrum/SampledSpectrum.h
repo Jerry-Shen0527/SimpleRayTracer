@@ -6,7 +6,6 @@
 #include "RGBSpectrum.h"
 #include <vector>
 
-#include "BRDF/BxDF_Utility.h"
 #include "Geometry/Vector3.h"
 static const int sampledLambdaStart = 400;
 static const int sampledLambdaEnd = 700;
@@ -289,4 +288,27 @@ inline float SampledSpectrum::y() const
 		yy += Y.c[i] * c[i];
 	}
 	return yy / yint;
+}
+
+inline SampledSpectrum& BlackBodySpectrum(Float T, Float beta)
+{
+	SampledSpectrum spectrum;
+
+	auto lambda = ALLOCA(Float, nSpectralSamples);
+	auto spec = ALLOCA(Float, nSpectralSamples);
+
+	auto step = (sampledLambdaEnd - sampledLambdaStart) / (Float)(nSpectralSamples);
+	for (int i = 0; i < nSpectralSamples; ++i)
+	{
+		lambda[i] = step * i + sampledLambdaStart;
+	}
+
+	BlackbodyNormalized(lambda, nSpectralSamples, T, spec);
+
+	for (int i = 0; i < nSpectralSamples; ++i)
+	{
+		spectrum[i] = spec[i];
+	}
+	spectrum *= beta;
+	return spectrum;
 }

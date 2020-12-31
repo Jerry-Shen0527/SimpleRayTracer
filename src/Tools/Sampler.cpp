@@ -1,7 +1,5 @@
 #include <Tools/Sampler.h>
 
-#include "common.h"
-
 template <typename T>
 void Shuffle(T* samp, int count, int nDimensions) {
 	for (int i = 0; i < count; ++i) {
@@ -195,7 +193,7 @@ Float GlobalSampler::Get1D() {
 		dimension = arrayEndDim;
 	return SampleDimension(intervalSampleIndex, dimension++);
 }
- Point2f GlobalSampler::Get2D() {
+Point2f GlobalSampler::Get2D() {
 	if (dimension + 1 >= arrayStartDim && dimension < arrayEndDim)
 		dimension = arrayEndDim;
 	Point2f p{ SampleDimension(intervalSampleIndex, dimension), SampleDimension(intervalSampleIndex, dimension + 1) };

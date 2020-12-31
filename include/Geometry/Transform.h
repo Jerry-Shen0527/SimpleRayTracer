@@ -133,16 +133,26 @@ inline Transform RotateX(Float theta) {
 
 //Here theta is measured by degrees.
 inline Transform Rotate(Float theta, const Vector3f& axis) {
-	Vector3f a = axis.Normalize();
+	Vector3f a = Normalize(axis);
 	Float sinTheta = std::sin(Radians(theta));
 	Float cosTheta = std::cos(Radians(theta));
 	Matrix4x4 m;
-	//Compute rotation of first basis vector 91
+	// Compute rotation of first basis vector
 	m.m[0][0] = a.x() * a.x() + (1 - a.x() * a.x()) * cosTheta;
 	m.m[0][1] = a.x() * a.y() * (1 - cosTheta) - a.z() * sinTheta;
 	m.m[0][2] = a.x() * a.z() * (1 - cosTheta) + a.y() * sinTheta;
 	m.m[0][3] = 0;
-	//Compute rotations of second and third basis vectors
+
+	// Compute rotations of second and third basis vectors
+	m.m[1][0] = a.x() * a.y() * (1 - cosTheta) + a.z() * sinTheta;
+	m.m[1][1] = a.y() * a.y() + (1 - a.y() * a.y()) * cosTheta;
+	m.m[1][2] = a.y() * a.z() * (1 - cosTheta) - a.x() * sinTheta;
+	m.m[1][3] = 0;
+
+	m.m[2][0] = a.x() * a.z() * (1 - cosTheta) - a.y() * sinTheta;
+	m.m[2][1] = a.y() * a.z() * (1 - cosTheta) + a.x() * sinTheta;
+	m.m[2][2] = a.z() * a.z() + (1 - a.z() * a.z()) * cosTheta;
+	m.m[2][3] = 0;
 	return Transform(m, Transpose(m));
 }
 

@@ -5,12 +5,13 @@
 
 Spectrum BxDF::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType) const
 {
-	*wi = CosineSampleHemisphere(sample);
-	if (wo.z() < 0) wi->z() *= -1;
-	return Spectrum(0);
+    *wi = CosineSampleHemisphere(sample);
+    if (wo.z() < 0) wi->z() *= -1;
+    *pdf = Pdf(wo, *wi);
+    return f(wo, *wi);
 }
 
-float BxDF::Pdf(const Vector3f& wo, const Vector3f& wi)
+float BxDF::Pdf(const Vector3f& wo, const Vector3f& wi) const
 {
 	return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;
 }

@@ -290,7 +290,7 @@ inline float SampledSpectrum::y() const
 	return yy / yint;
 }
 
-inline SampledSpectrum& BlackBodySpectrum(Float T, Float beta)
+inline SampledSpectrum BlackBodySpectrum(Float T, Float beta)
 {
 	SampledSpectrum spectrum;
 

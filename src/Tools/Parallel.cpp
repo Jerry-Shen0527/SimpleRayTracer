@@ -15,8 +15,6 @@ static ParallelForLoop* workList = nullptr;
 static std::condition_variable workListCondition;
 thread_local int ThreadIndex;
 
-
-
 void ParallelFor2D(std::function<void(Point2i)> func, const Point2i& count) {
 	if (threads.empty() || count.x() * count.y() <= 1) {
 		for (int y = 0; y < count.y(); ++y)

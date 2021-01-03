@@ -50,6 +50,10 @@ inline Vector3f CosineSampleHemisphere(const Point2f& u) {
 	return Vector3f(d.x(), d.y(), z);
 }
 
+inline Float CosineHemispherePdf(Float cosTheta) {
+	return cosTheta * InvPi;
+}
+
 inline bool SameHemisphere(const Vector3f& w, const Vector3f& wp) {
 	return w.z() * wp.z() > 0;
 }

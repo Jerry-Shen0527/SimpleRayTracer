@@ -80,9 +80,9 @@ struct Distribution1D {
 	//Distribution1D Public Data 758
 	int SampleDiscrete(Float u, Float* pdf = nullptr,
 		Float* uRemapped = nullptr) const {
-		//Find surrounding CDF segmentsand offset 759
-		int offset = FindInterval(cdf.size(), [&](int index) { return cdf[index] <= u; });
-		if (pdf) *pdf = func[offset] / (funcInt * Count());
+		int offset = FindInterval((int)cdf.size(),
+			[&](int index) { return cdf[index] <= u; });
+		if (pdf) *pdf = (funcInt > 0) ? func[offset] / (funcInt * Count()) : 0;
 		if (uRemapped)
 			*uRemapped = (u - cdf[offset]) / (cdf[offset + 1] - cdf[offset]);
 		return offset;

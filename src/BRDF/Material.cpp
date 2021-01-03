@@ -1,7 +1,7 @@
 #include <BRDF/BSDF.h>
 #include "BRDF/Material.h"
 
-#include "BRDF/Lambertian.h"
+#include "BRDF/lambertian.h"
 #include "BRDF/MicrofacetDistribution.h"
 #include "BRDF/Specular.h"
 #include "BRDF/OrenNayar.h"

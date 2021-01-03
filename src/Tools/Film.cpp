@@ -117,7 +117,7 @@ void Film::WriteImage(Float splatScale, bool timeStamp)
 	offset = 0;
 	for (Point2i p : croppedPixelBounds) {
 		// Scale pixel value by _scale_
-		rgb_char[3 * offset]     = static_cast<char>(Clamp(rgb[3 * offset], 0, 255.0));
+		rgb_char[3 * offset] = static_cast<char>(Clamp(rgb[3 * offset], 0, 255.0));
 		rgb_char[3 * offset + 1] = static_cast<char>(Clamp(rgb[3 * offset + 1], 0, 255.0));
 		rgb_char[3 * offset + 2] = static_cast<char>(Clamp(rgb[3 * offset + 2], 0, 255.0));
 		++offset;
@@ -130,7 +130,7 @@ void Film::WriteImage(Float splatScale, bool timeStamp)
 		struct tm* tm = new struct tm;
 		auto tme = time(nullptr);
 		localtime_s(tm, &tme);
-		auto time_s = std::to_string(tm->tm_mon+1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + "-" + std::to_string(tm->tm_min) + "-" + std::to_string(tm->tm_sec) + "-";
+		auto time_s = std::to_string(tm->tm_mon + 1) + "-" + std::to_string(tm->tm_mday) + " " + std::to_string(tm->tm_hour) + "-" + std::to_string(tm->tm_min) + "-" + std::to_string(tm->tm_sec) + "-";
 		stbi_write_png((time_s + filename).c_str(), out_put.x(), out_put.y(), 3, &rgb_char[0], 0);
 		delete tm;
 	}
@@ -138,6 +138,18 @@ void Film::WriteImage(Float splatScale, bool timeStamp)
 		stbi_write_png(filename.c_str(), out_put.x(), out_put.y(), 3, &rgb_char[0], 0);
 	}
 }
+
+void Film::SetImage(const Spectrum* img) const
+{
+	int nPixels = croppedPixelBounds.Volume();
+	for (int i = 0; i < nPixels; ++i) {
+		Pixel& p = pixels[i];
+		img[i].ToXYZ(p.xyz);
+		p.filterWeightSum = 1;
+		p.splatXYZ[0] = p.splatXYZ[1] = p.splatXYZ[2] = 0;
+	}
+}
+
 void FilmTile::AddSample(const Point2f& pFilm, Spectrum L, Float sampleWeight)
 {
 	if (L.y() > maxSampleLuminance)

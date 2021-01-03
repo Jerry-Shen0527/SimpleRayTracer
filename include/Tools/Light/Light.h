@@ -24,6 +24,9 @@ public:
 	virtual Float Pdf_Li(const Interaction& ref, const Vector3f& wi) const = 0;
 	virtual Spectrum Le(const RayDifferential& r) const { return  Spectrum(0); }
 
+	virtual Spectrum Sample_Le(const Point2f& u1, const Point2f& u2, Float time, Ray* ray, Normal3f* nLight, Float* pdfPos, Float* pdfDir) const = 0;
+	virtual void Pdf_Le(const Ray& ray, const Normal3f& nLight, Float* pdfPos, Float* pdfDir) const = 0;
+
 	virtual Spectrum Power() const = 0;
 	virtual void Preprocess(const Scene& scene) { }
 
@@ -66,18 +69,22 @@ inline AreaLight::AreaLight(const Transform& LightToWorld, const MediumInterface
 class DiffuseAreaLight : public AreaLight {
 public:
 	DiffuseAreaLight(const Transform& LightToWorld,
-	                 const MediumInterface& mediumInterface, const Spectrum& Lemit,
-	                 int nSamples, const std::shared_ptr<Shape>& shape);
+		const MediumInterface& mediumInterface, const Spectrum& Lemit,
+		int nSamples, const std::shared_ptr<Shape>& shape,bool twoSided=false);
 
 	Spectrum L(const Interaction& intr, const Vector3f& w) const override;
 
 	Spectrum Power() const;
 
 	Spectrum Sample_Li(const Interaction& ref, const Point2f& u, Vector3f* wi, Float* pdf,
-	                   VisibilityTester* vis) const override;
+		VisibilityTester* vis) const override;
 	Float Pdf_Li(const Interaction& ref, const Vector3f& wi) const override;
+	Spectrum Sample_Le(const Point2f& u1, const Point2f& u2, Float time, Ray* ray, Normal3f* nLight, Float* pdfPos, Float* pdfDir) const override;
+	void Pdf_Le(const Ray& ray, const Normal3f& nLight, Float* pdfPos, Float* pdfDir) const override;
 protected:
 	const Spectrum Lemit;
 	std::shared_ptr<Shape> shape;
+	const bool twoSided;
+
 	const Float area;
 };

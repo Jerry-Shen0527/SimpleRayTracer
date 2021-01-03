@@ -19,6 +19,9 @@ public:
 			: camera->film->croppedPixelBounds.Volume()),
 		writeFrequency(writeFrequency) {}
 	void Render(const Scene& scene) override;
+
+	static bool ToGrid(const Point3f& p, const Bounds3f& bounds,
+	                   const int gridRes[3], Point3i* pi);
 	//SPPMIntegrator Public Methods
 
 private:

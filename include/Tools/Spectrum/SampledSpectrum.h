@@ -10,6 +10,8 @@
 static const int sampledLambdaStart = 400;
 static const int sampledLambdaEnd = 700;
 static  const int nSpectralSamples = 30;
+static const Float CIE_Y_integral = 106.856895;
+
 
 class SampledSpectrum :public CoefficientSpectrum<nSpectralSamples>
 {
@@ -282,12 +284,10 @@ inline void SampledSpectrum::ToRGB(Float rgb[3]) const
 
 inline float SampledSpectrum::y() const
 {
-	float yy = 0.f;
-	for (int i = 0; i < nSpectralSamples; ++i)
-	{
-		yy += Y.c[i] * c[i];
-	}
-	return yy / yint;
+	Float yy = 0.f;
+	for (int i = 0; i < nSpectralSamples; ++i) yy += Y.c[i] * c[i];
+	return yy * Float(sampledLambdaEnd - sampledLambdaStart) /
+		Float(CIE_Y_integral * nSpectralSamples);
 }
 
 inline SampledSpectrum BlackBodySpectrum(Float T, Float beta)

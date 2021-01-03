@@ -1,9 +1,11 @@
 #include <Tools/Sampler.h>
 
+#include "Tools/LowDiscrepency.h"
+
 template <typename T>
-void Shuffle(T* samp, int count, int nDimensions) {
+void Shuffle(T* samp, int count, int nDimensions, RNG& rng) {
 	for (int i = 0; i < count; ++i) {
-		int other = i + random_int(0, count - i);
+		int other = i + rng.UniformUInt32(count - i);
 		for (int j = 0; j < nDimensions; ++j)
 			std::swap(samp[nDimensions * i + j], samp[nDimensions * other + j]);
 	}
@@ -14,19 +16,19 @@ void StratifiedSampler::StartPixel(const Point2i& p)
 	for (size_t i = 0; i < samples1D.size(); ++i)
 	{
 		StratifiedSample1D(&samples1D[i][0], xPixelSamples * yPixelSamples, jitterSamples);
-		Shuffle(&samples1D[i][0], xPixelSamples * yPixelSamples, 1);
+		Shuffle(&samples1D[i][0], xPixelSamples * yPixelSamples, 1, rng);
 	}
 	for (size_t i = 0; i < samples2D.size(); ++i)
 	{
 		StratifiedSample2D(&samples2D[i][0], xPixelSamples, yPixelSamples, jitterSamples);
-		Shuffle(&samples2D[i][0], xPixelSamples * yPixelSamples, 1);
+		Shuffle(&samples2D[i][0], xPixelSamples * yPixelSamples, 1, rng);
 	}
 
 	for (size_t i = 0; i < samples1DArraySizes.size(); ++i)
 		for (int64_t j = 0; j < samplesPerPixel; ++j) {
 			int count = samples1DArraySizes[i];
 			StratifiedSample1D(&sampleArray1D[i][j * count], count, jitterSamples);
-			Shuffle(&sampleArray1D[i][j * count], count, 1);
+			Shuffle(&sampleArray1D[i][j * count], count, 1, rng);
 		}
 	for (size_t i = 0; i < samples2DArraySizes.size(); ++i)
 		for (int64_t j = 0; j < samplesPerPixel; ++j) {
@@ -182,6 +184,38 @@ bool GlobalSampler::StartNextSample() {
 	intervalSampleIndex = GetIndexForSample(currentPixelSampleIndex + 1);
 	return Sampler::StartNextSample();
 }
+
+void GlobalSampler::StartPixel(const Point2i& p)
+{
+	Sampler::StartPixel(p);
+	dimension = 0;
+	intervalSampleIndex = GetIndexForSample(0);
+	// Compute _arrayEndDim_ for dimensions used for array samples
+	arrayEndDim =
+		arrayStartDim + sampleArray1D.size() + 2 * sampleArray2D.size();
+
+	// Compute 1D array samples for _GlobalSampler_
+	for (size_t i = 0; i < samples1DArraySizes.size(); ++i) {
+		int nSamples = samples1DArraySizes[i] * samplesPerPixel;
+		for (int j = 0; j < nSamples; ++j) {
+			int64_t index = GetIndexForSample(j);
+			sampleArray1D[i][j] = SampleDimension(index, arrayStartDim + i);
+		}
+	}
+
+	// Compute 2D array samples for _GlobalSampler_
+	int dim = arrayStartDim + samples1DArraySizes.size();
+	for (size_t i = 0; i < samples2DArraySizes.size(); ++i) {
+		int nSamples = samples2DArraySizes[i] * samplesPerPixel;
+		for (int j = 0; j < nSamples; ++j) {
+			int64_t idx = GetIndexForSample(j);
+			sampleArray2D[i][j].x() = SampleDimension(idx, dim);
+			sampleArray2D[i][j].y() = SampleDimension(idx, dim + 1);
+		}
+		dim += 2;
+	}
+}
+
 bool GlobalSampler::SetSampleNumber(int64_t sampleNum) {
 	dimension = 0;
 	intervalSampleIndex = GetIndexForSample(sampleNum);
@@ -200,3 +234,62 @@ Point2f GlobalSampler::Get2D() {
 	dimension += 2;
 	return p;
 }
+
+std::vector<uint16_t> ComputeRadicalInversePermutations(RNG& rng) {
+	std::vector<uint16_t> perms;
+	// Allocate space in _perms_ for radical inverse permutations
+	int permArraySize = 0;
+	for (int i = 0; i < PrimeTableSize; ++i) permArraySize += Primes[i];
+	perms.resize(permArraySize);
+	uint16_t* p = &perms[0];
+	for (int i = 0; i < PrimeTableSize; ++i) {
+		// Generate random permutation for $i$th prime base
+		for (int j = 0; j < Primes[i]; ++j) p[j] = j;
+		Shuffle(p, Primes[i], 1, rng);
+		p += Primes[i];
+	}
+	return perms;
+}
+
+HaltonSampler::HaltonSampler(int samplesPerPixel, const Bounds2i& sampleBounds) : GlobalSampler(samplesPerPixel)
+{
+	//Generate random digit permutations for Halton sampler 452
+	if (radicalInversePermutations.size() == 0)
+	{
+		RNG rng;
+		radicalInversePermutations = ComputeRadicalInversePermutations(rng);
+	}
+	//	Find radical inverse base scales and exponents that cover sampling area 452
+	Vector2i res = sampleBounds.pMax - sampleBounds.pMin;
+	for (int i = 0; i < 2; ++i)
+	{
+		int base = (i == 0) ? 2 : 3;
+		int scale = 1, exp = 0;
+		while (scale < std::min(res[i], kMaxResolution))
+		{
+			scale *= base;
+			++exp;
+		}
+		baseScales[i] = scale;
+		baseExponents[i] = exp;
+	}
+	//	Compute stride in samples for visiting each pixel area 453
+	sampleStride = baseScales[0] * baseScales[1];
+	//	Compute multiplicative inverses for baseScales
+}
+
+Float HaltonSampler::SampleDimension(int64_t index, int dim) const
+{
+	if (dim == 0)
+		return RadicalInverse(dim, index >> baseExponents[0]);
+	else if (dim == 1)
+		return RadicalInverse(dim, index / baseScales[1]);
+	else
+		return ScrambledRadicalInverse(dim, index, PermutationForDimension(dim));
+}
+
+std::unique_ptr<Sampler> HaltonSampler::Clone(int seed)
+{
+	return std::unique_ptr<Sampler>(new HaltonSampler(*this));
+}
+std::vector<uint16_t> HaltonSampler::radicalInversePermutations;

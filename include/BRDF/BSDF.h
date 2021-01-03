@@ -2,7 +2,6 @@
 #include "BxDF.h"
 #include "Geometry/Interaction.h"
 
-
 class BSDF
 {
 public:
@@ -25,7 +24,7 @@ public:
 			ss.z() * v.x() + ts.z() * v.y() + ns.z() * v.z());
 	}
 
-	Spectrum f(const Vector3f& woW, const Vector3f& wiW, BxDFType flags) const {
+	Spectrum f(const Vector3f& woW, const Vector3f& wiW, BxDFType flags = BSDF_ALL) const {
 		Vector3f wi = WorldToLocal(wiW), wo = WorldToLocal(woW);
 		bool reflect = Dot(wiW, ng) * Dot(woW, ng) > 0;
 		Spectrum f(0.f);

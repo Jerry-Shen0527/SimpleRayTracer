@@ -19,8 +19,9 @@ public:
 
 	// Sample a point on the shape given a reference point |ref| and
 	// return the PDF with respect to solid angle from |ref|.
-	virtual Interaction Sample(const Interaction& ref, const Point2f& u,
-		Float* pdf) const;
+
+	virtual Interaction Sample(const Interaction& ref, const Point2f& u, Float* pdf) const;
+
 	virtual Float Pdf(const Interaction& ref, const Vector3f& wi) const;
 
 	const Transform* ObjectToWorld;
@@ -28,7 +29,6 @@ public:
 	const bool reverseOrientation;
 	const bool transformSwapsHandedness;
 };
-
 
 class Sphere :public Shape
 {
@@ -42,9 +42,6 @@ public:
 
 	Float Area() const override;
 
-
-
-	
 private:
 	const Float radius;
 	const Float zMin, zMax;

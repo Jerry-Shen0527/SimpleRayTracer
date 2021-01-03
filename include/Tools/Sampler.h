@@ -3,19 +3,21 @@
 #include <vector>
 #include <BRDF/BxDF_Utility.h>
 
+#include "Bound.h"
+#include "LowDiscrepency.h"
+
 struct CameraSample {
 	Point2f pFilm;
 	Point2f pLens;
 	Float time;
 };
 
-
 class Sampler
 {
 public:
 	Sampler::Sampler(int64_t samplesPerPixel) : samplesPerPixel(samplesPerPixel) { }
 
-	virtual ~Sampler(){}
+	virtual ~Sampler() {}
 
 	virtual void StartPixel(const Point2i& p);
 
@@ -102,6 +104,8 @@ private:
 
 	const int xPixelSamples, yPixelSamples;
 	const bool jitterSamples;
+	RNG rng;
+
 };
 
 class GlobalSampler : public Sampler {
@@ -122,9 +126,45 @@ private:
 	int64_t intervalSampleIndex;
 	static const int arrayStartDim = 5;
 	int arrayEndDim;
+
 };
 
 inline Float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf) {
 	Float f = nf * fPdf, g = ng * gPdf;
 	return (f * f) / (f * f + g * g);
 }
+
+class HaltonSampler : public GlobalSampler {
+public:
+	HaltonSampler(int samplesPerPixel, const Bounds2i& sampleBounds);
+
+	int64_t GetIndexForSample(int64_t sampleNum) const override
+	{
+		if (currentPixel != pixelForOffset) {
+			//Compute Halton sample offset for currentPixel
+			pixelForOffset = currentPixel;
+		}
+		return offsetForCurrentPixel + sampleNum * sampleStride;
+	}
+
+	Float SampleDimension(int64_t index, int dim) const override;
+
+	const uint16_t* PermutationForDimension(int dim) const {
+		if (dim >= PrimeTableSize)
+			std::cout << "HaltonSampler can only sample 5 dimensions.";
+		return &radicalInversePermutations[PrimeSums[dim]];
+	}
+
+	std::unique_ptr<Sampler> Clone(int seed) override;
+	//HaltonSampler Public Methods
+	static std::vector<uint16_t> radicalInversePermutations;
+
+	const int PrimeSums[PrimeTableSize] = { 0, 2, 5, 10, 17, };
+	Point2i baseScales, baseExponents;
+	static constexpr int kMaxResolution = 128;
+	int sampleStride;
+
+private:
+	mutable Point2i pixelForOffset = Point2i(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+	mutable int64_t offsetForCurrentPixel;
+};

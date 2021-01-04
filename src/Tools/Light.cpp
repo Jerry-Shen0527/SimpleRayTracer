@@ -4,7 +4,7 @@
 #include "Geometry/Shape.h"
 
 bool VisibilityTester::Unoccluded(const Scene& scene) const {
-	return !scene.IntersectP(p0.SpawnRayTo(p1.p));
+	return !scene.IntersectP(p0.SpawnRayTo(p1));
 }
 
 Spectrum VisibilityTester::Tr(const Scene& scene, Sampler& sampler) const {

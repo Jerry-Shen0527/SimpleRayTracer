@@ -56,9 +56,9 @@ Scene CreateCornell()
 
 	auto Zero = make_shared<ConstantTexture<Float>>(0);
 
-	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red));
-	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green));
-	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white));
+	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red, SpectrumType::Reflectance));
+	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
 
 	auto red_material = make_shared<MatteMaterial>(Red, Zero, nullptr);
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
@@ -68,7 +68,7 @@ Scene CreateCornell()
 
 	vector<shared_ptr<Light>> lights;
 
-	auto white_light = BlackBodySpectrum(5000, 10000);
+	auto white_light = BlackBodySpectrum(6000, 12000);
 
 	for (auto light_tri : light_mesh)
 	{

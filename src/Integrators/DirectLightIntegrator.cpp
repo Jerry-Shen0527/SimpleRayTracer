@@ -136,7 +136,7 @@ Spectrum EstimateDirect(const Interaction& it, const Point2f& uScattering, const
 			const SurfaceInteraction& isect = (const SurfaceInteraction&)it;
 			f = isect.bsdf->Sample_f(isect.wo, &wi, uScattering, &scatteringPdf, bsdfFlags, &sampledType);
 			f *= AbsDot(wi, isect.shading.n);
-			sampledSpecular = sampledType & BSDF_SPECULAR;
+			sampledSpecular = (sampledType & BSDF_SPECULAR) != 0;
 		}
 		else {
 			//Sample scattered direction for medium interactions 900

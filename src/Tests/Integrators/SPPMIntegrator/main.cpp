@@ -12,7 +12,6 @@
 #include "Tools/Parallel.h"
 #include "Tools/Scenes.h"
 
-
 int main()
 {
 	Film film(Point2i(1000, 1000), Bounds2f(Point2f(0, 0), Point2f(1, 1)), std::make_unique<BoxFilter>(Vector2f(1.5, 1.5)), 1., "test.png", 1.);
@@ -21,7 +20,7 @@ int main()
 
 	shared_ptr<const Camera> camera = std::make_shared<PerspectiveCamera>(transform, Bounds2f(Point2f(-1, -1), Point2f(1, 1)), 0, 1.0, 0, 10.0, 40.0, &film, nullptr);
 
-	SPPMIntegrator integrator(camera, 10, 1000000, 40, 1., 1);
+	SPPMIntegrator integrator(camera, 20, 500000, 40, 1., 5);
 
 	Scene scene = CreateCornell();
 

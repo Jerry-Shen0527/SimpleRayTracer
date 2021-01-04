@@ -8,9 +8,12 @@ Spectrum SurfaceInteraction::Le(const Vector3f& w) const
 	return area ? area->L(*this, w) : Spectrum(0.f);
 }
 
-Ray Interaction::SpawnRayTo(const Interaction& h2) const
+Ray Interaction::SpawnRayTo(const Interaction& it) const
 {
-	return SpawnRayTo(h2.p);
+	Point3f origin = OffsetRayOrigin(p, pError, n, it.p - p);
+	Point3f target = OffsetRayOrigin(it.p, it.pError, it.n, origin - it.p);
+	Vector3f d = target - origin;
+	return Ray(origin, d, 1 - ShadowEpsilon, time, GetMedium(d));
 }
 
 Ray Interaction::SpawnRay(const Vector3f& d) const

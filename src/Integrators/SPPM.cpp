@@ -62,6 +62,7 @@ void SPPMIntegrator::Render(const Scene& scene)
 	std::unique_ptr<SPPMPixel[]> pixels(new SPPMPixel[nPixels]);
 	for (int i = 0; i < nPixels; ++i)
 		pixels[i].radius = initialSearchRadius;
+	const Float invSqrtSPP = 1.f / std::sqrt(nIterations);
 
 	//Compute lightDistr for sampling lights proportional to power 974
 	std::unique_ptr<Distribution1D> lightDistr = ComputeLightPowerDistribution(scene);
@@ -73,10 +74,10 @@ void SPPMIntegrator::Render(const Scene& scene)
 	const int tileSize = 16;
 	Point2i nTiles((pixelExtent.x() + tileSize - 1) / tileSize, (pixelExtent.y() + tileSize - 1) / tileSize);
 	ParallelInit();
+	std::vector<MemoryArena> perThreadArenas(NumSystemCores());
 
 	for (int iter = 0; iter < nIterations; ++iter) {
 		//Generate SPPM visible points 976
-		std::vector<MemoryArena> perThreadArenas(NumSystemCores());
 		ParallelFor2D(
 			[&](Point2i tile) {
 				MemoryArena& arena = perThreadArenas[ThreadIndex];
@@ -101,6 +102,10 @@ void SPPMIntegrator::Render(const Scene& scene)
 					CameraSample cameraSample = tileSampler->GetCameraSample(pPixel);
 					RayDifferential ray;
 					Spectrum beta = camera->GenerateRayDifferential(cameraSample, &ray);
+					if (beta.IsBlack())
+						continue;
+					ray.ScaleDifferentials(invSqrtSPP);
+
 
 					//	Follow camera ray path until a visible point is created 977
 					Point2i pPixelO = Point2i(pPixel - pixelBounds.pMin);
@@ -215,99 +220,102 @@ void SPPMIntegrator::Render(const Scene& scene)
 			}, nPixels, 4096);
 
 		//	Trace photons and accumulate contributions 983
-		std::vector<MemoryArena> photonShootArenas(NumSystemCores());
-		ParallelFor(
-			[&](int photonIndex) {
-				MemoryArena& arena = photonShootArenas[ThreadIndex];
+		{
+			std::vector<MemoryArena> photonShootArenas(NumSystemCores());
+			ParallelFor(
+				[&](int photonIndex) {
+					MemoryArena& arena = photonShootArenas[ThreadIndex];
 
-				//Follow photon path for photonIndex 984
-				uint64_t haltonIndex = (uint64_t)iter * (uint64_t)photonsPerIteration + photonIndex;
-				int haltonDim = 0;
+					//Follow photon path for photonIndex 984
+					uint64_t haltonIndex = (uint64_t)iter * (uint64_t)photonsPerIteration + photonIndex;
+					int haltonDim = 0;
 
-				//Choose light to shoot photon from 985
-				Float lightPdf;
-				Float lightSample = RadicalInverse(haltonDim++, haltonIndex);
-				int lightNum = lightDistr->SampleDiscrete(lightSample, &lightPdf);
-				const std::shared_ptr<Light>& light = scene.lights[lightNum];
+					//Choose light to shoot photon from 985
+					Float lightPdf;
+					Float lightSample = RadicalInverse(haltonDim++, haltonIndex);
+					int lightNum = lightDistr->SampleDiscrete(lightSample, &lightPdf);
+					const std::shared_ptr<Light>& light = scene.lights[lightNum];
 
-				//	Compute sample values for photon ray leaving light source 985
-				Point2f uLight0(RadicalInverse(haltonDim, haltonIndex), RadicalInverse(haltonDim + 1, haltonIndex));
-				Point2f uLight1(RadicalInverse(haltonDim + 2, haltonIndex), RadicalInverse(haltonDim + 3, haltonIndex));
-				Float uLightTime = Lerp(RadicalInverse(haltonDim + 4, haltonIndex), camera->shutterOpen, camera->shutterClose);
-				haltonDim += 5;
+					//	Compute sample values for photon ray leaving light source 985
+					Point2f uLight0(RadicalInverse(haltonDim, haltonIndex), RadicalInverse(haltonDim + 1, haltonIndex));
+					Point2f uLight1(RadicalInverse(haltonDim + 2, haltonIndex), RadicalInverse(haltonDim + 3, haltonIndex));
+					Float uLightTime = Lerp(RadicalInverse(haltonDim + 4, haltonIndex), camera->shutterOpen, camera->shutterClose);
+					haltonDim += 5;
 
-				//	Generate photonRay from light source and initialize beta 985
-				RayDifferential photonRay;
-				Normal3f nLight;
-				Float pdfPos, pdfDir;
-				Spectrum Le = light->Sample_Le(uLight0, uLight1, uLightTime, &photonRay, &nLight, &pdfPos, &pdfDir);
+					//	Generate photonRay from light source and initialize beta 985
+					RayDifferential photonRay;
+					Normal3f nLight;
+					Float pdfPos, pdfDir;
+					Spectrum Le = light->Sample_Le(uLight0, uLight1, uLightTime, &photonRay, &nLight, &pdfPos, &pdfDir);
 
-				if (pdfPos == 0 || pdfDir == 0 || Le.IsBlack()) return;
-				//Spectrum beta = (AbsDot(nLight, photonRay.d) * Le) / (lightPdf * pdfPos * pdfDir);
-				Spectrum beta = (AbsDot(nLight, photonRay.d) * Le) / (lightPdf * pdfPos * pdfDir);
+					if (pdfPos == 0 || pdfDir == 0 || Le.IsBlack()) return;
+					//Spectrum beta = (AbsDot(nLight, photonRay.d) * Le) / (lightPdf * pdfPos * pdfDir);
+					Spectrum beta = (AbsDot(nLight, photonRay.d) * Le) / (lightPdf * pdfPos * pdfDir);
 
-				if (beta.IsBlack())
-					return;
-				//	Follow photon path through scene and record intersections 986
-				SurfaceInteraction isect;
-				for (int depth = 0; depth < maxDepth; ++depth) {
-					if (!scene.Intersect(photonRay, &isect))
-						break;
-					if (depth > 0) {
-						//Add photon contribution to nearby visible points 986
-						Point3i photonGridIndex;
-						if (ToGrid(isect.p, gridBounds, gridRes, &photonGridIndex)) {
-							int h = hash(photonGridIndex, hashSize);
-							//Add photon contribution to visible points in grid[h] 986
-							for (SPPMPixelListNode* node = grid[h].load(std::memory_order_relaxed);
-								node != nullptr; node = node->next) {
-								SPPMPixel& pixel = *node->pixel;
-								Float radius = pixel.radius;
-								if ((pixel.vp.p - isect.p).LengthSquared() > radius * radius)
-									continue;
+					if (beta.IsBlack())
+						return;
 
-								//Update pixel and M for nearby photon 987
-								Vector3f wi = -photonRay.d;
-								Spectrum Phi = beta * pixel.vp.bsdf->f(pixel.vp.wo, wi);
-								for (int i = 0; i < nSpectralSamples; ++i)
-									pixel.Phi[i].Add(Phi[i]);
-								++pixel.M;
+					//	Follow photon path through scene and record intersections 986
+					SurfaceInteraction isect;
+					for (int depth = 0; depth < maxDepth; ++depth) {
+						if (!scene.Intersect(photonRay, &isect))
+							break;
+						if (depth > 0) {
+							//Add photon contribution to nearby visible points 986
+							Point3i photonGridIndex;
+							if (ToGrid(isect.p, gridBounds, gridRes, &photonGridIndex)) {
+								int h = hash(photonGridIndex, hashSize);
+								//Add photon contribution to visible points in grid[h] 986
+								for (SPPMPixelListNode* node = grid[h].load(std::memory_order_relaxed);
+									node != nullptr; node = node->next) {
+									SPPMPixel& pixel = *node->pixel;
+									Float radius = pixel.radius;
+									if ((pixel.vp.p - isect.p).LengthSquared() > radius * radius)
+										continue;
+
+									//Update pixel and M for nearby photon 987
+									Vector3f wi = -photonRay.d;
+									Spectrum Phi = beta * pixel.vp.bsdf->f(pixel.vp.wo, wi);
+									for (int i = 0; i < nSpectralSamples; ++i)
+										pixel.Phi[i].Add(Phi[i]);
+									++pixel.M;
+								}
 							}
 						}
+						//Sample new photon ray direction 987
+
+						//Compute BSDF at photon intersection point 988
+						isect.ComputeScatteringFunctions(photonRay, arena, true,
+							TransportMode::Importance);
+						if (!isect.bsdf) {
+							--depth;
+							photonRay = isect.SpawnRay(photonRay.d);
+							continue;
+						}
+						const BSDF& photonBSDF = *isect.bsdf;
+						//	Sample BSDF fr and direction wi for reflected photon 988
+						Vector3f wi, wo = -photonRay.d;
+						Float pdf;
+						BxDFType flags;
+						//Generate bsdfSample for outgoing photon sample 988
+
+						Point2f bsdfSample(RadicalInverse(haltonDim, haltonIndex), RadicalInverse(haltonDim + 1, haltonIndex));
+						haltonDim += 2;
+
+						Spectrum fr = photonBSDF.Sample_f(wo, &wi, bsdfSample, &pdf, BSDF_ALL, &flags);
+						if (fr.IsBlack() || pdf == 0.f) break;
+
+						Spectrum bnew = beta * fr * AbsDot(wi, isect.shading.n) / pdf;
+						//Possibly terminate photon path with Russian roulette 989
+						Float q = std::max((Float)0, 1 - bnew.y() / beta.y());
+						if (RadicalInverse(haltonDim++, haltonIndex) < q)
+							break;
+						beta = bnew / (1 - q);
+						photonRay = (RayDifferential)isect.SpawnRay(wi);
 					}
-					//Sample new photon ray direction 987
-
-					//Compute BSDF at photon intersection point 988
-					isect.ComputeScatteringFunctions(photonRay, arena, true,
-						TransportMode::Importance);
-					if (!isect.bsdf) {
-						--depth;
-						photonRay = isect.SpawnRay(photonRay.d);
-						continue;
-					}
-					const BSDF& photonBSDF = *isect.bsdf;
-					//	Sample BSDF fr and direction wi for reflected photon 988
-					Vector3f wi, wo = -photonRay.d;
-					Float pdf;
-					BxDFType flags;
-					//Generate bsdfSample for outgoing photon sample 988
-
-					Point2f bsdfSample(RadicalInverse(haltonDim, haltonIndex), RadicalInverse(haltonDim + 1, haltonIndex));
-					haltonDim += 2;
-
-					Spectrum fr = photonBSDF.Sample_f(wo, &wi, bsdfSample, &pdf, BSDF_ALL, &flags);
-					if (fr.IsBlack() || pdf == 0.f) break;
-
-					Spectrum bnew = beta * fr * AbsDot(wi, isect.shading.n) / pdf;
-					//Possibly terminate photon path with Russian roulette 989
-					Float q = std::max((Float)0, 1 - bnew.y() / beta.y());
-					if (RadicalInverse(haltonDim++, haltonIndex) < q)
-						break;
-					beta = bnew / (1 - q);
-					photonRay = (RayDifferential)isect.SpawnRay(wi);
-				}
-				arena.Reset();
-			}, photonsPerIteration, 8192);
+					arena.Reset();
+				}, photonsPerIteration, 8192);
+		}
 		//	Update pixel values from this pass¡¯s photons 989
 		//
 
@@ -355,7 +363,6 @@ void SPPMIntegrator::Render(const Scene& scene)
 			camera->film->SetImage(image.get());
 			camera->film->WriteImage(1, true);
 		}
-
 		for (int i = 0; i < perThreadArenas.size(); ++i)
 			perThreadArenas[i].Reset();
 	}

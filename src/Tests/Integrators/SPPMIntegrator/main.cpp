@@ -20,7 +20,7 @@ int main()
 
 	shared_ptr<const Camera> camera = std::make_shared<PerspectiveCamera>(transform, Bounds2f(Point2f(-1, -1), Point2f(1, 1)), 0, 1.0, 0, 10.0, 40.0, &film, nullptr);
 
-	SPPMIntegrator integrator(camera, 20, 500000, 40, 1., 5);
+	SPPMIntegrator integrator(camera, 20, 10000000, 40, 1., 10);
 
 	Scene scene = CreateCornell();
 

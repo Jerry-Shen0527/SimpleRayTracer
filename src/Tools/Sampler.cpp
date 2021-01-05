@@ -251,6 +251,24 @@ std::vector<uint16_t> ComputeRadicalInversePermutations(RNG& rng) {
 	return perms;
 }
 
+static void extendedGCD(uint64_t a, uint64_t b, int64_t* x, int64_t* y) {
+	if (b == 0) {
+		*x = 1;
+		*y = 0;
+		return;
+	}
+	int64_t d = a / b, xp, yp;
+	extendedGCD(b, a % b, &xp, &yp);
+	*x = yp;
+	*y = xp - (d * yp);
+}
+
+static uint64_t multiplicativeInverse(int64_t a, int64_t n) {
+	int64_t x, y;
+	extendedGCD(a, n, &x, &y);
+	return Mod(x, n);
+}
+
 HaltonSampler::HaltonSampler(int samplesPerPixel, const Bounds2i& sampleBounds) : GlobalSampler(samplesPerPixel)
 {
 	//Generate random digit permutations for Halton sampler 452
@@ -276,6 +294,47 @@ HaltonSampler::HaltonSampler(int samplesPerPixel, const Bounds2i& sampleBounds) 
 	//	Compute stride in samples for visiting each pixel area 453
 	sampleStride = baseScales[0] * baseScales[1];
 	//	Compute multiplicative inverses for baseScales
+
+		// Compute multiplicative inverses for _baseScales_
+	multInverse[0] = multiplicativeInverse(baseScales[1], baseScales[0]);
+	multInverse[1] = multiplicativeInverse(baseScales[0], baseScales[1]);
+}
+
+template <int base>
+inline uint64_t InverseRadicalInverse(uint64_t inverse, int nDigits) {
+	uint64_t index = 0;
+	for (int i = 0; i < nDigits; ++i) {
+		uint64_t digit = inverse % base;
+		inverse /= base;
+		index = index * base + digit;
+	}
+	return index;
+}
+
+int64_t HaltonSampler::GetIndexForSample(int64_t sampleNum) const
+{
+	if (currentPixel != pixelForOffset)
+	{
+		// Compute Halton sample offset for _currentPixel_
+		offsetForCurrentPixel = 0;
+		if (sampleStride > 1)
+		{
+			Point2i pm(Mod(currentPixel[0], kMaxResolution),
+				Mod(currentPixel[1], kMaxResolution));
+			for (int i = 0; i < 2; ++i)
+			{
+				uint64_t dimOffset =
+					(i == 0)
+					? InverseRadicalInverse < 2 >(pm[i], baseExponents[i])
+					: InverseRadicalInverse < 3 >(pm[i], baseExponents[i]);
+				offsetForCurrentPixel +=
+					dimOffset * (sampleStride / baseScales[i]) * multInverse[i];
+			}
+			offsetForCurrentPixel %= sampleStride;
+		}
+		pixelForOffset = currentPixel;
+	}
+	return offsetForCurrentPixel + sampleNum * sampleStride;
 }
 
 Float HaltonSampler::SampleDimension(int64_t index, int dim) const

@@ -76,6 +76,11 @@ void Film::MergeFilmTile(std::unique_ptr<FilmTile> tile)
 	}
 }
 
+inline Float GammaCorrect(Float value) {
+	if (value <= 0.0031308f) return 12.92f * value;
+	return 1.055f * std::pow(value, (Float)(1.f / 2.4f)) - 0.055f;
+}
+
 void Film::WriteImage(Float splatScale, bool timeStamp)
 {
 	std::unique_ptr<Float[]> rgb(new Float[3 * croppedPixelBounds.Volume()]);
@@ -117,9 +122,9 @@ void Film::WriteImage(Float splatScale, bool timeStamp)
 	offset = 0;
 	for (Point2i p : croppedPixelBounds) {
 		// Scale pixel value by _scale_
-		rgb_char[3 * offset] = static_cast<char>(Clamp(rgb[3 * offset], 0, 255.0));
-		rgb_char[3 * offset + 1] = static_cast<char>(Clamp(rgb[3 * offset + 1], 0, 255.0));
-		rgb_char[3 * offset + 2] = static_cast<char>(Clamp(rgb[3 * offset + 2], 0, 255.0));
+		rgb_char[3 * offset] = static_cast<char>(Clamp(255.0 * GammaCorrect(rgb[3 * offset]), 0, 255.0));
+		rgb_char[3 * offset + 1] = static_cast<char>(Clamp(255.0 * GammaCorrect(rgb[3 * offset + 1]), 0, 255.0));
+		rgb_char[3 * offset + 2] = static_cast<char>(Clamp(255.0 * GammaCorrect(rgb[3 * offset + 2]), 0, 255.0));
 		++offset;
 	}
 

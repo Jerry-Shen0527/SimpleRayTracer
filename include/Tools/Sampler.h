@@ -78,7 +78,7 @@ public:
 	inline void StartPixel(const Point2i& p) override;
 	bool StartNextSample() override;
 	//int RoundCount(int n) const override;
-	inline bool SetSampleNumber(int64_t sampleNum) override;
+	bool SetSampleNumber(int64_t sampleNum) override;
 	std::unique_ptr<Sampler> Clone(int seed) override;
 protected:
 	std::vector<std::vector<Float>> samples1D;
@@ -105,7 +105,6 @@ private:
 	const int xPixelSamples, yPixelSamples;
 	const bool jitterSamples;
 	RNG rng;
-
 };
 
 class GlobalSampler : public Sampler {
@@ -113,7 +112,7 @@ public:
 	// GlobalSampler Public Methods
 	bool StartNextSample();
 	void StartPixel(const Point2i&);
-	bool SetSampleNumber(int64_t sampleNum);
+	bool SetSampleNumber(int64_t sampleNum) override;
 	Float Get1D();
 	Point2f Get2D();
 	GlobalSampler(int64_t samplesPerPixel) : Sampler(samplesPerPixel) {}
@@ -126,7 +125,6 @@ private:
 	int64_t intervalSampleIndex;
 	static const int arrayStartDim = 5;
 	int arrayEndDim;
-
 };
 
 inline Float PowerHeuristic(int nf, Float fPdf, int ng, Float gPdf) {
@@ -138,14 +136,7 @@ class HaltonSampler : public GlobalSampler {
 public:
 	HaltonSampler(int samplesPerPixel, const Bounds2i& sampleBounds);
 
-	int64_t GetIndexForSample(int64_t sampleNum) const override
-	{
-		if (currentPixel != pixelForOffset) {
-			//Compute Halton sample offset for currentPixel
-			pixelForOffset = currentPixel;
-		}
-		return offsetForCurrentPixel + sampleNum * sampleStride;
-	}
+	int64_t GetIndexForSample(int64_t sampleNum) const override;
 
 	Float SampleDimension(int64_t index, int dim) const override;
 
@@ -159,10 +150,10 @@ public:
 	//HaltonSampler Public Methods
 	static std::vector<uint16_t> radicalInversePermutations;
 
-	const int PrimeSums[PrimeTableSize] = { 0, 2, 5, 10, 17, };
 	Point2i baseScales, baseExponents;
 	static constexpr int kMaxResolution = 128;
 	int sampleStride;
+	int multInverse[2];
 
 private:
 	mutable Point2i pixelForOffset = Point2i(std::numeric_limits<int>::max(), std::numeric_limits<int>::max());

@@ -16,6 +16,12 @@ inline Float Clamp(Float x, Float min, Float max) {
 	return x;
 }
 
+template <typename T>
+inline T Mod(T a, T b) {
+	T result = a - (a / b) * b;
+	return (T)((result < 0) ? result + b : result);
+}
+
 inline void idx_to_ij(int idx, int& i, int& j, int width)
 {
 	i = idx % width;

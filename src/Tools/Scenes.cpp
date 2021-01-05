@@ -68,7 +68,7 @@ Scene CreateCornell()
 
 	vector<shared_ptr<Light>> lights;
 
-	auto white_light = BlackBodySpectrum(6000, 12000);
+	auto white_light = BlackBodySpectrum(5000, 20);
 
 	for (auto light_tri : light_mesh)
 	{

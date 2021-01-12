@@ -28,6 +28,9 @@ public:
 	inline Point<T, 3> operator()(const Point<T, 3>& p) const;
 	template<typename T>
 	inline Point3<T> operator()(const Point3<T>& pt, Vector3<T>* absError) const;
+	template<typename T>
+	inline Point3<T> operator()(const Point3<T>& pt, const Vector3<T>& ptError,
+		Vector3<T>* absError) const;
 
 	Bounds3f operator()(const Bounds3f& b) const;
 	Ray operator()(const Ray& r) const;
@@ -243,4 +246,36 @@ inline Transform Perspective(Float fov, Float n, Float f) {
 	// Scale canonical perspective view to specified field of view
 	Float invTanAng = 1 / std::tan(Radians(fov) / 2);
 	return Scale(invTanAng, invTanAng, 1) * Transform(persp);
+}
+
+template <typename T>
+Point3<T> Transform::operator()(const Point3<T>& pt, const Vector3<T>& ptError,
+	Vector3<T>* absError) const {
+	T x = pt.x(), y = pt.y(), z = pt.z();
+	T xp = (m.m[0][0] * x + m.m[0][1] * y) + (m.m[0][2] * z + m.m[0][3]);
+	T yp = (m.m[1][0] * x + m.m[1][1] * y) + (m.m[1][2] * z + m.m[1][3]);
+	T zp = (m.m[2][0] * x + m.m[2][1] * y) + (m.m[2][2] * z + m.m[2][3]);
+	T wp = (m.m[3][0] * x + m.m[3][1] * y) + (m.m[3][2] * z + m.m[3][3]);
+	absError->x() =
+		(gamma(3) + (T)1) *
+		(std::abs(m.m[0][0]) * ptError.x() + std::abs(m.m[0][1]) * ptError.y() +
+			std::abs(m.m[0][2]) * ptError.z()) +
+		gamma(3) * (std::abs(m.m[0][0] * x) + std::abs(m.m[0][1] * y) +
+			std::abs(m.m[0][2] * z) + std::abs(m.m[0][3]));
+	absError->y() =
+		(gamma(3) + (T)1) *
+		(std::abs(m.m[1][0]) * ptError.x() + std::abs(m.m[1][1]) * ptError.y() +
+			std::abs(m.m[1][2]) * ptError.z()) +
+		gamma(3) * (std::abs(m.m[1][0] * x) + std::abs(m.m[1][1] * y) +
+			std::abs(m.m[1][2] * z) + std::abs(m.m[1][3]));
+	absError->z() =
+		(gamma(3) + (T)1) *
+		(std::abs(m.m[2][0]) * ptError.x() + std::abs(m.m[2][1]) * ptError.y() +
+			std::abs(m.m[2][2]) * ptError.z()) +
+		gamma(3) * (std::abs(m.m[2][0] * x) + std::abs(m.m[2][1] * y) +
+			std::abs(m.m[2][2] * z) + std::abs(m.m[2][3]));
+	if (wp == 1.)
+		return Point3<T>(xp, yp, zp);
+	else
+		return Point3<T>(xp, yp, zp) / wp;
 }

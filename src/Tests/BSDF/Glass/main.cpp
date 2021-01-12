@@ -14,9 +14,8 @@
 int main()
 {
 	MemoryArena arena;
-
-	const auto scene = CreateCornell(arena);
-	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(7, 7, true, 10);
+	const auto scene = CreateCornellWithBalls(arena);
+	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(2, 2, true, 10);
 
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
 	AnimatedTransform transform(&trans, 0, &trans, 0);
@@ -30,6 +29,7 @@ int main()
 	integrator.Render(scene);
 
 	camera->film->WriteImage(1, true);
+
 	arena.Reset();
 
 #ifdef _WIN32

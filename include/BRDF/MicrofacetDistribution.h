@@ -228,7 +228,7 @@ public:
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const;
 	Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& u,
 		Float* pdf, BxDFType* sampledType) const;
-	Float Pdf(const Vector3f& wo, const Vector3f& wi) const;
+	Float Pdf(const Vector3f& wo, const Vector3f& wi) const override;
 
 private:
 	// MicrofacetReflection Private Data

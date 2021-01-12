@@ -53,12 +53,12 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 {
 	SurfaceInteraction ret;
 	// Transform _p_ and _pError_ in _SurfaceInteraction_
-	ret.p = (*this)(si.p);
+	ret.p = (*this)(si.p, si.pError, &ret.pError);
 
 	// Transform remaining members of _SurfaceInteraction_
 	const Transform& t = *this;
-	ret.n = (t(si.n)).Normalize();
-	ret.wo = (t(si.wo)).Normalize();
+	ret.n = Normalize(t(si.n));
+	ret.wo = Normalize(t(si.wo));
 	ret.time = si.time;
 	ret.mediumInterface = si.mediumInterface;
 	ret.uv = si.uv;
@@ -67,7 +67,7 @@ SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const
 	ret.dpdv = t(si.dpdv);
 	ret.dndu = t(si.dndu);
 	ret.dndv = t(si.dndv);
-	ret.shading.n = t(si.shading.n).Normalize();
+	ret.shading.n = Normalize(t(si.shading.n));
 	ret.shading.dpdu = t(si.shading.dpdu);
 	ret.shading.dpdv = t(si.shading.dpdv);
 	ret.shading.dndu = t(si.shading.dndu);
@@ -115,3 +115,4 @@ bool Transform::IsIdentity() const
 		m.m[3][0] == 0.f && m.m[3][1] == 0.f && m.m[3][2] == 0.f &&
 		m.m[3][3] == 1.f);
 }
+

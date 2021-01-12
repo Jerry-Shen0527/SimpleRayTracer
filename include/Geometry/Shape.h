@@ -42,6 +42,7 @@ public:
 
 	Float Area() const override;
 
+	Interaction Sample(const Point2f& u, Float* pdf) const override;
 private:
 	const Float radius;
 	const Float zMin, zMax;

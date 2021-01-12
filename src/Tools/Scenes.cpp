@@ -41,7 +41,7 @@ int light_indices[] =
 	0,1,2,2,1,3
 };
 
-Scene CreateCornell()
+Scene CreateCornell(MemoryArena& arena)
 {
 	SampledSpectrum::Init();
 	auto t = Rotate(0, Vector3f(0, 1, 0));
@@ -88,14 +88,23 @@ Scene CreateCornell()
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[8], white_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[9], white_material, nullptr));
 
-	auto tb1 = Translate(Vector3f(265, 0, 295));
-	tb1 = tb1 * Rotate(15, Vector3f(0, 1, 0));
+	auto tb1 = ARENA_ALLOC(arena, Transform);
+	auto itb1 = ARENA_ALLOC(arena, Transform);
 
-	auto tb2 = Translate(Vector3f(130, 0, 65));
-	tb2 = tb2 * Rotate(-18, Vector3f(0, 1, 0));
+	*tb1 = Translate(Vector3f(265, 0, 295));
+	*tb1 = *tb1 * Rotate(15, Vector3f(0, 1, 0));
+	*itb1 = Inverse(*tb1);
 
-	auto Box1 = CreateBox(&tb1, &Inverse(tb1), false, Point3f(0, 0, 0), Point3f(165, 330, 165));
-	auto Box2 = CreateBox(&tb2, &Inverse(tb2), false, Point3f(0, 0, 0), Point3f(165, 165, 165));
+	auto tb2 = ARENA_ALLOC(arena, Transform);
+
+	auto itb2 = ARENA_ALLOC(arena, Transform);
+
+	*tb2 = Translate(Vector3f(130, 0, 65));
+	*tb2 = *tb2 * Rotate(-18, Vector3f(0, 1, 0));
+	*itb2 = Inverse(*tb2);
+
+	auto Box1 = CreateBox(tb1, itb1, false, Point3f(0, 0, 0), Point3f(165, 330, 165));
+	auto Box2 = CreateBox(tb2, itb2, false, Point3f(0, 0, 0), Point3f(165, 165, 165));
 
 	for (auto&& tri : Box1)
 	{
@@ -106,6 +115,96 @@ Scene CreateCornell()
 	{
 		primitives.push_back(make_shared<GeometricPrimitive>(tri, white_material, nullptr));
 	}
+
+	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::Middle);
+
+	//(+tilesize-1)/tileSize: max groups
+
+	Scene scene(bvh, lights);
+	return scene;
+}
+
+Scene CreateCornellWithBalls(MemoryArena& arena)
+{
+	SampledSpectrum::Init();
+	auto t = Rotate(0, Vector3f(0, 1, 0));
+	auto wto = Inverse(t);
+
+	auto mesh = CreateTriangleMesh(&t, &wto, false, sizeof(indices) / sizeof(int) / 3, indices, 8, points);
+
+	auto light_mesh = CreateTriangleMesh(&t, &wto, true, sizeof(light_indices) / sizeof(int) / 3, light_indices, 8, light_points);
+
+	using namespace  std;
+	vector<shared_ptr<Primitive>> primitives;
+
+	auto Zero = make_shared<ConstantTexture<Float>>(0);
+
+	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red, SpectrumType::Reflectance));
+	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
+
+	auto red_material = make_shared<MatteMaterial>(Red, Zero, nullptr);
+	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
+	auto green_material = make_shared<MatteMaterial>(Green, Zero, nullptr);
+
+	auto One = make_shared<ConstantTexture<Spectrum>>(Spectrum(1.0));
+	auto glass_material = make_shared<GlassMaterial>(One, One, make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<float>>(1.5), nullptr, false);
+
+	auto light_t = Transform();
+
+	vector<shared_ptr<Light>> lights;
+
+	auto white_light = BlackBodySpectrum(5000, 20);
+
+	for (auto light_tri : light_mesh)
+	{
+		auto light_ptr = make_shared<DiffuseAreaLight>(light_t, MediumInterface(), white_light, 1, light_tri);
+		lights.push_back(light_ptr);
+		primitives.push_back(make_shared<GeometricPrimitive>(light_tri, white_material, light_ptr));
+	}
+
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[0], green_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[1], green_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[2], white_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[3], white_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[4], red_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[5], red_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[6], white_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[7], white_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[8], white_material, nullptr));
+	primitives.push_back(make_shared<GeometricPrimitive>(mesh[9], white_material, nullptr));
+
+	auto tb1 = ARENA_ALLOC(arena, Transform);
+	auto itb1 = ARENA_ALLOC(arena, Transform);
+
+	*tb1 = Translate(Vector3f(265, 0, 295));
+	*tb1 = *tb1 * Rotate(15, Vector3f(0, 1, 0));
+	*itb1 = Inverse(*tb1);
+
+	auto tb2 = ARENA_ALLOC(arena, Transform);
+
+	auto itb2 = ARENA_ALLOC(arena, Transform);
+
+	*tb2 = Translate(Vector3f(190, 90, 190));
+	*tb2 = *tb2 * Rotate(-18, Vector3f(0, 1, 0));
+	*itb2 = Inverse(*tb2);
+
+	auto Box1 = CreateBox(tb1, itb1, false, Point3f(0, 0, 0), Point3f(165, 330, 165));
+	//auto Box2 = CreateBox(&tb2, &Inverse(tb2), false, Point3f(0, 0, 0), Point3f(165, 165, 165));
+
+	auto sphere = make_shared<Sphere>(tb2, itb2, false, 90, -1000, 1000, 360);
+
+	for (auto&& tri : Box1)
+	{
+		primitives.push_back(make_shared<GeometricPrimitive>(tri, white_material, nullptr));
+	}
+
+	//for (auto&& tri : Box2)
+	//{
+	//	primitives.push_back(make_shared<GeometricPrimitive>(tri, white_material, nullptr));
+	//}
+
+	primitives.push_back(make_shared<GeometricPrimitive>(sphere, glass_material, nullptr));
 
 	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::Middle);
 

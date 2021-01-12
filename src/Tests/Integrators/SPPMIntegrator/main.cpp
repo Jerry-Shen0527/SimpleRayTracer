@@ -9,6 +9,7 @@
 #include <memory>
 #include "Integrators/SPPM.h"
 #include "Tools/camera.h"
+#include "Tools/MemoryArena.h"
 #include "Tools/Parallel.h"
 #include "Tools/Scenes.h"
 
@@ -22,9 +23,11 @@ int main()
 
 	SPPMIntegrator integrator(camera, 20, 10000000, 40, 1., 10);
 
-	Scene scene = CreateCornell();
+	MemoryArena arena;
+	Scene scene = CreateCornell(arena);
 
 	integrator.Render(scene);
+	arena.Reset();
 
 #ifdef _WIN32
 	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);

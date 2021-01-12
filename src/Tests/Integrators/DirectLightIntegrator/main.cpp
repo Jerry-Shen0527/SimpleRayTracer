@@ -25,13 +25,14 @@ int main()
 	shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(6, 6, true, 10);
 
 	DirectLightingIntegrator integrator(LightStrategy::UniformSampleAll, 1, camera, sampler);
+	MemoryArena arena;
 
-	Scene scene = CreateCornell();
-
+	Scene scene = CreateCornell(arena);
 	integrator.Render(scene);
 
 	camera->film->WriteImage(1, true);
 
+	arena.Reset();
 #ifdef _WIN32
 	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif

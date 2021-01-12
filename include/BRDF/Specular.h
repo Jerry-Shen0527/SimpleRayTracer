@@ -2,7 +2,6 @@
 #include "BxDF.h"
 #include "Geometry/AnimatedTransform.h"
 
-
 class SpecularReflection : public BxDF {
 public:
 	SpecularReflection(const Spectrum& R, Fresnel* fresnel)
@@ -87,6 +86,8 @@ public:
 		mode(mode) { }
 
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
+	Float Pdf(const Vector3f& wo, const Vector3f& wi) const;
+
 	Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType = nullptr) const override;
 private:
 	const Spectrum R, T;
@@ -99,6 +100,11 @@ private:
 inline Spectrum FresnelSpecular::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	return Spectrum(0.f);
+}
+
+inline Float FresnelSpecular::Pdf(const Vector3f& wo, const Vector3f& wi) const
+{
+	return 0;
 }
 
 inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType) const
@@ -119,6 +125,8 @@ inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, cons
 		Float etaI = entering ? etaA : etaB;
 		Float etaT = entering ? etaB : etaA;
 		//Compute ray direction for specular transmission 529
+		if (!Refract(wo, Faceforward(Normal3f(0, 0, 1), wo), etaI / etaT, wi))
+			return 0;
 
 		Spectrum ft = T * (1 - F);
 		//Account for non - symmetry with transmission to different medium 961

@@ -102,7 +102,7 @@ Spectrum DiffuseAreaLight::Sample_Le(const Point2f& u1, const Point2f& u2, Float
 
 void DiffuseAreaLight::Pdf_Le(const Ray& ray, const Normal3f& nLight, Float* pdfPos, Float* pdfDir) const
 {
-	Interaction it(ray.o, nLight, Vector3f(), Vector3f(nLight), ray.time);
+	Interaction it(ray.o, nLight, Vector3f(), Vector3f(nLight), ray.time, nullptr);
 	*pdfPos = shape->Pdf(it);
 	*pdfDir = twoSided ? (.5 * CosineHemispherePdf(AbsDot(nLight, ray.d)))
 		: CosineHemispherePdf(Dot(nLight, ray.d));

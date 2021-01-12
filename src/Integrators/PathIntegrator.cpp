@@ -9,6 +9,9 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 	Spectrum L(0.f), beta(1.f);
 	RayDifferential ray(r);
 	bool specularBounce = false;
+
+	Float etaScale = 1;
+
 	for (int bounces = 0; ; ++bounces) {
 		//Find next path vertexand accumulate contribution กิ 876
 		//	Intersect ray with scene and store intersection in isect 877
@@ -45,11 +48,20 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 			break;
 		beta *= f * AbsDot(wi, isect.shading.n) / pdf;
 		specularBounce = (flags & BSDF_SPECULAR) != 0;
+		if ((flags & BSDF_SPECULAR) && (flags & BSDF_TRANSMISSION)) {
+			Float eta = isect.bsdf->eta;
+			// Update the term that tracks radiance scaling for refraction
+			// depending on whether the ray is entering or leaving the
+			// medium.
+			etaScale *= (Dot(wo, isect.n) > 0) ? (eta * eta) : 1 / (eta * eta);
+		}
 		ray = isect.SpawnRay(wi);
 		//	Account for subsurface scattering, if applicable 915
 		//	Possibly terminate the path with Russian roulette 879
+		Spectrum rrBeta = beta * etaScale;
+
 		if (bounces > 3) {
-			Float q = std::max((Float).05, 1 - beta.y());
+			Float q = std::max((Float).05, 1 - rrBeta.y());
 			if (sampler.Get1D() < q)
 				break;
 			beta /= 1 - q;

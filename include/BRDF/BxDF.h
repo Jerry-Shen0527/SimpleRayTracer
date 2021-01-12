@@ -18,7 +18,7 @@ public:
 
 	virtual Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType = nullptr) const;
 
-	float Pdf(const Vector3f& wo, const Vector3f& wi) const;
+	virtual float Pdf(const Vector3f& wo, const Vector3f& wi) const;
 	virtual Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples) const;
 	virtual Spectrum rho(int nSamples, const Point2f* samples1, const Point2f* samples2) const;
 

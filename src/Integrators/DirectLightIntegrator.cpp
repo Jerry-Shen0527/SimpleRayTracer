@@ -78,7 +78,7 @@ Spectrum UniformSampleOneLight(const Interaction& it, const Scene& scene, Memory
 
 	Point2f uLight = sampler.Get2D();
 	Point2f uScattering = sampler.Get2D();
-	return (Float)nLights * EstimateDirect(it, uScattering, *light, uLight, scene, sampler, arena, handleMedia);
+	return (Float)nLights * EstimateDirect(it, uScattering, *light, uLight, scene, sampler, arena, handleMedia,true);
 }
 
 Spectrum EstimateDirect(const Interaction& it, const Point2f& uScattering, const Light& light, const Point2f& uLight, const Scene& scene, Sampler& sampler,

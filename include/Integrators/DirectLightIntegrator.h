@@ -32,4 +32,4 @@ Spectrum UniformSampleOneLight(const Interaction& it,
 	bool handleMedia = false);
 Spectrum EstimateDirect(const Interaction& it, const Point2f& uScattering, const Light& light,
 	const Point2f& uLight, const Scene& scene, Sampler& sampler, MemoryArena& arena,
-	bool handleMedia = true, bool specular = true);
+	bool handleMedia = true, bool specular = false);

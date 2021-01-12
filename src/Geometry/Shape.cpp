@@ -143,3 +143,17 @@ Float Sphere::Area() const
 {
 	return phiMax * radius * (zMax - zMin);
 }
+
+Interaction Sphere::Sample(const Point2f& u, Float* pdf) const
+{
+	Point3f pObj = Point3f(0, 0, 0) + radius * UniformSampleSphere(u);
+	Interaction it;
+	it.n = Normalize((*ObjectToWorld)(Normal3f(pObj.x(), pObj.y(), pObj.z())));
+	if (reverseOrientation) it.n *= -1;
+	// Reproject _pObj_ to sphere surface and compute _pObjError_
+	pObj *= radius / (pObj - Point3f(0, 0, 0)).LengthSquared();
+	Vector3f pObjError = gamma(5) * Abs((Vector3f)pObj);
+	it.p = (*ObjectToWorld)(pObj, pObjError, &it.pError);
+	*pdf = 1 / Area();
+	return it;
+}

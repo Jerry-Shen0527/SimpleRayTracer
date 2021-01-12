@@ -1,5 +1,6 @@
 #include "Geometry/Interaction.h"
 #include "Geometry/Primitive.h"
+#include "Geometry/Shape.h"
 
 Spectrum SurfaceInteraction::Le(const Vector3f& w) const
 {
@@ -35,13 +36,29 @@ void SurfaceInteraction::set_face_normal(const Vector3f& r_in, const Normal3f& o
 	n = front_face ? outward_normal : -outward_normal;
 }
 
-SurfaceInteraction::SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape) : Interaction(p, Normal3f((Cross(dpdu, dpdv)).Normalize()), pError, wo, time), uv(uv), dpdu(dpdu), dpdv(dpdv), dndu(dndu), dndv(dndv)
-{
-	set_face_normal(wo, n);
-
+SurfaceInteraction::SurfaceInteraction(
+	const Point3f& p, const Vector3f& pError, const Point2f& uv,
+	const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv,
+	const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape)
+	: Interaction(p, Normal3f(Normalize(Cross(dpdu, dpdv))), pError, wo, time,
+		nullptr),
+	uv(uv),
+	dpdu(dpdu),
+	dpdv(dpdv),
+	dndu(dndu),
+	dndv(dndv),
+	shape(shape),
+	faceIndex(faceIndex) {
+	// Initialize shading geometry from true geometry
 	shading.n = n;
 	shading.dpdu = dpdu;
 	shading.dpdv = dpdv;
 	shading.dndu = dndu;
 	shading.dndv = dndv;
+
+	// Adjust normal based on orientation and handedness
+	if (shape && (shape->reverseOrientation ^ shape->transformSwapsHandedness)) {
+		n *= -1;
+		shading.n *= -1;
+	}
 }

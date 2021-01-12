@@ -310,6 +310,13 @@ Spectrum MicrofacetReflection::Sample_f(const Vector3f& wo, Vector3f* wi, const 
 	return f(wo, *wi);
 }
 
+Float MicrofacetReflection::Pdf(const Vector3f& wo, const Vector3f& wi) const
+{
+	if (!SameHemisphere(wo, wi)) return 0;
+	Vector3f wh = Normalize(wo + wi);
+	return distribution->Pdf(wo, wh) / (4 * Dot(wo, wh));
+}
+
 Spectrum MicrofacetTransmission::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	if (SameHemisphere(wo, wi)) return 0;  // transmission only

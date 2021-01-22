@@ -7,6 +7,8 @@
 #endif
 
 #include <Integrators/DirectLightIntegrator.h>
+#include <Tools/MemoryArena.h>
+
 
 #include "BRDF/Material.h"
 #include "Tools/camera.h"

@@ -444,3 +444,39 @@ bool Triangle::IntersectP(const Ray& ray, bool testAlphaTexture) const
 	}
 	return true;
 }
+
+static int box_indices[36] = {
+	2,0,3,
+	3,1,0,
+	6,3,2,
+	6,7,3,
+	5,7,4,
+	7,6,4,
+	3,5,1,
+	7,5,3,
+	5,4,1,
+	4,0,1,
+	6,2,0,
+	4,6,0
+};
+
+std::vector<std::shared_ptr<Shape>> CreateBox(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, const Point3f& p1, const Point3f& p2, const Vector3f* s, const Normal3f* n, const Point2f* uv, const std::shared_ptr<Texture<Float>>& alphaMask)
+{
+	auto p = ALLOCA(Point3f, 8);
+
+	for (int i = 0; i < 8; ++i)
+	{
+		Float x_v = (i >> 2) % 2 ? p2.x() : p1.x();
+		Float y_v = (i >> 1) % 2 ? p2.y() : p1.y();
+		Float z_v = (i >> 0) % 2 ? p2.z() : p1.z();
+
+		p[i] = Point3f(x_v, y_v, z_v);
+	}
+
+	std::shared_ptr<TriangleMesh> mesh = std::make_shared<TriangleMesh>(*ObjectToWorld, 12, box_indices, 8, p, s, n, uv, alphaMask);
+
+	std::vector<std::shared_ptr<Shape>> tris;
+	for (int i = 0; i < 12; ++i)
+		tris.push_back(std::make_shared<Triangle>(ObjectToWorld, WorldToObject, reverseOrientation, mesh, i));
+	return tris;
+}

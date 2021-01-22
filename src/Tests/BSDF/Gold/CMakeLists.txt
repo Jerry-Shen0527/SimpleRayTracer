@@ -4,7 +4,7 @@ Ubpa_GetTargetName(Tools "${PROJECT_SOURCE_DIR}/src/Tools")
 Ubpa_GetTargetName(BRDF "${PROJECT_SOURCE_DIR}/src/BRDF")
 
 Ubpa_AddTarget(
-  TEST  
+  TEST 
   MODE EXE
   LIB ${Integrator} ${Geometry} ${Tools} ${BRDF}
 ) 

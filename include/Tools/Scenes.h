@@ -3,5 +3,5 @@ class MemoryArena;
 class Scene;
 
 Scene CreateCornell(MemoryArena& arena);
-Scene CreateCornellSteel(MemoryArena& arena);
+Scene CreateCornellGold(MemoryArena& arena);
 Scene CreateCornellWithBalls(MemoryArena& arena);

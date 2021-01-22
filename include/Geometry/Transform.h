@@ -31,6 +31,9 @@ public:
 	template<typename T>
 	inline Point3<T> operator()(const Point3<T>& pt, const Vector3<T>& ptError,
 		Vector3<T>* absError) const;
+	Ray operator()(const Ray& r, Vector3f* oError, Vector3f* dError) const;
+	template <typename T>
+	Vector3<T> operator()(const Vector3<T>& v, Vector3<T>* absError) const;
 
 	Bounds3f operator()(const Bounds3f& b) const;
 	Ray operator()(const Ray& r) const;
@@ -90,6 +93,24 @@ Point3<T> Transform::operator()(const Point3<T>& p, Vector3<T>* pError) const
 		return Point3<T>(xp, yp, zp);
 	else
 		return Point3<T>(xp, yp, zp) / wp;
+}
+
+template <typename T>
+inline Vector3<T> Transform::operator()(const Vector3<T>& v,
+	Vector3<T>* absError) const {
+	T x = v.x(), y = v.y(), z = v.z();
+	absError->x() =
+		gamma(3) * (std::abs(m.m[0][0] * v.x()) + std::abs(m.m[0][1] * v.y()) +
+			std::abs(m.m[0][2] * v.z()));
+	absError->y() =
+		gamma(3) * (std::abs(m.m[1][0] * v.x()) + std::abs(m.m[1][1] * v.y()) +
+			std::abs(m.m[1][2] * v.z()));
+	absError->z() =
+		gamma(3) * (std::abs(m.m[2][0] * v.x()) + std::abs(m.m[2][1] * v.y()) +
+			std::abs(m.m[2][2] * v.z()));
+	return Vector3<T>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
+		m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
+		m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
 }
 
 inline Transform Inverse(const Transform& t) {

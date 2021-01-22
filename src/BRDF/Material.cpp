@@ -1,7 +1,8 @@
 #include <BRDF/BSDF.h>
 #include "BRDF/Material.h"
 
-#include "BRDF/lambertian.h"
+#include <Tools/MemoryArena.h>
+
 #include "BRDF/MicrofacetDistribution.h"
 #include "BRDF/Specular.h"
 #include "BRDF/OrenNayar.h"
@@ -107,3 +108,8 @@ void GlassMaterial::ComputeScatteringFunctions(SurfaceInteraction* si,
 		}
 	}
 }
+
+MetalMaterial::MetalMaterial(const std::shared_ptr<Texture<Spectrum>>& eta, const std::shared_ptr<Texture<Spectrum>>& k,
+	const std::shared_ptr<Texture<Float>>& rough, const std::shared_ptr<Texture<Float>>& urough,
+	const std::shared_ptr<Texture<Float>>& vrough, const std::shared_ptr<Texture<Float>>& bump, bool remapRoughness)
+	: eta(eta), k(k), roughness(roughness), uRoughness(uRoughness), vRoughness(vRoughness), bumpMap(bumpMap), remapRoughness(remapRoughness) {}

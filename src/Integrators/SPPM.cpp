@@ -54,7 +54,7 @@ inline unsigned int hash(const Point3i& p, int hashSize) {
 	return (unsigned int)((p.x() * 73856093) ^ (p.y() * 19349663) ^ (p.z() * 83492791)) % hashSize;
 }
 
-void SPPMIntegrator::Render(const Scene& scene)
+void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 {
 	//Initialize pixelBoundsand pixels array for SPPM 973
 	Bounds2i pixelBounds = camera->film->croppedPixelBounds;
@@ -105,7 +105,6 @@ void SPPMIntegrator::Render(const Scene& scene)
 					if (beta.IsBlack())
 						continue;
 					ray.ScaleDifferentials(invSqrtSPP);
-
 
 					//	Follow camera ray path until a visible point is created 977
 					Point2i pPixelO = Point2i(pPixel - pixelBounds.pMin);

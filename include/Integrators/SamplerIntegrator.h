@@ -10,7 +10,7 @@ public:
 		std::shared_ptr<Sampler> sampler)
 		: camera(camera), sampler(sampler) {}
 	virtual void Preprocess(const Scene& scene, Sampler& sampler) { }
-	void Render(const Scene& scene) override;
+	void Render(const Scene& scene, bool	benchmark = false) override;
 
 	virtual Spectrum Li(const RayDifferential& ray, const Scene& scene,
 		Sampler& sampler, MemoryArena& arena,

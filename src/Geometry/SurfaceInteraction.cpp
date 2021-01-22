@@ -20,14 +20,14 @@ Ray Interaction::SpawnRayTo(const Interaction& it) const
 Ray Interaction::SpawnRay(const Vector3f& d) const
 {
 	Point3f o = OffsetRayOrigin(p, pError, n, d);
-	return Ray(o, d, Infinity, t, GetMedium(d));
+	return Ray(o, d, Infinity, time, GetMedium(d));
 }
 
 Ray Interaction::SpawnRayTo(const Point3f& p2) const
 {
 	Point3f origin = OffsetRayOrigin(p, pError, n, p2 - p);
 	Vector3f d = p2 - p;
-	return Ray(origin, d, 1 - ShadowEpsilon, t, GetMedium(d));
+	return Ray(origin, d, 1 - ShadowEpsilon, time, GetMedium(d));
 }
 
 void SurfaceInteraction::set_face_normal(const Vector3f& r_in, const Normal3f& outward_normal)

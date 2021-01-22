@@ -47,89 +47,149 @@ static constexpr Float MachineEpsilon = std::numeric_limits<Float>::epsilon() * 
 inline constexpr Float gamma(int n) {
 	return (n * MachineEpsilon) / (1 - n * MachineEpsilon);
 }
-
-class EFloat
-{
+class EFloat {
 public:
-	EFloat() { }
-	EFloat(float v, float err = 0.f) : v(v), err(err) {
+	// EFloat Public Methods
+	EFloat() {}
+	EFloat(float v, float err = 0.f) : v(v) {
+		if (err == 0.)
+			low = high = v;
+		else {
+			// Compute conservative bounds by rounding the endpoints away
+			// from the middle. Note that this will be over-conservative in
+			// cases where v-err or v+err are exactly representable in
+			// floating-point, but it's probably not worth the trouble of
+			// checking this case.
+			low = NextFloatDown(v - err);
+			high = NextFloatUp(v + err);
+		}
+		// Store high precision reference value in _EFloat_
 #ifndef NDEBUG
-		ld = v;
-#endif // NDEBUG
+		vPrecise = v;
+#endif  // NDEBUG
+	}
+#ifndef NDEBUG
+	EFloat(float v, long double lD, float err) : EFloat(v, err) {
+		vPrecise = lD;
+	}
+#endif  // DEBUG
+	EFloat operator+(EFloat ef) const {
+		EFloat r;
+		r.v = v + ef.v;
+#ifndef NDEBUG
+		r.vPrecise = vPrecise + ef.vPrecise;
+#endif  // DEBUG
+		// Interval arithemetic addition, with the result rounded away from
+		// the value r.v in order to be conservative.
+		r.low = NextFloatDown(LowerBound() + ef.LowerBound());
+		r.high = NextFloatUp(UpperBound() + ef.UpperBound());
+		return r;
+	}
+	explicit operator float() const { return v; }
+	explicit operator double() const { return v; }
+	float GetAbsoluteError() const {
+		return NextFloatUp(std::max(std::abs(high - v),
+			std::abs(v - low)));
+	}
+	float UpperBound() const { return high; }
+	float LowerBound() const { return low; }
+#ifndef NDEBUG
+	float GetRelativeError() const {
+		return std::abs((vPrecise - v) / vPrecise);
+	}
+	long double PreciseValue() const { return vPrecise; }
+#endif
+	EFloat operator-(EFloat ef) const {
+		EFloat r;
+		r.v = v - ef.v;
+#ifndef NDEBUG
+		r.vPrecise = vPrecise - ef.vPrecise;
+#endif
+		r.low = NextFloatDown(LowerBound() - ef.UpperBound());
+		r.high = NextFloatUp(UpperBound() - ef.LowerBound());
+		return r;
+	}
+	EFloat operator*(EFloat ef) const {
+		EFloat r;
+		r.v = v * ef.v;
+#ifndef NDEBUG
+		r.vPrecise = vPrecise * ef.vPrecise;
+#endif
+		Float prod[4] = {
+			LowerBound() * ef.LowerBound(), UpperBound() * ef.LowerBound(),
+			LowerBound() * ef.UpperBound(), UpperBound() * ef.UpperBound() };
+		r.low = NextFloatDown(
+			std::min(std::min(prod[0], prod[1]), std::min(prod[2], prod[3])));
+		r.high = NextFloatUp(
+			std::max(std::max(prod[0], prod[1]), std::max(prod[2], prod[3])));
+		return r;
+	}
+	EFloat operator/(EFloat ef) const {
+		EFloat r;
+		r.v = v / ef.v;
+#ifndef NDEBUG
+		r.vPrecise = vPrecise / ef.vPrecise;
+#endif
+		if (ef.low < 0 && ef.high > 0) {
+			// Bah. The interval we're dividing by straddles zero, so just
+			// return an interval of everything.
+			r.low = -Infinity;
+			r.high = Infinity;
+		}
+		else {
+			Float div[4] = {
+				LowerBound() / ef.LowerBound(), UpperBound() / ef.LowerBound(),
+				LowerBound() / ef.UpperBound(), UpperBound() / ef.UpperBound() };
+			r.low = NextFloatDown(
+				std::min(std::min(div[0], div[1]), std::min(div[2], div[3])));
+			r.high = NextFloatUp(
+				std::max(std::max(div[0], div[1]), std::max(div[2], div[3])));
+		}
+		return r;
+	}
+	EFloat operator-() const {
+		EFloat r;
+		r.v = -v;
+#ifndef NDEBUG
+		r.vPrecise = -vPrecise;
+#endif
+		r.low = -high;
+		r.high = -low;
+		return r;
+	}
+	inline bool operator==(EFloat fe) const { return v == fe.v; }
+
+	EFloat(const EFloat& ef) {
+		v = ef.v;
+		low = ef.low;
+		high = ef.high;
+#ifndef NDEBUG
+		vPrecise = ef.vPrecise;
+#endif
+	}
+	EFloat& operator=(const EFloat& ef) {
+		if (&ef != this) {
+			v = ef.v;
+			low = ef.low;
+			high = ef.high;
+#ifndef NDEBUG
+			vPrecise = ef.vPrecise;
+#endif
+		}
+		return *this;
 	}
 
-	EFloat operator+(EFloat f) const;
-	EFloat operator-(EFloat f) const;
-	EFloat operator*(EFloat f) const;
-	EFloat operator/(EFloat f) const;
-
-	bool operator==(EFloat fe) const { return v == fe.v; }
-
-	explicit operator float() const { return v; }
-	float GetAbsoluteError() const { return err; }
-
-	float UpperBound() const { return NextFloatUp(v + err); }
-	float LowerBound() const { return NextFloatDown(v - err); }
-
-	friend inline bool Quadratic(EFloat A, EFloat B, EFloat C, EFloat* t0, EFloat* t1);
-
-#ifndef NDEBUG
-	float GetRelativeError() const { return std::abs((ld - v) / ld); }
-	long double PreciseValue() const { return ld; }
-#endif
-
 private:
-	Float v;
-	float err;
-
+	// EFloat Private Data
+	float v, low, high;
 #ifndef NDEBUG
-	long double ld;
-#endif // NDEBUG
+	long double vPrecise;
+#endif  // NDEBUG
+	friend inline EFloat sqrt(EFloat fe);
+	friend inline EFloat abs(EFloat fe);
+	friend inline bool Quadratic(EFloat A, EFloat B, EFloat C, EFloat* t0,
+		EFloat* t1);
 };
-
-inline EFloat EFloat::operator+(EFloat f) const
-{
-	EFloat r;
-	r.v = v + f.v;
-#ifndef NDEBUG
-	r.ld = ld + f.ld;
-#endif // DEBUG
-	r.err = err + f.err + gamma(1) * (std::abs(v + f.v) + err + f.err);
-	return r;
-}
-
-inline EFloat EFloat::operator-(EFloat f) const
-{
-	EFloat r;
-	r.v = v - f.v;
-#ifndef NDEBUG
-	r.ld = ld + f.ld;
-#endif // DEBUG
-	r.err = err - f.err + gamma(1) * (std::abs(v - f.v) + err + f.err);
-	return r;
-}
-
-inline EFloat EFloat::operator*(EFloat f) const
-{
-	EFloat r;
-	r.v = v * f.v;
-#ifndef NDEBUG
-	r.ld = ld * f.ld;
-#endif // DEBUG
-	r.err = err + f.err + gamma(1) * (std::abs(v * f.v) + err + f.err);
-	return r;
-}
-
-inline EFloat EFloat::operator/(EFloat f) const
-{
-	EFloat r;
-	r.v = v * f.v;
-#ifndef NDEBUG
-	r.ld = ld * f.ld;
-#endif // DEBUG
-	r.err = err + f.err + gamma(1) * (std::abs(v / f.v) + err + f.err);
-	return r;
-}
 
 // EFloat Inline Functions
 inline EFloat operator*(float f, EFloat fe) { return EFloat(f) * fe; }
@@ -140,8 +200,46 @@ inline EFloat operator+(float f, EFloat fe) { return EFloat(f) + fe; }
 
 inline EFloat operator-(float f, EFloat fe) { return EFloat(f) - fe; }
 
-inline bool Quadratic(EFloat A, EFloat B, EFloat C, EFloat* t0, EFloat* t1);
+inline EFloat sqrt(EFloat fe) {
+	EFloat r;
+	r.v = std::sqrt(fe.v);
+#ifndef NDEBUG
+	r.vPrecise = std::sqrt(fe.vPrecise);
+#endif
+	r.low = NextFloatDown(std::sqrt(fe.low));
+	r.high = NextFloatUp(std::sqrt(fe.high));
+	return r;
+}
 
+inline EFloat abs(EFloat fe) {
+	if (fe.low >= 0)
+		// The entire interval is greater than zero, so we're all set.
+		return fe;
+	else if (fe.high <= 0) {
+		// The entire interval is less than zero.
+		EFloat r;
+		r.v = -fe.v;
+#ifndef NDEBUG
+		r.vPrecise = -fe.vPrecise;
+#endif
+		r.low = -fe.high;
+		r.high = -fe.low;
+		return r;
+	}
+	else {
+		// The interval straddles zero.
+		EFloat r;
+		r.v = std::abs(fe.v);
+#ifndef NDEBUG
+		r.vPrecise = std::abs(fe.vPrecise);
+#endif
+		r.low = 0;
+		r.high = std::max(-fe.low, fe.high);
+		return r;
+	}
+}
+
+inline bool Quadratic(EFloat A, EFloat B, EFloat C, EFloat* t0, EFloat* t1);
 inline bool Quadratic(EFloat A, EFloat B, EFloat C, EFloat* t0, EFloat* t1) {
 	// Find quadratic discriminant
 	double discrim = (double)B.v * (double)B.v - 4. * (double)A.v * (double)C.v;

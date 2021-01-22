@@ -44,6 +44,20 @@ Ray Transform::operator()(const Ray& r) const
 	return Ray(o, d, tMax, r.time, r.medium);
 }
 
+Ray Transform::operator()(const Ray& r, Vector3f* oError,	Vector3f* dError) const
+{
+	Point3f o = (*this)(r.o, oError);
+	Vector3f d = (*this)(r.d, dError);
+	Float tMax = r.tMax;
+	Float lengthSquared = d.LengthSquared();
+	if (lengthSquared > 0) {
+		Float dt = Dot(Abs(d), *oError) / lengthSquared;
+		o += d * dt;
+		//        tMax -= dt;
+	}
+	return Ray(o, d, tMax, r.time, r.medium);
+}
+
 Transform Transform::operator*(const Transform& t2) const
 {
 	return Transform(Matrix4x4::Mul(m, t2.m), Matrix4x4::Mul(t2.mInv, mInv));

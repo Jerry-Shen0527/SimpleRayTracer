@@ -1,8 +1,12 @@
 #include <mutex>
 #include <vector>
 #include <functional>
+#include <iomanip>
 #include <Geometry/Vector3.h>
 #include <Tools/Parallel.h>
+
+#define NOMINMAX
+#include <Windows.h>
 
 static std::vector<std::thread> threads;
 extern thread_local uint64_t ProfilerState = 0;
@@ -67,8 +71,8 @@ void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize
 		loop.activeWorkers--;
 	}
 }
-
-void ParallelFor2D(std::function<void(Point2i)> func, const Point2i& count) {
+constexpr  int progress_bar_length = 80;
+void ParallelFor2D(std::function<void(Point2i)> func, const Point2i& count, bool benchmark) {
 	if (threads.empty() || count.x() * count.y() <= 1) {
 		for (int y = 0; y < count.y(); ++y)
 			for (int x = 0; x < count.x(); ++x) func(Point2i(x, y));
@@ -85,10 +89,10 @@ void ParallelFor2D(std::function<void(Point2i)> func, const Point2i& count) {
 	std::unique_lock<std::mutex> lock(workListMutex);
 	workListCondition.notify_all();
 
+	auto time_start = GetTickCount();
+
 	// Help out with parallel loop iterations in the current thread
 	while (!loop.Finished()) {
-		// Run a chunk of loop iterations for _loop_
-
 		// Find the set of loop iterations to run next
 		int64_t indexStart = loop.nextIndex;
 		int64_t indexEnd = std::min(indexStart + loop.chunkSize, loop.maxIndex);
@@ -113,9 +117,36 @@ void ParallelFor2D(std::function<void(Point2i)> func, const Point2i& count) {
 			ProfilerState = oldState;
 		}
 		lock.lock();
+		if (benchmark)
+		{
+			auto percent = float(loop.nextIndex) / loop.maxIndex;
+			if (percent < 0.999)
+			{
+				std::cout << '[';
+				for (int i = 0; i < progress_bar_length; ++i)
+				{
+					if (i / float(progress_bar_length) < percent) std::cout << '-';
+					else std::cout << ' ';
+				}
+				std::cout << ']';
+				auto time_passed = GetTickCount() - time_start;
+				std::cout << std::setw(8) << percent * 100 << '%' << std::setw(8) << time_passed / 1000.0 << 's' << '|' << std::setw(8) << time_passed / percent / 1000.0 << 's' << '\r';
+			}
+		}
 
 		// Update _loop_ to reflect completion of iterations
 		loop.activeWorkers--;
+	}
+	if (benchmark)
+	{
+		std::cout << '[';
+		for (int i = 0; i < progress_bar_length; ++i)
+		{
+			std::cout << '-';
+		}
+		std::cout << ']';
+		auto time_passed = GetTickCount() - time_start;
+		std::cout << std::setw(8) << 100 << '%' << std::setw(8) << time_passed / 1000.0 << 's' << '|' << std::setw(8) << time_passed / 1000.0 << 's' << std::endl;
 	}
 }
 

@@ -14,7 +14,7 @@
 int main()
 {
 	MemoryArena arena;
-	const auto scene = CreateCornellWithBalls(arena);	
+	const auto scene = CreateCornellSteel(arena);
 	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(30, 30, true, 10);
 
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));

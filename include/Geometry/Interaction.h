@@ -11,7 +11,7 @@ class Interaction
 public:
 	Interaction() {}
 	Interaction(const Point3f& p, const Normal3f& n, const Vector3f& pError, const Vector3f& r_in, Float time, const MediumInterface& mediumInterface)
-		: p(p), t(time), pError(pError), wo(r_in), n(n), time(time), mediumInterface(mediumInterface)
+		: p(p), pError(pError), wo(r_in), n(n), time(time), mediumInterface(mediumInterface)
 	{ }
 
 	Interaction(const Point3f& p, Float time, const MediumInterface& mediumInterface)
@@ -22,7 +22,6 @@ public:
 	}
 
 	Point3f p;
-	float t;
 	Normal3f n;
 	Vector3f wo;
 	float time;
@@ -54,8 +53,6 @@ class Material;
 class SurfaceInteraction :public Interaction {
 public:
 	SurfaceInteraction() {}
-
-	std::shared_ptr<Material> mat_ptr;
 
 	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& r_in, Float time) :Interaction(p, Normal3f((Cross(dpdu, dpdv)).Normalize()), pError, r_in, time, nullptr) {}
 

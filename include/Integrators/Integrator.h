@@ -3,5 +3,5 @@
 class Integrator
 {
 public:
-	virtual void Render(const Scene& scene) = 0;
+	virtual void Render(const Scene& scene, bool benchmark = false) = 0;
 };

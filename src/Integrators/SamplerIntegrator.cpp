@@ -4,7 +4,7 @@
 #include <Tools/Parallel.h>
 #include <Tools/Sampler.h>
 
-void SamplerIntegrator::Render(const Scene& scene)
+void SamplerIntegrator::Render(const Scene& scene, bool benchmark)
 {
 	ParallelInit();
 	Preprocess(scene, *sampler);
@@ -51,6 +51,6 @@ void SamplerIntegrator::Render(const Scene& scene)
 				} while (tileSampler->StartNextSample());
 			}
 			camera->film->MergeFilmTile(std::move(filmTile));
-		}, nTiles);
+		}, nTiles, benchmark);
 	ParallelCleanup();
 }

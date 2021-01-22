@@ -43,6 +43,7 @@ public:
 	Float Area() const override;
 
 	Interaction Sample(const Point2f& u, Float* pdf) const override;
+	bool IntersectP(const Ray& ray, bool testAlphaTexture) const override;
 private:
 	const Float radius;
 	const Float zMin, zMax;

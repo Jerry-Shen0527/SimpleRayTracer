@@ -75,6 +75,7 @@ private:
 	void GetUVs(Point2f uv[3]) const;
 public:
 	Interaction Sample(const Point2f& u, Float* pdf) const override;
+	bool IntersectP(const Ray& ray, bool testAlphaTexture) const override;
 };
 
 inline std::vector<std::shared_ptr<Shape>> CreateTriangleMesh(const Transform* ObjectToWorld, const Transform* WorldToObject, bool reverseOrientation, int nTriangles, const int* vertexIndices, int nVertices, const Point3f* p,

@@ -16,7 +16,7 @@ int main()
 	MemoryArena arena;
 
 	const auto scene = CreateCornell(arena);
-	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(3, 3, true, 10);
+	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(10, 10, true, 10);
 
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
 	AnimatedTransform transform(&trans, 0, &trans, 0);
@@ -27,8 +27,7 @@ int main()
 
 	PathIntegrator integrator(20, camera, sampler);
 
-	integrator.Render(scene);
-
+	integrator.Render(scene,true);
 	camera->film->WriteImage(1, true);
 	arena.Reset();
 

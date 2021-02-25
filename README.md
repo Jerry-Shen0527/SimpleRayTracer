@@ -58,10 +58,12 @@ CPU:10710U 35W
 - [x] 重构代码，使扩展性更强。
 
 
-- [ ] CPU矢量化支持。
+- [ ] 色散
 
 
-- [ ] CUDA支持。
+- [ ] OptiX (等待pbrt-v4)
 - [x] Spectrum rendering
 - [ ] Stokes矢量和Muller矩阵
 - [ ] Volume Rendering and atmosphere 
+
+### 

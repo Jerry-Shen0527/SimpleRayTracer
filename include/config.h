@@ -32,7 +32,6 @@ const std::string path = "C:/Users/Jerry/WorkSpace/SimpleRayTracer/resources/";
 static const Float OneMinusEpsilon = 0x1.fffffep-1;
 #define ALLOCA(TYPE, COUNT) (TYPE *) alloca((COUNT) * sizeof(TYPE))
 
-
 constexpr Float Infinity = std::numeric_limits<Float>::infinity();
 constexpr Float Pi = 3.1415926535897932385f;
 constexpr Float InvPi = 1 / Pi;

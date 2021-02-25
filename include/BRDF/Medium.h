@@ -2,6 +2,7 @@
 
 #include <config.h>
 #include <Geometry/Vector3.h>
+#include <Tools/Spectrum/SampledSpectrum.h>
 class Sampler;
 
 class PhaseFunction
@@ -48,4 +49,21 @@ struct MediumInterface {
 	bool IsMediumTransition() const { return inside != outside; }
 
 	const Medium* inside, * outside;
+};
+
+class HomogeneousMedium : public Medium {
+public:
+	//HomogeneousMedium Public Methods 689
+	HomogeneousMedium(const Spectrum& sigma_a, const Spectrum& sigma_s, Float g)
+		: sigma_a(sigma_a), sigma_s(sigma_s), sigma_t(sigma_s + sigma_a),
+		g(g) { }
+
+	Spectrum Tr(const Ray& ray, Sampler& sampler) const {
+		return Exp(-sigma_t * std::min(ray.tMax * ray.d.Length(), Infinity));
+	}
+private:
+	//HomogeneousMedium Private Data 689
+	const Spectrum sigma_a, sigma_s, sigma_t;
+	const Float g;
+	
 };

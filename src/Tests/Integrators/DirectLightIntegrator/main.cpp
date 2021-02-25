@@ -30,7 +30,7 @@ int main()
 	MemoryArena arena;
 
 	Scene scene = CreateCornell(arena);
-	integrator.Render(scene);
+	integrator.Render(scene,true);
 
 	camera->film->WriteImage(1, true);
 

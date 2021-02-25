@@ -39,12 +39,12 @@ const Material* GeometricPrimitive::GetMaterial() const
 	return material.get();
 }
 
-void GeometricPrimitive::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode,
-	bool allowMultipleLobes) const
+void GeometricPrimitive::ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* isect, MemoryArena& arena,
+                                                    TransportMode mode, bool allowMultipleLobes) const
 {
 	if (material)
-		material->ComputeScatteringFunctions(isect, arena, mode,
-			allowMultipleLobes);
+		material->ComputeScatteringFunctions(spectrum, isect, arena,
+		                                       mode, allowMultipleLobes);
 }
 
 bool TransformedPrimitive::Intersect(const Ray& r, SurfaceInteraction* isect) const
@@ -71,7 +71,7 @@ const Material* Aggregate::GetMaterial() const
 	return nullptr;
 }
 
-void Aggregate::ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode,
-	bool allowMultipleLobes) const
+void Aggregate::ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* isect, MemoryArena& arena,
+                                           TransportMode mode, bool allowMultipleLobes) const
 {
 }

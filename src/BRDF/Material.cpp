@@ -5,7 +5,6 @@
 
 #include "BRDF/MicrofacetDistribution.h"
 #include "BRDF/Specular.h"
-#include "BRDF/OrenNayar.h"
 
 void Material::Bump(const std::shared_ptr<Texture<Float>>& d, SurfaceInteraction* si)
 {
@@ -46,7 +45,7 @@ void Material::Bump(const std::shared_ptr<Texture<Float>>& d, SurfaceInteraction
 		false);
 }
 
-void MatteMaterial::ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
+void MatteMaterial::ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
 {
 	// Perform bump mapping with _bumpMap_, if present
 	if (bumpMap) Bump(bumpMap, si);
@@ -63,10 +62,10 @@ void MatteMaterial::ComputeScatteringFunctions(SurfaceInteraction* si, MemoryAre
 	}
 }
 
-void GlassMaterial::ComputeScatteringFunctions(SurfaceInteraction* si,
+void GlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
+	SurfaceInteraction* si,
 	MemoryArena& arena,
-	TransportMode mode,
-	bool allowMultipleLobes) const {
+	TransportMode mode, bool allowMultipleLobes) const {
 	// Perform bump mapping with _bumpMap_, if present
 	if (bumpMap) Bump(bumpMap, si);
 	Float eta = index->Evaluate(*si);
@@ -109,12 +108,92 @@ void GlassMaterial::ComputeScatteringFunctions(SurfaceInteraction* si,
 	}
 }
 
+void PhysicalGlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si, MemoryArena& arena,
+	TransportMode mode, bool allowMultipleLobes) const
+{
+	// Perform bump mapping with _bumpMap_, if present
+	if (bumpMap) Bump(bumpMap, si);
+	Spectrum eta = index->Evaluate(*si);
+
+	Float beta_accumulate[nSpectralSamples + 1];
+	beta_accumulate[0] = 0;
+
+	for (int i = 1; i < nSpectralSamples + 1; ++i)
+	{
+		beta_accumulate[i] = beta_accumulate[i - 1] + spectrum[i - 1];
+	}
+
+	auto beta_sum = beta_accumulate[nSpectralSamples];
+
+	auto sample = random_float(0, beta_sum);
+
+	int index = 0;
+
+	while (sample >= beta_accumulate[index])
+	{
+		index++;
+	}
+
+	index = (index - 1) / lambda_group * lambda_group;
+
+	Spectrum R(0.f);
+	Spectrum T(0.f);
+
+	Float beta_part = beta_accumulate[index + lambda_group] - beta_accumulate[index];
+
+	assert(beta_part != 0);
+
+	for (int i = index; i < index + lambda_group; ++i)
+	{
+		R[i] = 1.0f / beta_part * beta_sum;
+		T[i] = 1.0f / beta_part * beta_sum;
+	}
+	index = index + (lambda_group - 1) / 2;
+
+	Float urough = uRoughness->Evaluate(*si);
+	Float vrough = vRoughness->Evaluate(*si);
+	R *= Kr->Evaluate(*si).Clamp();
+	T *= Kt->Evaluate(*si).Clamp();
+	// Initialize _bsdf_ for smooth or rough dielectric
+	si->bsdf = ARENA_ALLOC(arena, BSDF)(*si, eta[index]);
+
+	if (R.IsBlack() && T.IsBlack()) return;
+
+	bool isSpecular = urough == 0 && vrough == 0;
+	if (isSpecular && allowMultipleLobes) {
+		si->bsdf->Add(ARENA_ALLOC(arena, FresnelSpecular)(R, T, 1.f, eta[index], mode));
+	}
+	else {
+		if (remapRoughness) {
+			urough = TrowbridgeReitzDistribution::RoughnessToAlpha(urough);
+			vrough = TrowbridgeReitzDistribution::RoughnessToAlpha(vrough);
+		}
+		MicrofacetDistribution* distrib =
+			isSpecular ? nullptr
+			: ARENA_ALLOC(arena, TrowbridgeReitzDistribution)(urough, vrough);
+		if (!R.IsBlack()) {
+			Fresnel* fresnel = ARENA_ALLOC(arena, FresnelDielectric)(1.f, eta[index]);
+			if (isSpecular)
+				si->bsdf->Add(
+					ARENA_ALLOC(arena, SpecularReflection)(R, fresnel));
+			else
+				si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetReflection)(R, distrib, fresnel));
+		}
+		if (!T.IsBlack()) {
+			if (isSpecular)
+				si->bsdf->Add(ARENA_ALLOC(arena, SpecularTransmission)(T, 1.f, eta[index], mode));
+			else
+				si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetTransmission)(T, distrib, 1.f, eta[index], mode));
+		}
+	}
+}
+
 MetalMaterial::MetalMaterial(const std::shared_ptr<Texture<Spectrum>>& eta, const std::shared_ptr<Texture<Spectrum>>& k,
 	const std::shared_ptr<Texture<Float>>& rough, const std::shared_ptr<Texture<Float>>& urough,
 	const std::shared_ptr<Texture<Float>>& vrough, const std::shared_ptr<Texture<Float>>& bump, bool remapRoughness)
 	: eta(eta), k(k), roughness(rough), uRoughness(urough), vRoughness(vrough), bumpMap(bump), remapRoughness(remapRoughness) {}
 
-void MetalMaterial::ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
+void MetalMaterial::ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const
 {
 	// Perform bump mapping with _bumpMap_, if present
 	if (bumpMap) Bump(bumpMap, si);
@@ -128,8 +207,7 @@ void MetalMaterial::ComputeScatteringFunctions(SurfaceInteraction* si, MemoryAre
 		uRough = TrowbridgeReitzDistribution::RoughnessToAlpha(uRough);
 		vRough = TrowbridgeReitzDistribution::RoughnessToAlpha(vRough);
 	}
-	Fresnel* frMf = ARENA_ALLOC(arena, FresnelConductor)(1., eta->Evaluate(*si),
-		k->Evaluate(*si));
+	Fresnel* frMf = ARENA_ALLOC(arena, FresnelConductor)(1., eta->Evaluate(*si), k->Evaluate(*si));
 	MicrofacetDistribution* distrib =
 		ARENA_ALLOC(arena, TrowbridgeReitzDistribution)(uRough, vRough);
 	si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetReflection)(1., distrib, frMf));

@@ -123,7 +123,7 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 						//Process SPPM camera ray intersection 978
 
 						//Compute BSDF at SPPM camera ray intersection 978
-						isect.ComputeScatteringFunctions(ray, arena, true);
+						isect.ComputeScatteringFunctions(beta, ray, arena, true);
 						if (!isect.bsdf) {
 							ray = isect.SpawnRay(ray.d);
 							--depth;
@@ -169,7 +169,8 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 						}
 					}
 				}
-			}, nTiles);
+			}, nTiles, benchmark);
+		std::cout << std::endl;
 		//Create grid of all SPPM visible points 979
 		int hashSize = nPixels;
 		std::vector<std::atomic<SPPMPixelListNode*>> grid(hashSize);
@@ -216,7 +217,9 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 									;
 							}
 				}
-			}, nPixels, 4096);
+			}, nPixels, 4096, benchmark);
+		std::cout << std::endl;
+
 
 		//	Trace photons and accumulate contributions 983
 		{
@@ -284,8 +287,8 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 						//Sample new photon ray direction 987
 
 						//Compute BSDF at photon intersection point 988
-						isect.ComputeScatteringFunctions(photonRay, arena, true,
-							TransportMode::Importance);
+						isect.ComputeScatteringFunctions(beta, photonRay, arena,
+							true, TransportMode::Importance);
 						if (!isect.bsdf) {
 							--depth;
 							photonRay = isect.SpawnRay(photonRay.d);
@@ -313,7 +316,8 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 						photonRay = (RayDifferential)isect.SpawnRay(wi);
 					}
 					arena.Reset();
-				}, photonsPerIteration, 8192);
+				}, photonsPerIteration, 8192, benchmark);
+			std::cout << std::endl;
 		}
 		//	Update pixel values from this pass¡¯s photons 989
 		//
@@ -340,7 +344,7 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 			// Reset _VisiblePoint_ in pixel
 			p.vp.beta = 0.;
 			p.vp.bsdf = nullptr;
-			}, nPixels, 4096);
+			}, nPixels, 4096, benchmark);
 
 		//	Periodically store SPPM image in film and write image
 		if (iter + 1 == nIterations || ((iter + 1) % writeFrequency == 0)) {

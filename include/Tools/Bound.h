@@ -40,7 +40,7 @@ public:
 
 	void BoundingSphere(Point<T, n>* center, Float* radius) const {
 		*center = (pMin + pMax) / 2;
-		*radius = Inside(*center, *this) ? (*center - pMax).length() : 0;
+		*radius = Inside(*center, *this) ? (*center - pMax).Length() : 0;
 	}
 
 	const Point<T, n>& operator[](int i) const;

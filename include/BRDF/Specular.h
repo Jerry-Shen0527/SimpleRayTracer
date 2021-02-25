@@ -110,6 +110,8 @@ inline Float FresnelSpecular::Pdf(const Vector3f& wo, const Vector3f& wi) const
 inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType) const
 {
 	Float F = FrDielectric(CosTheta(wo), etaA, etaB);
+
+	
 	if (sample[0] < F) {
 		//Compute specular reflection for FresnelSpecular 817
 		*wi = Vector3f(-wo.x(), -wo.y(), wo.z());

@@ -17,9 +17,14 @@ public:
 	Interaction(const Point3f& p, Float time, const MediumInterface& mediumInterface)
 		: p(p), time(time), mediumInterface(mediumInterface) {}
 
+	Interaction(const Point3f& p, const Vector3f& wo, Float time, const MediumInterface& mediumInterface)
+		: p(p), time(time), wo(wo), mediumInterface(mediumInterface) { }
+
 	bool IsSurfaceInteraction() const {
 		return n != Normal3f();
 	}
+
+	bool IsMediumInteraction() const { return !IsSurfaceInteraction(); }
 
 	Point3f p;
 	Normal3f n;
@@ -58,7 +63,8 @@ public:
 
 	SurfaceInteraction(const Point3f& p, const Vector3f& pError, const Point2f& uv, const Vector3f& wo, const Vector3f& dpdu, const Vector3f& dpdv, const Normal3f& dndu, const Normal3f& dndv, Float time, const Shape* shape);
 
-	void ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes = false, TransportMode mode = TransportMode::Radiance);
+	void ComputeScatteringFunctions(const
+		Spectrum& spectrum, const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes = false, TransportMode mode = TransportMode::Radiance);
 
 	void ComputeDifferentials(const RayDifferential& ray) const;
 
@@ -87,4 +93,14 @@ public:
 	const Primitive* primitive = nullptr;
 	const Shape* shape = nullptr;
 	int faceIndex = 0;
+};
+
+class MediumInteraction :public Interaction
+{
+public:
+	MediumInteraction(const Point3f& p, const Vector3f& wo, Float time,
+		const Medium* medium, const PhaseFunction* phase)
+		: Interaction(p, wo, time, medium), phase(phase) { }
+
+	const PhaseFunction* phase;
 };

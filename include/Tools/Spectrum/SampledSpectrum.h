@@ -12,7 +12,6 @@ static const int sampledLambdaEnd = 700;
 static  const int nSpectralSamples = 30;
 static const Float CIE_Y_integral = 106.856895;
 
-
 class SampledSpectrum :public CoefficientSpectrum<nSpectralSamples>
 {
 public:
@@ -37,6 +36,8 @@ public:
 	void ToRGB(Float rgb[]) const;
 	Float y() const;
 
+	static bool polarized;
+
 private:
 	static SampledSpectrum X, Y, Z;
 	static float yint;
@@ -50,6 +51,8 @@ private:
 	static SampledSpectrum rgbIllum2SpectRed, rgbIllum2SpectGreen;
 	static SampledSpectrum rgbIllum2SpectBlue;
 };
+
+bool SampledSpectrum::polarized = true;
 
 inline float SampledSpectrum::AverageSpectrumSamples(const float* lambda, const float* vals, int n, float lambdaStart,
 	float lambdaEnd)

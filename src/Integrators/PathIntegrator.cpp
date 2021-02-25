@@ -31,7 +31,7 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 			break;
 		//	Compute scattering functions and skip over medium boundaries 878
 		//No bsdf means it could be in the medium
-		isect.ComputeScatteringFunctions(ray, arena, true);
+		isect.ComputeScatteringFunctions(beta, ray, arena, true);
 		if (!isect.bsdf) {
 			ray = isect.SpawnRay(ray.d);
 			bounces--;

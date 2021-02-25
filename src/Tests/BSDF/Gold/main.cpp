@@ -15,7 +15,7 @@ int main()
 {
 	MemoryArena arena;
 	const auto scene = CreateCornellGold(arena);
-	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(10, 10, true, 10);
+	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(8, 8, true, 10);
 
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
 	AnimatedTransform transform(&trans, 0, &trans, 0);

@@ -21,12 +21,13 @@ int main()
 
 	shared_ptr<const Camera> camera = std::make_shared<PerspectiveCamera>(transform, Bounds2f(Point2f(-1, -1), Point2f(1, 1)), 0, 1.0, 0, 10.0, 40.0, &film, nullptr);
 
-	SPPMIntegrator integrator(camera, 20, 10000000, 40, 1., 10);
+	SPPMIntegrator integrator(camera, 100, 100000, 40, 1., 10);
+	//SPPMIntegrator integrator(camera, 20, 5000000, 40, 1., 10);
 
 	MemoryArena arena;
-	Scene scene = CreateCornell(arena);
+	Scene scene = CreateCornellWithBalls(arena);
 
-	integrator.Render(scene);
+	integrator.Render(scene,true);
 	arena.Reset();
 
 #ifdef _WIN32

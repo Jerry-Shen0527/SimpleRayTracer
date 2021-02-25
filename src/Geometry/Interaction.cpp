@@ -3,10 +3,10 @@
 
 #include "Geometry/Primitive.h"
 
-void SurfaceInteraction::ComputeScatteringFunctions(const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes, TransportMode mode)
+void SurfaceInteraction::ComputeScatteringFunctions(const Spectrum& spectrum, const RayDifferential& ray, MemoryArena& arena, bool allowMultipleLobes, TransportMode mode)
 {
-	ComputeDifferentials(ray);
-	primitive->ComputeScatteringFunctions(this, arena, mode, allowMultipleLobes);
+	//ComputeDifferentials(ray);
+	primitive->ComputeScatteringFunctions(spectrum, this, arena, mode, allowMultipleLobes);
 }
 
 void SurfaceInteraction::ComputeDifferentials(const RayDifferential& ray) const

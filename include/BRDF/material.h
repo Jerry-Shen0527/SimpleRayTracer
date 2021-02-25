@@ -6,7 +6,7 @@
 class Material {
 public:
 	// Material Interface
-	virtual void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
+	virtual void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 	virtual ~Material() {}
 	static void Bump(const std::shared_ptr<Texture<Float>>& d, SurfaceInteraction* si);
 };
@@ -16,9 +16,9 @@ public:
 	// MatteMaterial Public Methods
 	MatteMaterial(const std::shared_ptr<Texture<Spectrum>>& Kd, const std::shared_ptr<Texture<Float>>& sigma, const std::shared_ptr<Texture<Float>>& bumpMap)
 		: Kd(Kd), sigma(sigma), bumpMap(bumpMap) {}
-	void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena,
-		TransportMode mode,
-		bool allowMultipleLobes) const override;
+	void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si,
+		MemoryArena& arena,
+		TransportMode mode, bool allowMultipleLobes) const override;
 
 private:
 	// MatteMaterial Private Data
@@ -43,15 +43,48 @@ public:
 		index(index),
 		bumpMap(bumpMap),
 		remapRoughness(remapRoughness) {}
-	void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena,
-		TransportMode mode,
-		bool allowMultipleLobes) const;
+	void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si,
+		MemoryArena& arena,
+		TransportMode mode, bool allowMultipleLobes) const;
 
 private:
 	// GlassMaterial Private Data
 	std::shared_ptr<Texture<Spectrum>> Kr, Kt;
 	std::shared_ptr<Texture<Float>> uRoughness, vRoughness;
 	std::shared_ptr<Texture<Float>> index;
+	std::shared_ptr<Texture<Float>> bumpMap;
+	bool remapRoughness;
+};
+extern const int nSpectralSamples;
+class PhysicalGlassMaterial :public Material
+{
+	// GlassMaterial Public Methods
+public:
+	PhysicalGlassMaterial(const std::shared_ptr<Texture<Spectrum>>& Kr,
+		const std::shared_ptr<Texture<Spectrum>>& Kt,
+		const std::shared_ptr<Texture<Float>>& uRoughness,
+		const std::shared_ptr<Texture<Float>>& vRoughness,
+		const std::shared_ptr<Texture<Spectrum>>& index,
+		const std::shared_ptr<Texture<Float>>& bumpMap,
+		bool remapRoughness, int lambdagroup = nSpectralSamples)
+		: Kr(Kr),
+		Kt(Kt),
+		uRoughness(uRoughness),
+		vRoughness(vRoughness),
+		index(index),
+		bumpMap(bumpMap),
+		remapRoughness(remapRoughness), lambda_group(lambdagroup) {}
+	void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si,
+		MemoryArena& arena,
+		TransportMode mode, bool allowMultipleLobes) const override;
+
+private:
+	// GlassMaterial Private Data
+	const int lambda_group;
+
+	std::shared_ptr<Texture<Spectrum>> Kr, Kt;
+	std::shared_ptr<Texture<Float>> uRoughness, vRoughness;
+	std::shared_ptr<Texture<Spectrum>> index;
 	std::shared_ptr<Texture<Float>> bumpMap;
 	bool remapRoughness;
 };
@@ -66,9 +99,9 @@ public:
 		const std::shared_ptr<Texture<Float>>& vrough,
 		const std::shared_ptr<Texture<Float>>& bump,
 		bool remapRoughness);
-	void ComputeScatteringFunctions(SurfaceInteraction* si, MemoryArena& arena,
-		TransportMode mode,
-		bool allowMultipleLobes) const;
+	void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si,
+		MemoryArena& arena,
+		TransportMode mode, bool allowMultipleLobes) const;
 
 private:
 	// MetalMaterial Private Data

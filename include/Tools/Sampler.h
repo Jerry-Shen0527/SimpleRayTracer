@@ -142,7 +142,7 @@ public:
 
 	const uint16_t* PermutationForDimension(int dim) const {
 		if (dim >= PrimeTableSize)
-			std::cout << "HaltonSampler can only sample 5 dimensions.";
+			std::cout << "HaltonSampler can only sample 1000 dimensions.";
 		return &radicalInversePermutations[PrimeSums[dim]];
 	}
 

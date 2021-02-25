@@ -34,8 +34,11 @@ public:
 	CoefficientSpectrum operator/(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum operator*(Float x) const;
 	CoefficientSpectrum operator/(Float x) const;
+	CoefficientSpectrum operator-() const;
 
 	Float& operator[](int idx) { return c[idx]; }
+
+	const Float& operator[](int idx) const { return c[idx]; }
 
 	CoefficientSpectrum Clamp(Float low = 0, Float high = INFINITY) const;
 
@@ -170,6 +173,12 @@ CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator/(Float x) 
 }
 
 template <int nSamples>
+CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::operator-() const
+{
+	return Spectrum() - *this;
+}
+
+template <int nSamples>
 CoefficientSpectrum<nSamples> CoefficientSpectrum<nSamples>::Clamp(Float low, Float high) const
 {
 	CoefficientSpectrum ret;
@@ -193,9 +202,8 @@ bool CoefficientSpectrum<nSamples>::IsBlack() const
 	for (int i = 0; i < nSamples; ++i)
 	{
 		if (c[i] != 0.) return false;
-
-		return true;
 	}
+	return true;
 }
 
 template <int nSamples>

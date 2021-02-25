@@ -17,8 +17,9 @@ static std::mutex workListMutex;
 
 static ParallelForLoop* workList = nullptr;
 static std::condition_variable workListCondition;
+constexpr  int progress_bar_length = 80;
 
-void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize)
+void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize, bool benchmark)
 {
 	// Run iterations immediately if not using threads or if _count_ is small
 	if (threads.empty() || count < chunkSize) {
@@ -37,6 +38,7 @@ void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize
 	// Notify worker threads of work to be done
 	std::unique_lock<std::mutex> lock(workListMutex);
 	workListCondition.notify_all();
+	auto time_start = GetTickCount();
 
 	// Help out with parallel loop iterations in the current thread
 	while (!loop.Finished()) {
@@ -67,11 +69,38 @@ void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize
 		}
 		lock.lock();
 
+		if (benchmark)
+		{
+			auto percent = float(loop.nextIndex) / loop.maxIndex;
+			if (percent < 0.999)
+			{
+				std::cout << '[';
+				for (int i = 0; i < progress_bar_length; ++i)
+				{
+					if (i / float(progress_bar_length) < percent) std::cout << '-';
+					else std::cout << ' ';
+				}
+				std::cout << ']';
+				auto time_passed = GetTickCount() - time_start;
+				std::cout << std::setw(8) << percent * 100 << '%' << std::setw(8) << time_passed / 1000.0 << 's' << '|' << std::setw(8) << time_passed / percent / 1000.0 << 's' << '\r';
+			}
+		}
+
 		// Update _loop_ to reflect completion of iterations
 		loop.activeWorkers--;
 	}
+	if (benchmark)
+	{
+		std::cout << '[';
+		for (int i = 0; i < progress_bar_length; ++i)
+		{
+			std::cout << '-';
+		}
+		std::cout << ']';
+		auto time_passed = GetTickCount() - time_start;
+		std::cout << std::setw(8) << 100 << '%' << std::setw(8) << time_passed / 1000.0 << 's' << '|' << std::setw(8) << time_passed / 1000.0 << 's' << std::endl;
+	}
 }
-constexpr  int progress_bar_length = 80;
 void ParallelFor2D(std::function<void(Point2i)> func, const Point2i& count, bool benchmark) {
 	if (threads.empty() || count.x() * count.y() <= 1) {
 		for (int y = 0; y < count.y(); ++y)
@@ -222,10 +251,10 @@ static void workerThreadFunc(int tIndex, std::shared_ptr<Barrier> barrier) {
 }
 
 int NumSystemCores() {
-#ifdef _DEBUG
-	return 1;
-#endif
-	return std::max(1u, std::thread::hardware_concurrency()-2);
+	#ifdef _DEBUG
+		return 1;
+	#endif
+	return std::max(1u, std::thread::hardware_concurrency());
 }
 
 void ParallelInit() {

@@ -5,7 +5,7 @@
 class BSDF
 {
 public:
-	BSDF(const SurfaceInteraction& si, Float eta = 1) : eta(eta), ns(si.shading.n), ng(si.n), ss(Normalize(si.shading.dpdu)), ts(Cross(ns, ss)) { }
+	BSDF(const SurfaceInteraction& si, Float eta = 1) :eta(eta), ns(si.shading.n), ng(si.n), ss(Normalize(si.shading.dpdu)), ts(Cross(ns, ss)) { }
 
 	void Add(BxDF* b) {
 		assert(nBxDFs < MaxBxDFs);
@@ -29,8 +29,7 @@ public:
 		bool reflect = Dot(wiW, ng) * Dot(woW, ng) > 0;
 		Spectrum f(0.f);
 		for (int i = 0; i < nBxDFs; ++i)
-			if (bxdfs[i]->MatchesFlags(flags) &&
-				(reflect && bxdfs[i]->type & BSDF_REFLECTION || !reflect && bxdfs[i]->type & BSDF_TRANSMISSION))
+			if (bxdfs[i]->MatchesFlags(flags) && (reflect && bxdfs[i]->type & BSDF_REFLECTION || !reflect && bxdfs[i]->type & BSDF_TRANSMISSION))
 				f += bxdfs[i]->f(wo, wi);
 		return f;
 	}
@@ -42,7 +41,8 @@ public:
 	Spectrum rho(const Vector3f& wo, int nSamples, const Point2f* samples, BxDFType flags = BSDF_ALL) const;
 
 public:
-	const Float eta;
+	Float eta;
+
 private:
 	const Normal3f ns, ng;
 	const Vector3f ss, ts;

@@ -15,7 +15,7 @@ Spectrum DirectLightingIntegrator::Li(const RayDifferential& ray, const Scene& s
 	}
 
 	// Compute scattering functions for surface interaction
-	isect.ComputeScatteringFunctions(ray, arena);
+	isect.ComputeScatteringFunctions(Spectrum(), ray, arena);
 
 	if (!isect.bsdf)
 		return Li(isect.SpawnRay(ray.d), scene, sampler, arena, depth);
@@ -78,7 +78,7 @@ Spectrum UniformSampleOneLight(const Interaction& it, const Scene& scene, Memory
 
 	Point2f uLight = sampler.Get2D();
 	Point2f uScattering = sampler.Get2D();
-	return (Float)nLights * EstimateDirect(it, uScattering, *light, uLight, scene, sampler, arena, handleMedia,true);
+	return (Float)nLights * EstimateDirect(it, uScattering, *light, uLight, scene, sampler, arena, handleMedia, true);
 }
 
 Spectrum EstimateDirect(const Interaction& it, const Point2f& uScattering, const Light& light, const Point2f& uLight, const Scene& scene, Sampler& sampler,
@@ -167,7 +167,11 @@ Spectrum EstimateDirect(const Interaction& it, const Point2f& uScattering, const
 				Ld += f * Li * Tr * weight / scatteringPdf;
 		}
 	}
-	return Ld;
+	if (!Ld.IsBlack())
+	{
+		return Ld;
+	}
+	return Spectrum(0.f);
 }
 
 void DirectLightingIntegrator::Preprocess(const Scene& scene, Sampler& sampler)

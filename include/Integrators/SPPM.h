@@ -12,9 +12,7 @@ public:
 		initialSearchRadius(initialSearchRadius),
 		nIterations(nIterations),
 		maxDepth(maxDepth),
-		photonsPerIteration(photonsPerIteration > 0
-			? photonsPerIteration
-			: camera->film->croppedPixelBounds.Volume()),
+		photonsPerIteration(photonsPerIteration),
 		writeFrequency(writeFrequency) {}
 	void Render(const Scene& scene, bool benchmark = false) override;
 

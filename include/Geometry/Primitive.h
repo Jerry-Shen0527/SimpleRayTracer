@@ -13,7 +13,7 @@ public:
 	virtual const AreaLight* GetAreaLight() const = 0;
 	virtual const Material* GetMaterial() const = 0;
 
-	virtual void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
+	virtual void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 };
 
 class GeometricPrimitive :public Primitive
@@ -32,8 +32,8 @@ public:
 	bool IntersectP(const Ray& r) const override;
 	const AreaLight* GetAreaLight() const override;
 	const Material* GetMaterial() const override;
-	void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode,
-		bool allowMultipleLobes) const override;
+	void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* isect, MemoryArena& arena,
+	                                TransportMode mode, bool allowMultipleLobes) const override;
 private:
 	std::shared_ptr<Shape> shape;
 	std::shared_ptr<Material> material;
@@ -60,5 +60,5 @@ public:
 	// Aggregate Public Methods
 	const AreaLight* GetAreaLight() const;
 	const Material* GetMaterial() const;
-	void ComputeScatteringFunctions(SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const;
+	void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* isect, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const;
 };

@@ -1,8 +1,6 @@
 #pragma once
 #include <Tools/camera.h>
 
-#include <optix.h>
-
 #include "Integrator.h"
 #include "SamplerIntegrator.h"
 

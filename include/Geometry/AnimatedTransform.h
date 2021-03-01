@@ -7,8 +7,8 @@ public:
 	// AnimatedTransform Public Methods
 	AnimatedTransform(const Transform* startTransform, Float startTime,
 		const Transform* endTransform, Float endTime);
-	static void Decompose(const Matrix4x4& m, Vector3f* T, Quaternion* R,
-		Matrix4x4* S);
+	static void Decompose(const Matrix4x4f& m, Vector3f* T, Quaternion* R,
+		Matrix4x4f* S);
 	void Interpolate(Float time, Transform* t) const;
 	Ray operator()(const Ray& r) const;
 	RayDifferential operator()(const RayDifferential& r) const;
@@ -27,7 +27,7 @@ private:
 	const bool actuallyAnimated;
 	Vector3f T[2];
 	Quaternion R[2];
-	Matrix4x4 S[2];
+	Matrix4x4f S[2];
 	bool hasRotation;
 	struct DerivativeTerm {
 		DerivativeTerm() {}

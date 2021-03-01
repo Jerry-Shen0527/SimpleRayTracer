@@ -1,15 +1,16 @@
 #pragma once
-#include <config.h>
+#include "EFloat.h"
 
+template<typename T>
 struct Matrix4x4 {
 	Matrix4x4();
 
-	Matrix4x4(Float mat[4][4]);
+	Matrix4x4(T mat[4][4]);
 
-	Matrix4x4(Float t00, Float t01, Float t02, Float t03,
-		Float t10, Float t11, Float t12, Float t13,
-		Float t20, Float t21, Float t22, Float t23,
-		Float t30, Float t31, Float t32, Float t33);
+	Matrix4x4(T t00, T t01, T t02, T t03,
+		T t10, T t11, T t12, T t13,
+		T t20, T t21, T t22, T t23,
+		T t30, T t31, T t32, T t33);
 
 	Matrix4x4 Transpose(const Matrix4x4& m);
 
@@ -26,6 +27,16 @@ struct Matrix4x4 {
 		return false;
 	}
 
+	Matrix4x4 operator*(Float scalar)
+	{
+		Matrix4x4 ret = *this;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				ret.m[i][j] *= scalar;
+
+		return ret;
+	}
+
 	static Matrix4x4 Mul(const Matrix4x4& m1, const Matrix4x4& m2) {
 		Matrix4x4 r;
 		for (int i = 0; i < 4; ++i)
@@ -37,26 +48,32 @@ struct Matrix4x4 {
 		return r;
 	}
 
-	Float m[4][4];
+	T m[4][4];
+	template<typename T>
 	friend Matrix4x4 Inverse(const Matrix4x4&);
 };
-
-inline Matrix4x4::Matrix4x4()
+template<typename T>
+Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
+{
+	return Matrix4x4<T>::Mul(lhs, rhs);
+}
+template<typename T>
+inline Matrix4x4<T>::Matrix4x4()
 {
 	m[0][0] = m[1][1] = m[2][2] = m[3][3] = 1.f;
 	m[0][1] = m[0][2] = m[0][3] = m[1][0] = m[1][2] = m[1][3] = m[2][0] =
 		m[2][1] = m[2][3] = m[3][0] = m[3][1] = m[3][2] = 0.f;
 }
-
-inline Matrix4x4::Matrix4x4(Float mat[4][4])
+template<typename T>
+inline Matrix4x4<T>::Matrix4x4(T mat[4][4])
 {
-	memcpy(m, mat, 16 * sizeof(Float));
+	memcpy(m, mat, 16 * sizeof(T));
 }
-
-inline Matrix4x4::Matrix4x4(Float t00, Float t01, Float t02, Float t03, Float t10,
-	Float t11, Float t12, Float t13, Float t20, Float t21,
-	Float t22, Float t23, Float t30, Float t31, Float t32,
-	Float t33) {
+template<typename T>
+inline Matrix4x4<T>::Matrix4x4(T t00, T t01, T t02, T t03, T t10,
+	T t11, T t12, T t13, T t20, T t21,
+	T t22, T t23, T t30, T t31, T t32,
+	T t33) {
 	m[0][0] = t00;
 	m[0][1] = t01;
 	m[0][2] = t02;
@@ -74,37 +91,37 @@ inline Matrix4x4::Matrix4x4(Float t00, Float t01, Float t02, Float t03, Float t1
 	m[3][2] = t32;
 	m[3][3] = t33;
 }
-
-inline Matrix4x4 Matrix4x4::Transpose(const Matrix4x4& m)
+template<typename T>
+inline Matrix4x4<T> Matrix4x4<T>::Transpose(const Matrix4x4& m)
 {
 	return Matrix4x4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0],
 		m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1],
 		m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2],
 		m.m[0][3], m.m[1][3], m.m[2][3], m.m[3][3]);
 }
-
-inline Matrix4x4 Transpose(const Matrix4x4& m) {
+template<typename T>
+inline Matrix4x4<T> Transpose(const Matrix4x4<T>& m) {
 	return Matrix4x4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0], m.m[0][1],
 		m.m[1][1], m.m[2][1], m.m[3][1], m.m[0][2], m.m[1][2],
 		m.m[2][2], m.m[3][2], m.m[0][3], m.m[1][3], m.m[2][3],
 		m.m[3][3]);
 }
-
-inline  Matrix4x4 Inverse(const Matrix4x4& m) {
+template<typename T>
+inline  Matrix4x4<T> Inverse(const Matrix4x4<T>& m) {
 	int indxc[4], indxr[4];
 	int ipiv[4] = { 0, 0, 0, 0 };
-	Float minv[4][4];
-	memcpy(minv, m.m, 4 * 4 * sizeof(Float));
+	T minv[4][4];
+	memcpy(minv, m.m, 4 * 4 * sizeof(T));
 	for (int i = 0; i < 4; i++) {
 		int irow = 0, icol = 0;
-		Float big = 0.f;
+		T big = 0.f;
 		// Choose pivot
 		for (int j = 0; j < 4; j++) {
 			if (ipiv[j] != 1) {
 				for (int k = 0; k < 4; k++) {
 					if (ipiv[k] == 0) {
 						if (std::abs(minv[j][k]) >= big) {
-							big = Float(std::abs(minv[j][k]));
+							big = T(std::abs(minv[j][k]));
 							irow = j;
 							icol = k;
 						}
@@ -124,14 +141,14 @@ inline  Matrix4x4 Inverse(const Matrix4x4& m) {
 		if (minv[icol][icol] == 0.f) std::cerr << "Singular matrix in MatrixInvert" << std::endl;
 
 		// Set $m[icol][icol]$ to one by scaling row _icol_ appropriately
-		Float pivinv = 1. / minv[icol][icol];
+		T pivinv = 1. / minv[icol][icol];
 		minv[icol][icol] = 1.;
 		for (int j = 0; j < 4; j++) minv[icol][j] *= pivinv;
 
 		// Subtract this row from others to zero out their columns
 		for (int j = 0; j < 4; j++) {
 			if (j != icol) {
-				Float save = minv[j][icol];
+				T save = minv[j][icol];
 				minv[j][icol] = 0;
 				for (int k = 0; k < 4; k++) minv[j][k] -= minv[icol][k] * save;
 			}
@@ -146,3 +163,5 @@ inline  Matrix4x4 Inverse(const Matrix4x4& m) {
 	}
 	return Matrix4x4(minv);
 }
+
+using Matrix4x4f = Matrix4x4<Float>;

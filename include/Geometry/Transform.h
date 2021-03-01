@@ -9,8 +9,8 @@ class Transform
 public:
 	Transform() {}
 	Transform(const Float mat[4][4]);
-	Transform(const Matrix4x4& m) : m(m), mInv(Inverse(m)) {}
-	Transform(const Matrix4x4& m, const Matrix4x4& mInv);
+	Transform(const Matrix4x4f& m) : m(m), mInv(Inverse(m)) {}
+	Transform(const Matrix4x4f& m, const Matrix4x4f& mInv);
 
 	friend Transform Inverse(const Transform& t);
 	friend Transform Transpose(const Transform& t);
@@ -47,7 +47,7 @@ public:
 	bool SwapsHandedness() const;
 
 	bool IsIdentity() const;
-	Matrix4x4 m, mInv;
+	Matrix4x4f m, mInv;
 };
 
 template <typename T>
@@ -122,11 +122,11 @@ inline Transform Transpose(const Transform& t) {
 }
 
 inline Transform Translate(const Vector3f& delta) {
-	Matrix4x4 m(1, 0, 0, delta.x(),
+	Matrix4x4f m(1, 0, 0, delta.x(),
 		0, 1, 0, delta.y(),
 		0, 0, 1, delta.z(),
 		0, 0, 0, 1);
-	Matrix4x4 minv(1, 0, 0, -delta.x(),
+	Matrix4x4f minv(1, 0, 0, -delta.x(),
 		0, 1, 0, -delta.y(),
 		0, 0, 1, -delta.z(),
 		0, 0, 0, 1);
@@ -134,11 +134,11 @@ inline Transform Translate(const Vector3f& delta) {
 }
 
 inline Transform Scale(Float x, Float y, Float z) {
-	Matrix4x4 m(x, 0, 0, 0,
+	Matrix4x4f m(x, 0, 0, 0,
 		0, y, 0, 0,
 		0, 0, z, 0,
 		0, 0, 0, 1);
-	Matrix4x4 minv(1 / x, 0, 0, 0,
+	Matrix4x4f minv(1 / x, 0, 0, 0,
 		0, 1 / y, 0, 0,
 		0, 0, 1 / z, 0,
 		0, 0, 0, 1);
@@ -148,7 +148,7 @@ inline Transform Scale(Float x, Float y, Float z) {
 inline Transform RotateX(Float theta) {
 	Float sinTheta = std::sin(Radians(theta));
 	Float cosTheta = std::cos(Radians(theta));
-	Matrix4x4 m(1, 0, 0, 0,
+	Matrix4x4f m(1, 0, 0, 0,
 		0, cosTheta, -sinTheta, 0,
 		0, sinTheta, cosTheta, 0,
 		0, 0, 0, 1);
@@ -160,7 +160,7 @@ inline Transform Rotate(Float theta, const Vector3f& axis) {
 	Vector3f a = Normalize(axis);
 	Float sinTheta = std::sin(Radians(theta));
 	Float cosTheta = std::cos(Radians(theta));
-	Matrix4x4 m;
+	Matrix4x4f m;
 	// Compute rotation of first basis vector
 	m.m[0][0] = a.x() * a.x() + (1 - a.x() * a.x()) * cosTheta;
 	m.m[0][1] = a.x() * a.y() * (1 - cosTheta) - a.z() * sinTheta;
@@ -261,7 +261,7 @@ inline void IntervalFindZeros(Float c1, Float c2, Float c3, Float c4, Float c5,
 
 inline Transform Perspective(Float fov, Float n, Float f) {
 	// Perform projective divide for perspective projection
-	Matrix4x4 persp(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, f / (f - n), -f * n / (f - n),
+	Matrix4x4f persp(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, f / (f - n), -f * n / (f - n),
 		0, 0, 1, 0);
 
 	// Scale canonical perspective view to specified field of view
@@ -270,7 +270,7 @@ inline Transform Perspective(Float fov, Float n, Float f) {
 }
 
 inline Transform LookAt(const Point3f& pos, const Point3f& look, const Vector3f& up) {
-	Matrix4x4 cameraToWorld;
+	Matrix4x4f cameraToWorld;
 	// Initialize fourth column of viewing matrix
 	cameraToWorld.m[0][3] = pos.x();
 	cameraToWorld.m[1][3] = pos.y();

@@ -27,6 +27,7 @@ public:
 	const BxDFType type;
 
 	bool MatchesFlags(BxDFType t) const;
+	bool HasFlags(BxDFType t) const;
 };
 
 class LambertianReflection : public BxDF {
@@ -45,7 +46,9 @@ private:
 
 inline Spectrum LambertianReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
-	return R * InvPi;
+	Spectrum ret = R;
+	ret.mueller_spectrum = MuellerMatrix(1, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	return ret * InvPi;
 }
 
 inline Spectrum LambertianReflection::rho(const Vector3f& wo, int nSamples, const Point2f* samples) const

@@ -38,7 +38,14 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 			continue;
 		}
 		//	Sample illumination from lights to find path contribution 878
-		L += beta * UniformSampleOneLight(isect, scene, arena, sampler);
+		if constexpr (Spectrum::polarized)
+		{
+			L += L.mueller_spectrum.m[0][0] * UniformSampleOneLight(isect, scene, arena, sampler);
+		}
+		else
+		{
+			L += UniformSampleOneLight(isect, scene, arena, sampler);
+		}
 		//	Sample BSDF to get new path direction 878
 		Vector3f wo = -ray.d, wi;
 		Float pdf;
@@ -47,8 +54,9 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 		if (f.IsBlack() || pdf == 0.f)
 			break;
 		beta *= f * AbsDot(wi, isect.shading.n) / pdf;
+		beta.mueller_spectrum = f.mueller_spectrum * beta.mueller_spectrum;
 		specularBounce = (flags & BSDF_SPECULAR) != 0;
-		if ((flags & BSDF_SPECULAR) && (flags & BSDF_TRANSMISSION)) {
+		if (flags & BSDF_SPECULAR && flags & BSDF_TRANSMISSION) {
 			Float eta = isect.bsdf->eta;
 			// Update the term that tracks radiance scaling for refraction
 			// depending on whether the ray is entering or leaving the

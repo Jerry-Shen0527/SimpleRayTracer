@@ -3,14 +3,14 @@
 
 Transform::Transform(const Float mat[4][4])
 {
-	m = Matrix4x4(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+	m = Matrix4x4f(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
 		mat[1][0], mat[1][1], mat[1][2], mat[1][3],
 		mat[2][0], mat[2][1], mat[2][2], mat[2][3],
 		mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 	mInv = Inverse(m);
 }
 
-Transform::Transform(const Matrix4x4& m, const Matrix4x4& mInv) : m(m), mInv(mInv)
+Transform::Transform(const Matrix4x4f& m, const Matrix4x4f& mInv) : m(m), mInv(mInv)
 {
 }
 
@@ -60,7 +60,7 @@ Ray Transform::operator()(const Ray& r, Vector3f* oError,	Vector3f* dError) cons
 
 Transform Transform::operator*(const Transform& t2) const
 {
-	return Transform(Matrix4x4::Mul(m, t2.m), Matrix4x4::Mul(t2.mInv, mInv));
+	return Transform(Matrix4x4f::Mul(m, t2.m), Matrix4x4f::Mul(t2.mInv, mInv));
 }
 
 SurfaceInteraction Transform::operator()(const SurfaceInteraction& si) const

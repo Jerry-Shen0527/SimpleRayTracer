@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <Tools/Mueller.h>
+
 
 #include "config.h"
 #include <Tools/Math/math_tools.h>
@@ -51,6 +53,10 @@ public:
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, Float x);
 	template <int nSamples> friend CoefficientSpectrum<nSamples> operator*(Float x, const CoefficientSpectrum<nSamples>& s);
 
+	constexpr static bool polarized = true;
+
+	MuellerMatrix mueller_spectrum;
+	
 protected:
 	Float c[nSamples];
 };

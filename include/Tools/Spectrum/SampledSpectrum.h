@@ -5,6 +5,8 @@
 #include "CoefficientSpecturm.h"
 #include "RGBSpectrum.h"
 #include <vector>
+#include <Tools/Mueller.h>
+
 
 #include "Geometry/Vector3.h"
 static const int sampledLambdaStart = 400;
@@ -36,7 +38,7 @@ public:
 	void ToRGB(Float rgb[]) const;
 	Float y() const;
 
-	static bool polarized;
+
 
 private:
 	static SampledSpectrum X, Y, Z;
@@ -51,8 +53,6 @@ private:
 	static SampledSpectrum rgbIllum2SpectRed, rgbIllum2SpectGreen;
 	static SampledSpectrum rgbIllum2SpectBlue;
 };
-
-bool SampledSpectrum::polarized = true;
 
 inline float SampledSpectrum::AverageSpectrumSamples(const float* lambda, const float* vals, int n, float lambdaStart,
 	float lambdaEnd)

@@ -708,26 +708,26 @@ AnimatedTransform::AnimatedTransform(const Transform* startTransform,
     }
 }
 
-void AnimatedTransform::Decompose(const Matrix4x4& m, Vector3f* T,
-    Quaternion* Rquat, Matrix4x4* S) {
+void AnimatedTransform::Decompose(const Matrix4x4f& m, Vector3f* T,
+    Quaternion* Rquat, Matrix4x4f* S) {
     // Extract translation _T_ from transformation matrix
     T->x() = m.m[0][3];
     T->y() = m.m[1][3];
     T->z() = m.m[2][3];
 
     // Compute new transformation matrix _M_ without translation
-    Matrix4x4 M = m;
+    Matrix4x4f M = m;
     for (int i = 0; i < 3; ++i) M.m[i][3] = M.m[3][i] = 0.f;
     M.m[3][3] = 1.f;
 
     // Extract rotation _R_ from transformation matrix
     Float norm;
     int count = 0;
-    Matrix4x4 R = M;
+    Matrix4x4f R = M;
     do {
         // Compute next matrix _Rnext_ in series
-        Matrix4x4 Rnext;
-        Matrix4x4 Rit = Inverse(Transpose(R));
+        Matrix4x4f Rnext;
+        Matrix4x4f Rit = Inverse(Transpose(R));
         for (int i = 0; i < 4; ++i)
             for (int j = 0; j < 4; ++j)
                 Rnext.m[i][j] = 0.5f * (R.m[i][j] + Rit.m[i][j]);
@@ -746,7 +746,7 @@ void AnimatedTransform::Decompose(const Matrix4x4& m, Vector3f* T,
     *Rquat = Quaternion(R);
 
     // Compute scale _S_ using rotation and original matrix
-    *S = Matrix4x4::Mul(Inverse(R), M);
+    *S = Matrix4x4f::Mul(Inverse(R), M);
 }
 
 void AnimatedTransform::Interpolate(Float time, Transform* t) const {
@@ -767,7 +767,7 @@ void AnimatedTransform::Interpolate(Float time, Transform* t) const {
     Quaternion rotate = Slerp(dt, R[0], R[1]);
 
     // Interpolate scale at _dt_
-    Matrix4x4 scale;
+    Matrix4x4f scale;
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
             scale.m[i][j] = Lerp(dt, S[0].m[i][j], S[1].m[i][j]);

@@ -17,14 +17,6 @@ private:
 	const Fresnel* fresnel;
 };
 
-inline Spectrum SpecularReflection::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType)  const
-{
-	*wi = Vector3f(-wo.x(), -wo.y(), wo.z());
-
-	*pdf = 1;
-	return fresnel->Evaluate(CosTheta(*wi)) * R / AbsCosTheta(*wi);
-}
-
 class SpecularTransmission : public BxDF {
 public:
 	SpecularTransmission(const Spectrum& T, Float etaA, Float etaB,
@@ -44,37 +36,6 @@ private:
 	const FresnelDielectric fresnel;
 	const TransportMode mode;
 };
-
-inline bool Refract(const Vector3f& wi, const Normal3f& n, Float eta,
-	Vector3f* wt) {
-	//Compute cos ¦Èt using Snell¡¯s law 531
-
-	Float cosThetaI = Dot(n, wi);
-	Float sin2ThetaI = std::max(0.f, 1.f - cosThetaI * cosThetaI);
-	Float sin2ThetaT = eta * eta * sin2ThetaI;
-
-	//Handle total internal reflection for transmission 531
-	if (sin2ThetaT >= 1) return false;
-
-	Float cosThetaT = std::sqrt(1 - sin2ThetaT);
-	*wt = eta * -wi + (eta * cosThetaI - cosThetaT) * Vector3f(n);
-	return true;
-}
-
-inline Spectrum SpecularTransmission::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType)  const
-{
-	//Figure out which ¦Ç is incidentand which is transmitted 529
-	bool entering = CosTheta(wo) > 0;
-	Float etaI = entering ? etaA : etaB;
-	Float etaT = entering ? etaB : etaA;
-	//Compute ray direction for specular transmission 529
-	if (!Refract(wo, Faceforward(Normal3f(0, 0, 1), wo), etaI / etaT, wi))
-		return 0;
-	*pdf = 1;
-	Spectrum ft = T * (Spectrum(1.) - fresnel.Evaluate(CosTheta(*wi)));
-	//Account for non - symmetry with transmission to different medium 961
-	return ft / AbsCosTheta(*wi);
-}
 
 class FresnelSpecular : public BxDF {
 public:
@@ -97,44 +58,4 @@ private:
 	//FresnelSpecular Private Data 532
 };
 
-inline Spectrum FresnelSpecular::f(const Vector3f& wo, const Vector3f& wi) const
-{
-	return Spectrum(0.f);
-}
-
-inline Float FresnelSpecular::Pdf(const Vector3f& wo, const Vector3f& wi) const
-{
-	return 0;
-}
-
-inline Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType) const
-{
-	Float F = FrDielectric(CosTheta(wo), etaA, etaB);
-
-	
-	if (sample[0] < F) {
-		//Compute specular reflection for FresnelSpecular 817
-		*wi = Vector3f(-wo.x(), -wo.y(), wo.z());
-		if (sampledType)
-			*sampledType = BxDFType(BSDF_SPECULAR | BSDF_REFLECTION);
-		*pdf = F;
-		return F * R / AbsCosTheta(*wi);
-	}
-	else {
-		//Compute specular transmission for FresnelSpecular 817
-		//Figure out which ¦Ç is incidentand which is transmitted 529
-		bool entering = CosTheta(wo) > 0;
-		Float etaI = entering ? etaA : etaB;
-		Float etaT = entering ? etaB : etaA;
-		//Compute ray direction for specular transmission 529
-		if (!Refract(wo, Faceforward(Normal3f(0, 0, 1), wo), etaI / etaT, wi))
-			return 0;
-
-		Spectrum ft = T * (1 - F);
-		//Account for non - symmetry with transmission to different medium 961
-		if (sampledType)
-			*sampledType = BxDFType(BSDF_SPECULAR | BSDF_TRANSMISSION);
-		*pdf = 1 - F;
-		return ft / AbsCosTheta(*wi);
-	}
-}
+bool Refract(const Vector3f& wi, const Normal3f& n, Float eta, Vector3f* wt);

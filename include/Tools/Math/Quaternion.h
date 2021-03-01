@@ -57,7 +57,7 @@ public:
 
 inline Quaternion::Quaternion(const Transform& t)
 {
-	const Matrix4x4& m = t.m;
+	const Matrix4x4f& m = t.m;
 	Float trace = m.m[0][0] + m.m[1][1] + m.m[2][2];
 	if (trace > 0.f) {
 		// Compute w from matrix trace, then xyz
@@ -96,7 +96,7 @@ inline Transform Quaternion::ToTransform() const
 	Float xy = v.x() * v.y(), xz = v.x() * v.z(), yz = v.y() * v.z();
 	Float wx = v.x() * w, wy = v.y() * w, wz = v.z() * w;
 
-	Matrix4x4 m;
+	Matrix4x4f m;
 	m.m[0][0] = 1 - 2 * (yy + zz);
 	m.m[0][1] = 2 * (xy + wz);
 	m.m[0][2] = 2 * (xz - wy);

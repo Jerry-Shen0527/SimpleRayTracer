@@ -3,6 +3,7 @@
 #include <config.h>
 #include <Geometry/Vector3.h>
 #include <Tools/Spectrum/SampledSpectrum.h>
+#include <ray.h>
 class Sampler;
 
 class PhaseFunction

@@ -2,7 +2,7 @@
 
 #include "BxDF.h"
 #include "BxDF_Utility.h"
-
+#include <complex>
 class MicrofacetDistribution;
 
 inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
@@ -110,3 +110,86 @@ private:
 	const Spectrum Rd, Rs;
 	shared_ptr<MicrofacetDistribution> distribution;
 };
+
+std::tuple<std::complex<Float>, std::complex<Float>, Float, Float, Float>
+inline fresnel_polarized(Float cos_theta_i, Float eta) {
+	auto outside_mask = cos_theta_i >= 0.f;
+
+	Float rcp_eta = 1 / eta;
+	Float eta_it = outside_mask ? eta : rcp_eta;
+	Float eta_ti = outside_mask ? rcp_eta : eta;
+
+	/* Using Snell's law, calculate the squared sine of the
+	   angle between the surface normal and the transmitted ray */
+	Float cos_theta_t_sqr = fma(-fma(-cos_theta_i, cos_theta_i, 1.f), eta_ti * eta_ti, 1.f);
+
+	/* Find the cosines of the incident/transmitted rays */
+	Float cos_theta_i_abs = abs(cos_theta_i);
+	std::complex<Float> cos_theta_t = sqrt(cos_theta_t_sqr);
+
+	/* Choose the appropriate sign of the root (important when computing the
+	   phase difference under total internal reflection, see appendix A.2 of
+	   "Stellar Polarimetry" by David Clarke) */
+	cos_theta_t *= cos_theta_t_sqr > 0 ? 1. : -1.;
+
+	/* Amplitudes of reflected waves. The sign convention of 'a_p' used here
+	   matches Fresnel's original paper from 1823 and is different from some
+	   contemporary references. See appendix A.1 of "Stellar Polarimetry" by
+	   David Clarke for a historical perspective. */
+	std::complex<Float> a_s = (-eta_it * cos_theta_t + cos_theta_i_abs) /
+		(eta_it * cos_theta_t + cos_theta_i_abs);
+	std::complex<Float> a_p = (-eta_it * cos_theta_i_abs + cos_theta_t) /
+		(eta_it * cos_theta_i_abs + cos_theta_t);
+
+	auto index_matched = eta == 1.f;
+	auto invalid = eta == 0.f;
+	if (index_matched || invalid)a_s = 0.f;
+	if (index_matched || invalid)a_p = 0.f;
+
+	/* Adjust the sign of the transmitted direction */
+	Float cos_theta_t_signed = cos_theta_t_sqr >= 0.f ? (real(cos_theta_t) * cos_theta_i < 0 ? 1 : -1) : 0.f;
+
+	return { a_s, a_p, cos_theta_t_signed, eta_it, eta_ti };
+}
+
+std::tuple<std::complex<Float>, std::complex<Float>, Float, std::complex<Float>, std::complex<Float>>
+inline fresnel_polarized(Float cos_theta_i, std::complex<Float> eta) {
+	auto outside_mask = cos_theta_i >= 0.f;
+
+	auto z2 = abs(eta) * abs(eta);
+
+	std::complex<Float> rcp_eta(eta.real() / z2, -eta.imag() / z2);
+	std::complex<Float>	eta_it = outside_mask ? eta : rcp_eta;
+	std::complex<Float>	eta_ti = outside_mask ? rcp_eta : eta;
+
+	/* Using Snell's law, calculate the squared sine of the
+	   angle between the surface normal and the transmitted ray */
+	std::complex<Float> cos_theta_t_sqr =
+		1.f - (eta_ti * eta_ti) * (-cos_theta_i * cos_theta_i + 1.f);
+
+	/* Find the cosines of the incident/transmitted rays */
+	Float cos_theta_i_abs = abs(cos_theta_i);
+	std::complex<Float> cos_theta_t = sqrt(cos_theta_t_sqr);
+
+	/* Choose the appropriate sign of the root (important when computing the
+	   phase difference under total internal reflection, see appendix A.2 of
+	   "Stellar Polarimetry" by David Clarke) */
+	cos_theta_t *= real(cos_theta_t_sqr) >= 0 ? 1 : -1;
+
+	/* Amplitudes of reflected waves. The sign convention of 'a_p' used here
+	   matches Fresnel's original paper from 1823 and is different from some
+	   contemporary references. See appendix A.1 of "Stellar Polarimetry" by
+	   David Clarke for a historical perspective. */
+	std::complex<Float> a_s = (-eta_it * cos_theta_t + cos_theta_i_abs) / (eta_it * cos_theta_t + cos_theta_i_abs);
+	std::complex<Float> a_p = (-eta_it * cos_theta_i_abs + cos_theta_t) / (eta_it * cos_theta_i_abs + cos_theta_t);
+
+	auto index_matched = (abs(eta) * abs(eta) == 1.f) && (imag(eta) == 0.f);
+	auto invalid = abs(eta) * abs(eta) == 0.f;
+	if (index_matched || invalid)a_s = 0.f;
+	if (index_matched || invalid)a_p = 0.f;
+
+	/* Adjust the sign of the transmitted direction */
+	Float cos_theta_t_signed = real(cos_theta_t_sqr) >= 0.f ? (real(cos_theta_t) * cos_theta_i < 0 ? 1 : -1) : 0.f;
+
+	return { a_s, a_p, cos_theta_t_signed, eta_it, eta_ti };
+}

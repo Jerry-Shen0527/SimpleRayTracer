@@ -62,35 +62,36 @@ class Fresnel
 {
 public:
 	virtual Spectrum Evaluate(Float cosI) const = 0;
+public:
+	Spectrum etaI, etaT, k;
 };
 
 class FresnelConductor : public Fresnel {
 public:
-	FresnelConductor(const Spectrum& etaI, const Spectrum& etaT, const Spectrum& k) : etaI(etaI), etaT(etaT), k(k) { }
+	FresnelConductor(const Spectrum& etaI_, const Spectrum& etaT_, const Spectrum& k_)
+	{
+		etaI = etaI_;
+		etaT = etaT_;
+		k = k_;
+	}
 
 	Spectrum FresnelConductor::Evaluate(Float cosThetaI) const {
 		return FrConductor(std::abs(cosThetaI), etaI, etaT, k);
 	}
-private:
-	Spectrum etaI, etaT, k;
 };
 
 class FresnelDielectric : public Fresnel {
 public:
 
-	FresnelDielectric(Float etaI, Float etaT) : etaI(etaI), etaT(etaT) { }
-
-	Spectrum FresnelDielectric::Evaluate(Float cosThetaI) const {
-		return FrDielectric(cosThetaI, etaI, etaT);
+	FresnelDielectric(Float etaI_, Float etaT_)
+	{
+		etaI = Spectrum(etaI_);
+		etaT = Spectrum(etaT_);
 	}
 
-private:
-	Float etaI, etaT;
-};
-
-class FresnelNoOp : public Fresnel {
-public:
-	Spectrum Evaluate(Float) const { return Spectrum(1.); }
+	Spectrum FresnelDielectric::Evaluate(Float cosThetaI) const {
+		return FrDielectric(cosThetaI, etaI[0], etaT[0]);
+	}
 };
 
 class FresnelBlend : public BxDF {
@@ -125,7 +126,7 @@ inline fresnel_polarized(Float cos_theta_i, Float eta) {
 
 	/* Find the cosines of the incident/transmitted rays */
 	Float cos_theta_i_abs = abs(cos_theta_i);
-	std::complex<Float> cos_theta_t = sqrt(cos_theta_t_sqr);
+	std::complex<Float> cos_theta_t = sqrt(std::complex<Float>(cos_theta_t_sqr));
 
 	/* Choose the appropriate sign of the root (important when computing the
 	   phase difference under total internal reflection, see appendix A.2 of
@@ -147,7 +148,7 @@ inline fresnel_polarized(Float cos_theta_i, Float eta) {
 	if (index_matched || invalid)a_p = 0.f;
 
 	/* Adjust the sign of the transmitted direction */
-	Float cos_theta_t_signed = cos_theta_t_sqr >= 0.f ? (real(cos_theta_t) * cos_theta_i < 0 ? 1 : -1) : 0.f;
+	Float cos_theta_t_signed = cos_theta_t_sqr >= 0.f ? (real(cos_theta_t) * (cos_theta_i < 0 ? 1 : -1)) : 0.f;
 
 	return { a_s, a_p, cos_theta_t_signed, eta_it, eta_ti };
 }
@@ -189,7 +190,7 @@ inline fresnel_polarized(Float cos_theta_i, std::complex<Float> eta) {
 	if (index_matched || invalid)a_p = 0.f;
 
 	/* Adjust the sign of the transmitted direction */
-	Float cos_theta_t_signed = real(cos_theta_t_sqr) >= 0.f ? (real(cos_theta_t) * cos_theta_i < 0 ? 1 : -1) : 0.f;
+	Float cos_theta_t_signed = real(cos_theta_t_sqr) >= 0.f ? ((cos_theta_i < 0 ? 1 : -1) * real(cos_theta_t)) : 0.f;
 
 	return { a_s, a_p, cos_theta_t_signed, eta_it, eta_ti };
 }

@@ -282,6 +282,8 @@ Vector3f TrowbridgeReitzDistribution::Sample_wh(const Vector3f& wo, const Point2
 	return wh;
 }
 
+using UnpolarizedSpectrum = Float;
+
 Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	Float cosThetaO = AbsCosTheta(wo), cosThetaI = AbsCosTheta(wi);
@@ -291,8 +293,31 @@ Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 	if (wh.x() == 0 && wh.y() == 0 && wh.z() == 0) return Spectrum(0.);
 	wh = wh.Normalize();
 	Spectrum F = fresnel->Evaluate(Dot(wi, wh));
-	return R * distribution->D(wh) * distribution->G(wo, wi) * F /
-		(4 * cosThetaI * cosThetaO);
+
+	MuellerMatrix value;
+	if (polarized)
+	{
+		Vector3f wi_hat = mode == TransportMode::Radiance ? wo : wi,
+			wo_hat = mode == TransportMode::Radiance ? wi : wo;
+		// Mueller matrix for specular reflection.
+		value = specular_reflection(UnpolarizedSpectrum(CosTheta(wi_hat)), std::complex<Float>(fresnel->etaT[10], fresnel->k[10]));
+
+		value = reverse(value);
+
+		Vector3f n(0, 0, 1);
+		Vector3f s_axis_in = Normalize(Cross(n, -wi_hat)),
+			p_axis_in = Normalize(Cross(-wi_hat, s_axis_in)),
+			s_axis_out = Normalize(Cross(n, wo_hat)),
+			p_axis_out = Normalize(Cross(wo_hat, s_axis_out));
+
+		value = rotate_mueller_basis(value,
+			-wi_hat, p_axis_in, stokes_basis(-wi_hat),
+			wo_hat, p_axis_out, stokes_basis(wo_hat));
+		value = value * absorber(1);
+	}
+	auto ret = R * distribution->D(wh) * distribution->G(wo, wi) * F / (4 * cosThetaI * cosThetaO);
+	ret.mueller_spectrum = value;
+	return ret;
 }
 
 Spectrum MicrofacetReflection::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& u, Float* pdf,
@@ -307,7 +332,41 @@ Spectrum MicrofacetReflection::Sample_f(const Vector3f& wo, Vector3f* wi, const 
 
 	// Compute PDF of _wi_ for microfacet reflection
 	*pdf = distribution->Pdf(wo, wh) / (4 * Dot(wo, wh));
-	return f(wo, *wi);
+	MuellerMatrix value;
+
+	if (polarized)
+	{
+		/* Due to lack of reciprocity in polarization-aware pBRDFs, they are
+   always evaluated w.r.t. the actual light propagation direction, no
+   matter the transport mode. In the following, 'wi_hat' is toward the
+   light source. */
+		Vector3f wi_hat = mode == TransportMode::Radiance ? wo : *wi,
+			wo_hat = mode == TransportMode::Radiance ? *wi : wo;
+		// Mueller matrix for specular reflection.
+		value = specular_reflection(UnpolarizedSpectrum(CosTheta(wi_hat)), std::complex<Float>(fresnel->etaT[10], fresnel->k[10]));
+
+		/* Apply frame reflection, according to "Stellar Polarimetry" by
+		   David Clarke, Appendix A.2 (A26) */
+		value = reverse(value);
+
+		/* The Stokes reference frame vector of this matrix lies in the plane
+		   of reflection. */
+		Vector3f n(0, 0, 1);
+		Vector3f s_axis_in = Normalize(Cross(n, -wi_hat)),
+			p_axis_in = Normalize(Cross(-wi_hat, s_axis_in)),
+			s_axis_out = Normalize(Cross(n, wo_hat)),
+			p_axis_out = Normalize(Cross(wo_hat, s_axis_out));
+
+		/* Rotate in/out reference vector of M s.t. it aligns with the implicit
+		   Stokes bases of -wi_hat & wo_hat. */
+		value = rotate_mueller_basis(value,
+			-wi_hat, p_axis_in, stokes_basis(-wi_hat),
+			wo_hat, p_axis_out, stokes_basis(wo_hat));
+		value = value * absorber(1);
+	}
+	auto ret = f(wo, *wi);
+	ret.mueller_spectrum = value;
+	return ret;
 }
 
 Float MicrofacetReflection::Pdf(const Vector3f& wo, const Vector3f& wi) const

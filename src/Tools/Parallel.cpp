@@ -254,7 +254,7 @@ int NumSystemCores() {
 	#ifdef _DEBUG
 		return 1;
 	#endif
-	return std::max(1u, std::thread::hardware_concurrency());
+	return std::max(1u, std::thread::hardware_concurrency()-2);
 }
 
 void ParallelInit() {

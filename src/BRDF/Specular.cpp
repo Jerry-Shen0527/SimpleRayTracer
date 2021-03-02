@@ -84,9 +84,9 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 			return 0;
 	}
 
-	if constexpr (Spectrum::polarized) {
-		Vector3f wi_hat = mode == TransportMode::Radiance ? *wi : wo;
-		Vector3f wo_hat = mode == TransportMode::Radiance ? wo : *wi;
+	if (polarized) {
+		Vector3f wi_hat = mode == TransportMode::Radiance ? wo : *wi;
+		Vector3f wo_hat = mode == TransportMode::Radiance ? *wi : wo;
 
 		/* BSDF weights are Mueller matrices now. */
 		Float cos_theta_i_hat = CosTheta(wi_hat);
@@ -129,17 +129,17 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 		else
 		{
 			weight = weight * absorber(transmittance);
-
-			/* For transmission, radiance must be scaled to account for the solid
-			   angle compression that occurs when crossing the interface. */
-			Float factor = (mode == TransportMode::Radiance) ? eta_ti : Float(1.f);
-			weight = weight * (factor * factor);
+			bool entering = CosTheta(wo) > 0;
+			Float etaI = entering ? etaA : etaB;
+			Float etaT = entering ? etaB : etaA;
 
 			//Compute ray direction for specular transmission 529
 
 			Spectrum ft = T * (1 - F);
 			ft.mueller_spectrum = weight;
 			//Account for non - symmetry with transmission to different medium 961
+			if (mode == TransportMode::Radiance)
+				ft *= (etaI * etaI) / (etaT * etaT);
 			if (sampledType)
 				*sampledType = BxDFType(BSDF_SPECULAR | BSDF_TRANSMISSION);
 			ft = ft / AbsCosTheta(*wi);
@@ -159,6 +159,11 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 
 			Spectrum ft = T * (1 - F);
 			//Account for non - symmetry with transmission to different medium 961
+			bool entering = CosTheta(wo) > 0;
+			Float etaI = entering ? etaA : etaB;
+			Float etaT = entering ? etaB : etaA;
+			if (mode == TransportMode::Radiance)
+				ft *= (etaI * etaI) / (etaT * etaT);
 			if (sampledType)
 				*sampledType = BxDFType(BSDF_SPECULAR | BSDF_TRANSMISSION);
 			return ft / AbsCosTheta(*wi);

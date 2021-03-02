@@ -210,5 +210,5 @@ void MetalMaterial::ComputeScatteringFunctions(const Spectrum& spectrum, Surface
 	Fresnel* frMf = ARENA_ALLOC(arena, FresnelConductor)(1., eta->Evaluate(*si), k->Evaluate(*si));
 	MicrofacetDistribution* distrib =
 		ARENA_ALLOC(arena, TrowbridgeReitzDistribution)(uRough, vRough);
-	si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetReflection)(1., distrib, frMf));
+	si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetReflection)(1., distrib, frMf,mode));
 }

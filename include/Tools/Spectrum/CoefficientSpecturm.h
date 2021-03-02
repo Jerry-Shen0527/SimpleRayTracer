@@ -53,7 +53,6 @@ public:
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, Float x);
 	template <int nSamples> friend CoefficientSpectrum<nSamples> operator*(Float x, const CoefficientSpectrum<nSamples>& s);
 
-	constexpr static bool polarized = true;
 
 	MuellerMatrix mueller_spectrum;
 	

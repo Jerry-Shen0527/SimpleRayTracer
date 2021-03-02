@@ -16,6 +16,16 @@ inline MuellerMatrix linear_polarizer(Float value = 1.f) {
 	);
 }
 
+inline MuellerMatrix linear_polarizer_slant(Float value = 1.f) {
+	Float a = value * .5f;
+	return MuellerMatrix(
+		a, -a, 0, 0,
+		-a, a, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0
+	);
+}
+
 inline MuellerMatrix linear_retarder(Float phase) {
 	Float s, c;
 	s = sin(phase);
@@ -83,7 +93,8 @@ fresnel_polarized(Float cos_theta_i, std::complex<Float> eta);
 std::tuple<std::complex<Float>, std::complex<Float>, Float, Float, Float>
 fresnel_polarized(Float cos_theta_i, Float eta);
 
-inline MuellerMatrix specular_reflection(Float cos_theta_i, Float eta) {
+template<typename Eta>
+inline MuellerMatrix specular_reflection(Float cos_theta_i, Eta eta) {
 	std::complex<Float> a_s, a_p;
 
 	std::tie(a_s, a_p, std::ignore, std::ignore, std::ignore) = fresnel_polarized(cos_theta_i, eta);

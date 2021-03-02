@@ -107,7 +107,11 @@ inline Spectrum BSDF::Sample_f(const Vector3f& woWorld, Vector3f* wiWorld, const
 	if (wo.z() == 0) return 0.;
 	*pdf = 0;
 	if (sampledType) *sampledType = bxdf->type;
-	Spectrum f = bxdf->Sample_f(wo, &wi, uRemapped, pdf, sampledType);
+	auto sampled_f = bxdf->Sample_f(wo, &wi, uRemapped, pdf, sampledType);
+
+	Spectrum f = sampled_f;
+	f.mueller_spectrum = sampled_f.mueller_spectrum;
+
 	if (*pdf == 0) {
 		if (sampledType) *sampledType = BxDFType(0);
 		return 0;
@@ -129,7 +133,11 @@ inline Spectrum BSDF::Sample_f(const Vector3f& woWorld, Vector3f* wiWorld, const
 			if (bxdfs[i]->MatchesFlags(type) &&
 				((reflect && (bxdfs[i]->type & BSDF_REFLECTION)) ||
 					(!reflect && (bxdfs[i]->type & BSDF_TRANSMISSION))))
-				f += bxdfs[i]->f(wo, wi);
+			{
+				auto sampled_f = bxdfs[i]->f(wo, wi);
+				f += sampled_f;
+				f.mueller_spectrum = sampled_f.mueller_spectrum;
+			}
 	}
 	return f;
 }

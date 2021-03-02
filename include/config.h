@@ -38,3 +38,5 @@ constexpr Float InvPi = 1 / Pi;
 constexpr Float Inv2Pi = 1 / Pi / 2.0;
 constexpr Float PiOver4 = Pi / 4.0;
 constexpr Float PiOver2 = Pi / 2.0;
+
+extern bool polarized;

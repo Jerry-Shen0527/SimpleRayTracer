@@ -3,7 +3,6 @@
 #include "BxDF_Utility.h"
 #include "Fresnel.h"
 
-
 class MicrofacetDistribution
 {
 public:
@@ -70,13 +69,10 @@ inline Float BeckmannDistribution::Lambda(const Vector3f& w) const
 		(3.535f * a + 2.181f * a * a);
 }
 
-
-
 class TrowbridgeReitzDistribution : public MicrofacetDistribution {
 public:
 
 	static Float RoughnessToAlpha(Float roughness);
-	
 
 	TrowbridgeReitzDistribution(Float alphax, Float alphay,
 		bool samplevis = true)
@@ -114,11 +110,11 @@ class MicrofacetReflection : public BxDF {
 public:
 	// MicrofacetReflection Public Methods
 	MicrofacetReflection(const Spectrum& R,
-		MicrofacetDistribution* distribution, Fresnel* fresnel)
+		MicrofacetDistribution* distribution, Fresnel* fresnel, TransportMode mode = TransportMode::Radiance)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_GLOSSY)),
 		R(R),
 		distribution(distribution),
-		fresnel(fresnel) {}
+		fresnel(fresnel), mode(mode) {}
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const;
 	Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& u,
 		Float* pdf, BxDFType* sampledType) const;
@@ -129,6 +125,7 @@ private:
 	const Spectrum R;
 	const MicrofacetDistribution* distribution;
 	const Fresnel* fresnel;
+	const TransportMode mode;
 };
 
 class MicrofacetTransmission : public BxDF {

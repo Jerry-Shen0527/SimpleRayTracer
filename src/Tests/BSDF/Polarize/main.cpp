@@ -15,7 +15,7 @@ int main()
 {
 	MemoryArena arena;
 	const auto scene = CreateCornellPolarized(arena);
-	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(20, 20, true, 20);
+	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(40, 40, true, 20);
 	const std::shared_ptr<Sampler> sampler2 = sampler->Clone(1);
 
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));

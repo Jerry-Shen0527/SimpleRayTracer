@@ -3,12 +3,10 @@
 #include "BRDF/BSDF.h"
 #include "Integrators/DirectLightIntegrator.h"
 
-#define sqr(a) (a*a)
 Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sampler& sampler, MemoryArena& arena,
 	int depth) const
 {
 	Spectrum L(0.f), beta(1.f);
-	beta.mueller_spectrum = linear_polarizer(1);
 	RayDifferential ray(r);
 	bool specularBounce = false;
 
@@ -25,10 +23,10 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 			if (bounces == 0 || specularBounce) {
 				//Add emitted light at path vertex or from the environment 877
 				if (foundIntersection)
-					L += sqr(beta.mueller_spectrum.m[0][0]) * beta * isect.Le(-ray.d);
+					L += beta.mueller_spectrum.m[0][0] * beta * isect.Le(-ray.d);
 				else
 					for (const auto& light : scene.lights)
-						L += sqr(beta.mueller_spectrum.m[0][0]) * beta * light->Le(ray);
+						L += beta.mueller_spectrum.m[0][0] * beta * light->Le(ray);
 			}
 		}
 		else
@@ -64,7 +62,7 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 		beta.mueller_spectrum = beta.mueller_spectrum * f.mueller_spectrum;
 		if (polarized)
 		{
-			L += beta * sqr(beta.mueller_spectrum.m[0][0]) * UniformSampleOneLight(isect, scene, arena, sampler);
+			L += beta * beta.mueller_spectrum.m[0][0] * UniformSampleOneLight(isect, scene, arena, sampler);
 		}
 		else
 		{

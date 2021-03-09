@@ -15,7 +15,7 @@ int main()
 {
 	MemoryArena arena;
 	const auto scene = CreateCornellWithBalls(arena);	
-	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(13, 13 , true, 10);
+	const std::shared_ptr<Sampler> sampler = std::make_shared<StratifiedSampler>(40, 40 , true, 10);
 
 	Transform trans = Translate(Vector3f(277.5, 277.5, -800));
 	AnimatedTransform transform(&trans, 0, &trans, 0);
@@ -24,7 +24,7 @@ int main()
 
 	auto camera = std::make_shared<PerspectiveCamera>(transform, Bounds2f(Point2f(-1, -1), Point2f(1, 1)), 0, 1.0, 0, 10.0, 40.0, &film, nullptr);
 
-	PathIntegrator integrator(20, camera, sampler);
+	PathIntegrator integrator(30, camera, sampler);
 
 	integrator.Render(scene, true);
 

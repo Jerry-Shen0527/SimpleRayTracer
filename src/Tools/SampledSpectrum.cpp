@@ -957,4 +957,4 @@ const float RGBIllum2SpectBlue[nRGB2SpectSamples] = {
 	1.4878477178237029e-01,  1.6624255403475907e-01,  1.6997613960634927e-01,
 	1.5769743995852967e-01,  1.9069090525482305e-01 };
 
-bool polarized = false;
+bool polarized = true;

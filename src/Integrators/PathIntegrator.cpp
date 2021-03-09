@@ -7,6 +7,7 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 	int depth) const
 {
 	Spectrum L(0.f), beta(1.f);
+	beta.mueller_spectrum = linear_polarizer_slant(1);
 	RayDifferential ray(r);
 	bool specularBounce = false;
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <Tools/Math/matrix.h>
 
 using Float = float;
 
@@ -17,7 +18,12 @@ class SurfaceInteraction;
 class Scene;
 class VisibilityTester;
 class SampledSpectrum;
-using Spectrum = SampledSpectrum;
+
+template<typename T>
+using MuellerMatrix = Matrix4x4<T>;
+
+using PolarizedSpectrum = MuellerMatrix<SampledSpectrum>;
+using Spectrum=Unpolarize
 
 class AnimatedTransform;
 class RayDifferential;

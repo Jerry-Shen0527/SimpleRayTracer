@@ -5,8 +5,6 @@
 #include "CoefficientSpecturm.h"
 #include "RGBSpectrum.h"
 #include <vector>
-#include <Tools/Mueller.h>
-
 
 #include "Geometry/Vector3.h"
 static const int sampledLambdaStart = 400;
@@ -37,8 +35,6 @@ public:
 	void ToXYZ(Float xyz[]) const;
 	void ToRGB(Float rgb[]) const;
 	Float y() const;
-
-
 
 private:
 	static SampledSpectrum X, Y, Z;

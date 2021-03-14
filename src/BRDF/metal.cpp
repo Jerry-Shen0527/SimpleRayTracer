@@ -1,5 +1,9 @@
 #include <cassert>
 #include <BRDF/MicrofacetDistribution.h>
+#include <Tools/Mueller.h>
+#include <Tools/Polarized.h>
+
+
 
 #include "BRDF/Specular.h"
 #include "Tools/Math/Sampling.h"
@@ -282,10 +286,10 @@ Vector3f TrowbridgeReitzDistribution::Sample_wh(const Vector3f& wo, const Point2
 	return wh;
 }
 
-using UnpolarizedSpectrum = Float;
 
 Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
+	using UnpolarizedSpectrum = Unpolarize<Spectrum>;
 	Float cosThetaO = AbsCosTheta(wo), cosThetaI = AbsCosTheta(wi);
 	Vector3f wh = wi + wo;
 	//Handle degenerate cases for microfacet reflection 547

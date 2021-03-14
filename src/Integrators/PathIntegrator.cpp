@@ -14,7 +14,7 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 	Float etaScale = 1;
 
 	for (int bounces = 0; ; ++bounces) {
-		//Find next path vertexand accumulate contribution กิ 876
+		//Find next path vertexand accum ulate contribution กิ 876
 		//	Intersect ray with scene and store intersection in isect 877
 		SurfaceInteraction isect;
 		bool foundIntersection = scene.Intersect(ray, &isect);

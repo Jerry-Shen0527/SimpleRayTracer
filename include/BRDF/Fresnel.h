@@ -112,6 +112,7 @@ private:
 	shared_ptr<MicrofacetDistribution> distribution;
 };
 
+template<typename Float>
 std::tuple<std::complex<Float>, std::complex<Float>, Float, Float, Float>
 inline fresnel_polarized(Float cos_theta_i, Float eta) {
 	auto outside_mask = cos_theta_i >= 0.f;

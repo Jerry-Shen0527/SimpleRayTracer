@@ -1,9 +1,6 @@
 #pragma once
 #include <vector>
-#include <Tools/Mueller.h>
 
-
-#include "config.h"
 #include <Tools/Math/math_tools.h>
 
 inline Float clamp(Float x, Float min, Float max) {
@@ -53,9 +50,6 @@ public:
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, Float x);
 	template <int nSamples> friend CoefficientSpectrum<nSamples> operator*(Float x, const CoefficientSpectrum<nSamples>& s);
 
-
-	MuellerMatrix mueller_spectrum;
-	
 protected:
 	Float c[nSamples];
 };

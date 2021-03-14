@@ -1,13 +1,14 @@
 #pragma once
 #include <complex>
-#include <Geometry/Vector3.h>
 
 #include "Math/matrix.h"
+#include <Tools/Spectrum/SampledSpectrum.h>
 
-using MuellerMatrix = Matrix4x4f;
 
-inline MuellerMatrix linear_polarizer(Float value = 1.f) {
-	Float a = value * .5f;
+
+template<typename T>
+inline MuellerMatrix<T> linear_polarizer(Float value = 1.f) {
+	T a = value * .5f;
 	return MuellerMatrix(
 		a, a, 0, 0,
 		a, a, 0, 0,
@@ -16,7 +17,8 @@ inline MuellerMatrix linear_polarizer(Float value = 1.f) {
 	);
 }
 
-inline MuellerMatrix linear_polarizer_slant(Float value = 1.f) {
+template<typename T>
+inline MuellerMatrix<T> linear_polarizer_slant(Float value = 1.f) {
 	Float a = value * .5f;
 	return MuellerMatrix(
 		a, -a, 0, 0,
@@ -26,7 +28,8 @@ inline MuellerMatrix linear_polarizer_slant(Float value = 1.f) {
 	);
 }
 
-inline MuellerMatrix linear_retarder(Float phase) {
+template<typename T>
+inline MuellerMatrix<T> linear_retarder(Float phase) {
 	Float s, c;
 	s = sin(phase);
 	c = cos(phase);
@@ -43,8 +46,8 @@ inline std::tuple<float, float> sincos_arg_diff(const std::complex<float>& a, co
 	auto delta = arg(a / b);
 	return std::forward_as_tuple(sin(delta), cos(delta));
 }
-
-inline MuellerMatrix rotator(Float theta) {
+template<typename T>
+inline MuellerMatrix<T> rotator(Float theta) {
 	auto s = sin(2.f * theta);
 	auto c = cos(2.f * theta);
 	return MuellerMatrix(
@@ -55,11 +58,6 @@ inline MuellerMatrix rotator(Float theta) {
 	);
 }
 
-#define mulsign(expr,sign) (expr*((sign>0)?1:-1))
-#define sqr(a) (a*a)
-#define select(cond,a,b) (cond?a:b)
-#define eq(a,b) a==b
-
 inline Float unit_angle(const Vector3f& a, const Vector3f& b) {
 	Float dot_uv = Dot(a, b);
 
@@ -67,15 +65,15 @@ inline Float unit_angle(const Vector3f& a, const Vector3f& b) {
 
 	return dot_uv >= 0 ? temp : Pi - temp;
 }
-
-inline MuellerMatrix rotate_stokes_basis(const Vector3f& forward, const Vector3f& basis_current, const Vector3f& basis_target) {
+template<typename T>
+inline MuellerMatrix<T> rotate_stokes_basis(const Vector3f& forward, const Vector3f& basis_current, const Vector3f& basis_target) {
 	Float theta = unit_angle(Normalize(basis_current), Normalize(basis_target));
 
 	if (Dot(forward, Cross(basis_current, basis_target)) < 0) theta *= -1.f;
 	return rotator(theta);
 }
-
-inline MuellerMatrix rotate_mueller_basis(const MuellerMatrix& M,
+template<typename T>
+inline MuellerMatrix<T> rotate_mueller_basis(const MuellerMatrix<T>& M,
 	const Vector3f& in_forward,
 	const Vector3f& in_basis_current,
 	const Vector3f& in_basis_target,
@@ -93,20 +91,20 @@ fresnel_polarized(Float cos_theta_i, std::complex<Float> eta);
 std::tuple<std::complex<Float>, std::complex<Float>, Float, Float, Float>
 fresnel_polarized(Float cos_theta_i, Float eta);
 
-template<typename Eta>
-inline MuellerMatrix specular_reflection(Float cos_theta_i, Eta eta) {
-	std::complex<Float> a_s, a_p;
+template<typename T, typename Eta>
+inline MuellerMatrix<T> specular_reflection(T cos_theta_i, Eta eta) {
+	std::complex<T> a_s, a_p;
 
 	std::tie(a_s, a_p, std::ignore, std::ignore, std::ignore) = fresnel_polarized(cos_theta_i, eta);
 
-	Float sin_delta, cos_delta;
+	T sin_delta, cos_delta;
 	std::tie(sin_delta, cos_delta) = sincos_arg_diff(a_s, a_p);
 
-	Float r_s = abs(a_s * a_s);
-	Float r_p = abs(a_p * a_p);
-	Float a = .5f * (r_s + r_p);
-	Float b = .5f * (r_s - r_p);
-	Float c = sqrt(r_s * r_p);
+	T r_s = abs(a_s * a_s);
+	T r_p = abs(a_p * a_p);
+	T a = .5f * (r_s + r_p);
+	T b = .5f * (r_s - r_p);
+	T c = sqrt(r_s * r_p);
 
 	if (c == 0.f) sin_delta = 0.f; // avoid issues with NaNs
 	if (c == 0.f) cos_delta = 0.f;
@@ -118,7 +116,7 @@ inline MuellerMatrix specular_reflection(Float cos_theta_i, Eta eta) {
 		0, 0, -c * sin_delta, c * cos_delta
 	);
 }
-
+template<typename Float, typename Eta>
 inline MuellerMatrix specular_transmission(Float cos_theta_i, Float eta) {
 	std::complex<Float> a_s, a_p;
 	Float cos_theta_t, eta_it, eta_ti;

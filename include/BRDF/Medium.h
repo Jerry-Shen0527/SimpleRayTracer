@@ -30,7 +30,10 @@ private:
 };
 
 // Medium Declarations
+template<typename Spectrum>
 class Medium {
+	IMPORT_TYPES
+
 public:
 	// Medium Interface
 	virtual ~Medium() {}
@@ -41,8 +44,10 @@ public:
 };
 
 // MediumInterface Declarations
+template<typename Spectrum>
 struct MediumInterface {
-	MediumInterface() : inside(nullptr), outside(nullptr) {}
+	IMPORT_TYPES
+		MediumInterface() : inside(nullptr), outside(nullptr) {}
 	// MediumInterface Public Methods
 	MediumInterface(const Medium* medium) : inside(medium), outside(medium) {}
 	MediumInterface(const Medium* inside, const Medium* outside)
@@ -52,9 +57,11 @@ struct MediumInterface {
 	const Medium* inside, * outside;
 };
 
-class HomogeneousMedium : public Medium {
+template<typename Spectrum>
+class HomogeneousMedium : public Medium<Spectrum> {
 public:
 	//HomogeneousMedium Public Methods 689
+
 	HomogeneousMedium(const Spectrum& sigma_a, const Spectrum& sigma_s, Float g)
 		: sigma_a(sigma_a), sigma_s(sigma_s), sigma_t(sigma_s + sigma_a),
 		g(g) { }
@@ -64,7 +71,6 @@ public:
 	}
 private:
 	//HomogeneousMedium Private Data 689
-	const Spectrum sigma_a, sigma_s, sigma_t;
+	const UnpolarizedT<Spectrum> sigma_a, sigma_s, sigma_t;
 	const Float g;
-	
 };

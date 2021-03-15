@@ -2,10 +2,13 @@
 #include "BxDF.h"
 #include "Geometry/Interaction.h"
 
+template<typename Spectrum>
 class BSDF
 {
 public:
-	BSDF(const SurfaceInteraction& si, Float eta = 1) :eta(eta), ns(si.shading.n), ng(si.n), ss(Normalize(si.shading.dpdu)), ts(Cross(ns, ss)) { }
+	IMPORT_TYPES
+
+		BSDF(const SurfaceInteraction& si, Float eta = 1) :eta(eta), ns(si.shading.n), ng(si.n), ss(Normalize(si.shading.dpdu)), ts(Cross(ns, ss)) { }
 
 	void Add(BxDF* b) {
 		assert(nBxDFs < MaxBxDFs);
@@ -52,7 +55,8 @@ private:
 	BxDF* bxdfs[MaxBxDFs];
 };
 
-inline int BSDF::NumComponents(BxDFType flags) const
+template<typename Spectrum>
+inline int BSDF<Spectrum>::NumComponents(BxDFType flags) const
 {
 	int num = 0;
 	for (int i = 0; i < nBxDFs; ++i)
@@ -60,7 +64,8 @@ inline int BSDF::NumComponents(BxDFType flags) const
 	return num;
 }
 
-inline Float BSDF::Pdf(const Vector3f& woWorld, const Vector3f& wiWorld, BxDFType flags) const
+template<typename Spectrum>
+inline Float BSDF<Spectrum>::Pdf(const Vector3f& woWorld, const Vector3f& wiWorld, BxDFType flags) const
 {
 	if (nBxDFs == 0.f) return 0.f;
 	Vector3f wo = WorldToLocal(woWorld), wi = WorldToLocal(wiWorld);
@@ -76,7 +81,8 @@ inline Float BSDF::Pdf(const Vector3f& woWorld, const Vector3f& wiWorld, BxDFTyp
 	return v;
 }
 
-inline Spectrum BSDF::Sample_f(const Vector3f& woWorld, Vector3f* wiWorld, const Point2f& u, Float* pdf, BxDFType type,
+template<typename Spectrum>
+inline Spectrum BSDF<Spectrum>::Sample_f(const Vector3f& woWorld, Vector3f* wiWorld, const Point2f& u, Float* pdf, BxDFType type,
 	BxDFType* sampledType) const
 {
 	// Choose which _BxDF_ to sample

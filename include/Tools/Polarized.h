@@ -1,5 +1,7 @@
 #pragma once
-#include "Mueller.h"
+#include <xtr1common>
+
+template<typename T> class Matrix4x4;
 
 template<typename Spectrum>
 struct UnpolarizedT;
@@ -29,7 +31,8 @@ struct SpectrumTrait<Matrix4x4<Spectrum>>
 };
 
 template<typename Spectrum>
-using is_polarized_t = typename SpectrumTrait<Spectrum>::polarized;
+constexpr bool is_polarized_t(){ return SpectrumTrait<Spectrum>::polarized::value; }
+
 
 template<typename Spectrum>
 constexpr bool is_polarized_v(Spectrum spectrum) { return SpectrumTrait<Spectrum>::polarized::value; }

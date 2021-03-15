@@ -2,8 +2,8 @@
 //This is used for error handling. Most code comes from pbrt-v3;
 
 #include <complex>
+#include <config.h>
 
-#include "math_tools.h"
 
 inline uint32_t FloatToBits(float f) {
 	uint32_t ui;

@@ -37,6 +37,16 @@ struct Matrix4x4 {
 		return ret;
 	}
 
+	Matrix4x4 operator-()
+	{
+		Matrix4x4 ret ;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				ret.m[i][j] *= -m[i][j];
+
+		return ret;
+	}
+
 	static Matrix4x4 Mul(const Matrix4x4& m1, const Matrix4x4& m2) {
 		Matrix4x4 r;
 		for (int i = 0; i < 4; ++i)
@@ -51,6 +61,8 @@ struct Matrix4x4 {
 	T m[4][4];
 	template<typename T>
 	friend Matrix4x4 Inverse(const Matrix4x4&);
+
+	
 };
 template<typename T>
 Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)

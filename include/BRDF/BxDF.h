@@ -1,4 +1,5 @@
 #pragma once
+#include <Tools/Math/matrix.h>
 #include <Tools/Spectrum/SampledSpectrum.h>
 
 #include "BxDF_Utility.h"
@@ -12,8 +13,10 @@ enum BxDFType {
 	BSDF_ALL = BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR | BSDF_REFLECTION | BSDF_TRANSMISSION,
 };
 
+template<typename Spectrum>
 class BxDF
 {
+	IMPORT_TYPES
 public:
 	BxDF(BxDFType type) : type(type) { }
 	virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const = 0;
@@ -30,10 +33,11 @@ public:
 	bool HasFlags(BxDFType t) const;
 };
 
-class LambertianReflection : public BxDF {
+template<typename Spectrum>
+class LambertianReflection : public BxDF<Spectrum> {
 public:
 	//LambertianReflection Public Methods 532
-	LambertianReflection(const Spectrum& R)
+	LambertianReflection(const UnpolarizedSpectrum& R)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), R(R) { }
 
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
@@ -41,27 +45,41 @@ public:
 	Spectrum rho(int nSamples, const Point2f* samples1, const Point2f* samples2) const override;
 private:
 	//LambertianReflection Private Data 532
-	const Spectrum R;
+	const UnpolarizedT<Spectrum> R;
 };
 
-inline Spectrum LambertianReflection::f(const Vector3f& wo, const Vector3f& wi) const
+template<typename Spectrum>
+inline Spectrum LambertianReflection<Spectrum>::f(const Vector3f& wo, const Vector3f& wi) const
 {
-	Spectrum ret = R;
-	ret.mueller_spectrum = MuellerMatrix(1, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	return ret * InvPi;
+	UnpolarizedSpectrum ret_spectrum = R * InvPi;
+
+	if (is_polarized_t<Spectrum>())
+	{
+		Spectrum ret;
+		ret.m[0][0] = ret_spectrum;
+		ret.m[1][1] = UnpolarizedSpectrum(0);
+		ret.m[2][2] = UnpolarizedSpectrum(0);
+		ret.m[3][3] = UnpolarizedSpectrum(0);
+	}
+	else {
+		return ret_spectrum;
+	}
 }
 
-inline Spectrum LambertianReflection::rho(const Vector3f& wo, int nSamples, const Point2f* samples) const
+template<typename Spectrum>
+inline Spectrum LambertianReflection<Spectrum>::rho(const Vector3f& wo, int nSamples, const Point2f* samples) const
 {
 	return R;
 }
 
-inline Spectrum LambertianReflection::rho(int nSamples, const Point2f* samples1, const Point2f* samples2) const
+template<typename Spectrum>
+inline Spectrum LambertianReflection<Spectrum>::rho(int nSamples, const Point2f* samples1, const Point2f* samples2) const
 {
 	return  R;
 }
 
-class OrenNayar :public BxDF
+template<typename Spectrum>
+class OrenNayar :public BxDF<Spectrum>
 {
 public:
 	OrenNayar(const Spectrum& R, Float sigma)
@@ -79,27 +97,33 @@ private:
 	Float A, B;
 };
 
-inline Spectrum OrenNayar::f(const Vector3f& wo, const Vector3f& wi) const
+template<typename Spectrum>
+inline Spectrum OrenNayar<Spectrum>::f(const Vector3f& wo, const Vector3f& wi) const
 {
-	Float sinThetaI = SinTheta(wi);
-	Float sinThetaO = SinTheta(wo);
-	//Compute cosine term of Oren每Nayar model	536	
-	Float maxCos = 0;
-	if (sinThetaI > 1e-4 && sinThetaO > 1e-4) {
-		Float sinPhiI = SinPhi(wi), cosPhiI = CosPhi(wi);
-		Float sinPhiO = SinPhi(wo), cosPhiO = CosPhi(wo);
-		Float dCos = cosPhiI * cosPhiO + sinPhiI * sinPhiO;
-		maxCos = std::max((Float)0, dCos);
-	}
-	//Compute sine and tangent terms of Oren每Nayar model537	
-	Float sinAlpha, tanBeta;
-	if (AbsCosTheta(wi) > AbsCosTheta(wo)) {
-		sinAlpha = sinThetaO;
-		tanBeta = sinThetaI / AbsCosTheta(wi);
+	if constexpr (is_polarized_t<Spectrum>())
+	{
 	}
 	else {
-		sinAlpha = sinThetaI;
-		tanBeta = sinThetaO / AbsCosTheta(wo);
+		Float sinThetaI = SinTheta(wi);
+		Float sinThetaO = SinTheta(wo);
+		//Compute cosine term of Oren每Nayar model	536	
+		Float maxCos = 0;
+		if (sinThetaI > 1e-4 && sinThetaO > 1e-4) {
+			Float sinPhiI = SinPhi(wi), cosPhiI = CosPhi(wi);
+			Float sinPhiO = SinPhi(wo), cosPhiO = CosPhi(wo);
+			Float dCos = cosPhiI * cosPhiO + sinPhiI * sinPhiO;
+			maxCos = std::max((Float)0, dCos);
+		}
+		//Compute sine and tangent terms of Oren每Nayar model537	
+		Float sinAlpha, tanBeta;
+		if (AbsCosTheta(wi) > AbsCosTheta(wo)) {
+			sinAlpha = sinThetaO;
+			tanBeta = sinThetaI / AbsCosTheta(wi);
+		}
+		else {
+			sinAlpha = sinThetaI;
+			tanBeta = sinThetaO / AbsCosTheta(wo);
+		}
+		return R * InvPi * (A + B * maxCos * sinAlpha * tanBeta);
 	}
-	return R * InvPi * (A + B * maxCos * sinAlpha * tanBeta);
 }

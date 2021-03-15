@@ -1,13 +1,12 @@
 #pragma once
 #include "Integrator.h"
 #include "Tools/camera.h"
-
 class SPPMIntegrator : public Integrator {
 public:
-
-	SPPMIntegrator(std::shared_ptr<const Camera>& camera, int nIterations,
-		int photonsPerIteration, int maxDepth,
-		Float initialSearchRadius, int writeFrequency)
+	IMPORT_TYPES_L3
+		SPPMIntegrator(std::shared_ptr<const Camera>& camera, int nIterations,
+			int photonsPerIteration, int maxDepth,
+			Float initialSearchRadius, int writeFrequency)
 		: camera(camera),
 		initialSearchRadius(initialSearchRadius),
 		nIterations(nIterations),

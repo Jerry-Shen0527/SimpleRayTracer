@@ -51,8 +51,6 @@ Float FresnelSpecular::Pdf(const Vector3f& wo, const Vector3f& wi) const
 	return 0;
 }
 
-using UnpolarizedSpectrum = Float;
-
 Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType) const
 {
 	bool has_reflection = HasFlags(BSDF_REFLECTION);
@@ -63,7 +61,7 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 
 	UnpolarizedSpectrum reflectance = 1.f, transmittance = 1.f;
 
-	MuellerMatrix weight;
+	Spectrum weight;
 
 	Float m_eta = etaB / etaA;
 
@@ -84,13 +82,13 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 			return 0;
 	}
 
-	if (polarized) {
+	if constexpr (is_polarized_t<Spectrum>()) {
 		Vector3f wi_hat = mode == TransportMode::Radiance ? wo : *wi;
 		Vector3f wo_hat = mode == TransportMode::Radiance ? *wi : wo;
 
 		/* BSDF weights are Mueller matrices now. */
 		Float cos_theta_i_hat = CosTheta(wi_hat);
-		MuellerMatrix R_mat = specular_reflection(UnpolarizedSpectrum(cos_theta_i_hat), UnpolarizedSpectrum(m_eta)),
+		Spectrum R_mat = specular_reflection(UnpolarizedSpectrum(cos_theta_i_hat), UnpolarizedSpectrum(m_eta)),
 			T_mat = specular_transmission(UnpolarizedSpectrum(cos_theta_i_hat), UnpolarizedSpectrum(m_eta));
 
 		if (has_reflection && has_transmission) {
@@ -152,7 +150,7 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 			//Compute specular reflection for FresnelSpecular 817
 			if (sampledType)
 				*sampledType = BxDFType(BSDF_SPECULAR | BSDF_REFLECTION);
-			return F * R / AbsCosTheta(*wi);
+			return  R * F / AbsCosTheta(*wi);
 		}
 		else {
 			//Compute specular transmission for FresnelSpecular 817

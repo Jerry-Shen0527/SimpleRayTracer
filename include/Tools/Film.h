@@ -10,7 +10,8 @@
 #include "Spectrum/SampledSpectrum.h"
 
 struct FilmTilePixel {
-	Spectrum contribSum = 0.f;
+	IMPORT_TYPES_L1
+	UnpolarizedSpectrum contribSum = 0.f;
 	Float filterWeightSum = 0.f;
 };
 
@@ -19,6 +20,7 @@ class FilmTile;
 class Film {
 public:
 	// Film Public Methods
+	IMPORT_TYPES_L1
 	Film(const Point2i& resolution, const Bounds2f& cropWindow,
 		std::unique_ptr<Filter> filter, Float diagonal,
 		const std::string& filename, Float scale,
@@ -28,7 +30,7 @@ public:
 	std::unique_ptr<FilmTile> GetFilmTile(const Bounds2i& sampleBounds);
 	void MergeFilmTile(std::unique_ptr<FilmTile> tile);
 	void WriteImage(Float splatScale = 1, bool timeStamp = false);
-	void SetImage(const Spectrum* img) const;
+	void SetImage(const UnpolarizedSpectrum* img) const;
 	void AddSplat(const Point2f& p, Spectrum v);
 	void Clear();
 
@@ -68,6 +70,7 @@ private:
 
 class FilmTile {
 public:
+	using UnpolarizedSpectrum = Unpolarize<Spectrum>;
 	// FilmTile Public Methods
 	FilmTile(const Bounds2i& pixelBounds, const Vector2f& filterRadius,
 		const Float* filterTable, int filterTableSize,
@@ -81,7 +84,7 @@ public:
 		pixels = std::vector<FilmTilePixel>(std::max(0, pixelBounds.Volume()));
 	}
 
-	void AddSample(const Point2f& pFilm, Spectrum L, Float sampleWeight = 1.);
+	void AddSample(const Point2f& pFilm, UnpolarizedSpectrum L, Float sampleWeight = 1.);
 
 	FilmTilePixel& GetPixel(const Point2i& p);
 

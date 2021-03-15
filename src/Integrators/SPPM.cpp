@@ -10,7 +10,8 @@
 struct SPPMPixel {
 	//SPPMPixel Public Methods
 		//SPPMPixel Public Data 974
-	SPPMPixel() : M(0) {}
+	IMPORT_TYPES_L3
+		SPPMPixel() : M(0) {}
 
 	Float radius = 0;
 	Spectrum Ld;
@@ -53,7 +54,6 @@ inline std::unique_ptr<Distribution1D> ComputeLightPowerDistribution(
 inline unsigned int hash(const Point3i& p, int hashSize) {
 	return (unsigned int)((p.x() * 73856093) ^ (p.y() * 19349663) ^ (p.z() * 83492791)) % hashSize;
 }
-
 void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 {
 	//Initialize pixelBoundsand pixels array for SPPM 973
@@ -220,7 +220,6 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 			}, nPixels, 4096, benchmark);
 		std::cout << std::endl;
 
-
 		//	Trace photons and accumulate contributions 983
 		{
 			std::vector<MemoryArena> photonShootArenas(NumSystemCores());
@@ -351,7 +350,7 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 			int x0 = pixelBounds.pMin.x();
 			int x1 = pixelBounds.pMax.x();
 			uint64_t Np = (uint64_t)(iter + 1) * (uint64_t)photonsPerIteration;
-			std::unique_ptr<Spectrum[]> image(new Spectrum[pixelBounds.Volume()]);
+			std::unique_ptr<UnpolarizedSpectrum[]> image(new Spectrum[pixelBounds.Volume()]);
 			int offset = 0;
 			for (int y = pixelBounds.pMin.y(); y < pixelBounds.pMax.y(); ++y) {
 				for (int x = x0; x < x1; ++x) {
@@ -360,7 +359,7 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 						pixels[(y - pixelBounds.pMin.y()) * (x1 - x0) + (x - x0)];
 					Spectrum L = pixel.Ld / (iter + 1);
 					L += pixel.tau / (Np * Pi * pixel.radius * pixel.radius);
-					image[offset++] = L;
+					image[offset++] = unpolarize_v(L);
 				}
 			}
 			camera->film->SetImage(image.get());
@@ -372,7 +371,8 @@ void SPPMIntegrator::Render(const Scene& scene, bool benchmark)
 	ParallelCleanup();
 }
 
-bool SPPMIntegrator::ToGrid(const Point3f& p, const Bounds3f& bounds, const int gridRes[3], Point3i* pi)
+template<typename Spectrum>
+bool SPPMIntegrator<Spectrum>::ToGrid(const Point3f& p, const Bounds3f& bounds, const int gridRes[3], Point3i* pi)
 {
 	bool inBounds = true;
 	Vector3f pg = bounds.Offset(p);

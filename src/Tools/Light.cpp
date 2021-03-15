@@ -41,7 +41,7 @@ Spectrum DiffuseAreaLight::L(const Interaction& intr, const Vector3f& w) const
 
 Spectrum DiffuseAreaLight::Power() const
 {
-	return (twoSided ? 2 : 1) * Lemit * area * Pi;
+	return Lemit * (twoSided ? 2 : 1) * area * Pi;
 }
 
 Spectrum DiffuseAreaLight::Sample_Li(const Interaction& ref, const Point2f& u, Vector3f* wi, Float* pdf,

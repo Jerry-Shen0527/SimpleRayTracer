@@ -19,6 +19,7 @@ public:
 class GeometricPrimitive :public Primitive
 {
 public:
+	IMPORT_TYPES_L3
 	GeometricPrimitive(const std::shared_ptr<Shape>& shape,
 		const std::shared_ptr<Material>& material,
 		const std::shared_ptr<AreaLight>& areaLight);

@@ -5,6 +5,8 @@ template<typename T>
 struct Matrix4x4 {
 	Matrix4x4();
 
+	Matrix4x4(T val) :Matrix4x4() { *this = *this * val; }
+
 	Matrix4x4(T mat[4][4]);
 
 	Matrix4x4(T t00, T t01, T t02, T t03,
@@ -27,7 +29,7 @@ struct Matrix4x4 {
 		return false;
 	}
 
-	Matrix4x4 operator*(Float scalar)
+	Matrix4x4 operator*(T scalar) const
 	{
 		Matrix4x4 ret = *this;
 		for (int i = 0; i < 4; ++i)
@@ -37,14 +39,75 @@ struct Matrix4x4 {
 		return ret;
 	}
 
+	Matrix4x4 operator*=(const Matrix4x4& rhs)
+	{
+		Matrix4x4 ret = *this;
+		*this = Mul(*this, rhs);
+		return *this;
+	}
+
+	Matrix4x4 operator/(T scalar) const
+	{
+		Matrix4x4 ret = *this;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				ret.m[i][j] /= scalar;
+
+		return ret;
+	}
+
+	//Matrix4x4 operator*=(const Matrix4x4& rhs)
+	//{
+	//	Matrix4x4 ret = *this;
+	//	*this = Mul(*this, rhs);
+	//	return *this;
+	//}
+
+	bool IsBlack() const {
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				if (m[i][j].IsBlack()) return true;
+		return false;
+	}
+
 	Matrix4x4 operator-()
 	{
-		Matrix4x4 ret ;
+		Matrix4x4 ret;
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j)
 				ret.m[i][j] *= -m[i][j];
 
 		return ret;
+	}
+
+	Matrix4x4 operator+=(const Matrix4x4& rhs)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] += rhs.m[i][j];
+
+		return *this;
+	}
+
+	Matrix4x4 operator+(const Matrix4x4& rhs) const
+	{
+		Matrix4x4 ret = *this;
+		return ret += rhs;
+	}
+
+	Matrix4x4 operator-=(const Matrix4x4& rhs)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] -= rhs.m[i][j];
+
+		return *this;
+	}
+
+	Matrix4x4 operator-(const Matrix4x4& rhs) const
+	{
+		Matrix4x4 ret = *this;
+		return ret -= rhs;
 	}
 
 	static Matrix4x4 Mul(const Matrix4x4& m1, const Matrix4x4& m2) {
@@ -58,11 +121,11 @@ struct Matrix4x4 {
 		return r;
 	}
 
+	Float y() { return m[0][0].y(); }
+
 	T m[4][4];
 	template<typename T>
 	friend Matrix4x4 Inverse(const Matrix4x4&);
-
-	
 };
 template<typename T>
 Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)

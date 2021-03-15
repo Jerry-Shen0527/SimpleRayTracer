@@ -4,7 +4,7 @@
 
 #include "Integrator.h"
 
-class SamplerIntegrator : public Integrator {
+class SamplerIntegrator : public Integrator<Spectrum> {
 public:
 	SamplerIntegrator(std::shared_ptr<const Camera> camera,
 		std::shared_ptr<Sampler> sampler)

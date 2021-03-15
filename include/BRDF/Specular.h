@@ -2,7 +2,7 @@
 #include "BxDF.h"
 #include "Geometry/AnimatedTransform.h"
 
-class SpecularReflection : public BxDF {
+class SpecularReflection : public BxDF<Spectrum> {
 public:
 	SpecularReflection(const Spectrum& R, Fresnel* fresnel)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_SPECULAR)), R(R),
@@ -17,7 +17,7 @@ private:
 	const Fresnel* fresnel;
 };
 
-class SpecularTransmission : public BxDF {
+class SpecularTransmission : public BxDF<Spectrum> {
 public:
 	SpecularTransmission(const Spectrum& T, Float etaA, Float etaB,
 		TransportMode mode)
@@ -37,7 +37,7 @@ private:
 	const TransportMode mode;
 };
 
-class FresnelSpecular : public BxDF {
+class FresnelSpecular : public BxDF<Spectrum> {
 public:
 	//FresnelSpecular Public Methods 532
 	FresnelSpecular(const Spectrum& R, const Spectrum& T, Float etaA,

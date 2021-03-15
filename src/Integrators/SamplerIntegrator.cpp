@@ -44,7 +44,7 @@ void SamplerIntegrator::Render(const Scene& scene, bool benchmark)
 						L = Li(ray, scene, *tileSampler, arena);
 
 					//	Add camera ray¡¯s contribution to image 32
-					filmTile->AddSample(cameraSample.pFilm, L, rayWeight);
+					filmTile->AddSample(cameraSample.pFilm, unpolarize_v(L), rayWeight);
 
 					//	Free MemoryArena memory from computing image sample value 32
 					arena.Reset();

@@ -147,7 +147,7 @@ Spectrum PerspectiveCamera::We(const Ray& ray, Point2f* pRaster2) const
 	CameraToWorld.Interpolate(ray.time, &c2w);
 	Float cosTheta = Dot(ray.d, c2w(Vector3f(0, 0, 1)));
 	if (cosTheta <= 0)
-		return 0;
+		return 0.;
 	//	Map ray(p, ¦Ø) onto the raster grid 950
 	Point3f pFocus = ray((lensRadius > 0 ? focalDistance : 1) / cosTheta);
 	Point3f pRaster = Inverse(RasterToCamera)(Inverse(c2w)(pFocus));
@@ -157,7 +157,7 @@ Spectrum PerspectiveCamera::We(const Ray& ray, Point2f* pRaster2) const
 	Bounds2i sampleBounds = film->GetSampleBounds();
 	if (pRaster.x() < sampleBounds.pMin.x() || pRaster.x() >= sampleBounds.pMax.x() ||
 		pRaster.y() < sampleBounds.pMin.y() || pRaster.y() >= sampleBounds.pMax.y())
-		return 0;
+		return 0.;
 	//	Compute lens area of perspective camera 953
 	Float lensArea = lensRadius != 0 ? (Pi * lensRadius * lensRadius) : 1;
 	//	Return importance for point on image plane 953

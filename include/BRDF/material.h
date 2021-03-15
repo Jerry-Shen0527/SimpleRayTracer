@@ -5,14 +5,16 @@
 
 class Material {
 public:
-	// Material Interface
-	virtual void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
+		// Material Interface
+		virtual void ComputeScatteringFunctions(const Spectrum& spectrum, SurfaceInteraction* si, MemoryArena& arena, TransportMode mode, bool allowMultipleLobes) const = 0;
 	virtual ~Material() {}
 	static void Bump(const std::shared_ptr<Texture<Float>>& d, SurfaceInteraction* si);
 };
 
 class MatteMaterial : public Material {
 public:
+	IMPORT_TYPES_L3
+
 	// MatteMaterial Public Methods
 	MatteMaterial(const std::shared_ptr<Texture<Spectrum>>& Kd, const std::shared_ptr<Texture<Float>>& sigma, const std::shared_ptr<Texture<Float>>& bumpMap)
 		: Kd(Kd), sigma(sigma), bumpMap(bumpMap) {}
@@ -91,9 +93,10 @@ private:
 
 class MetalMaterial : public Material {
 public:
+	IMPORT_TYPES_L3
 	// MetalMaterial Public Methods
-	MetalMaterial(const std::shared_ptr<Texture<Spectrum>>& eta,
-		const std::shared_ptr<Texture<Spectrum>>& k,
+	MetalMaterial(const std::shared_ptr<Texture<UnpolarizedSpectrum>>& eta,
+		const std::shared_ptr<Texture<UnpolarizedSpectrum>>& k,
 		const std::shared_ptr<Texture<Float>>& rough,
 		const std::shared_ptr<Texture<Float>>& urough,
 		const std::shared_ptr<Texture<Float>>& vrough,

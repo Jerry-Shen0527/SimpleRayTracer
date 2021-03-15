@@ -17,12 +17,14 @@ inline bool IsDeltaLight(int flags)
 class Light
 {
 public:
+	IMPORT_TYPES_L3
+
 	Light(int flags, const Transform& LightToWorld, const MediumInterface& mediumInterface, int nSamples = 1)
 		: flags(flags), nSamples(std::max(1, nSamples)), mediumInterface(mediumInterface), LightToWorld(LightToWorld), WorldToLight(Inverse(LightToWorld)) {	}
 
 	virtual Spectrum Sample_Li(const Interaction& ref, const Point2f& u, Vector3f* wi, Float* pdf, VisibilityTester* vis) const = 0;
 	virtual Float Pdf_Li(const Interaction& ref, const Vector3f& wi) const = 0;
-	virtual Spectrum Le(const RayDifferential& r) const { return  Spectrum(0); }
+	virtual Spectrum Le(const RayDifferential& r) const { return  Spectrum(0.); }
 
 	virtual Spectrum Sample_Le(const Point2f& u1, const Point2f& u2, Float time, Ray* ray, Normal3f* nLight, Float* pdfPos, Float* pdfDir) const = 0;
 	virtual void Pdf_Le(const Ray& ray, const Normal3f& nLight, Float* pdfPos, Float* pdfDir) const = 0;
@@ -48,7 +50,7 @@ public:
 	const Interaction& P1() const { return p1; }
 	bool Unoccluded(const Scene& scene) const;
 
-	virtual Spectrum Le(const RayDifferential& ray) const { return Spectrum(0.f); }
+	virtual Spectrum Le(const RayDifferential& ray) const { return Spectrum(0.); }
 
 	Spectrum Tr(const Scene& scene, Sampler& sampler) const;
 private:

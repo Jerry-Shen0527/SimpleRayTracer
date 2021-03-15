@@ -8,6 +8,7 @@
 class Camera {
 public:
 	// Camera Interface
+	IMPORT_TYPES_L2
 	Camera(const AnimatedTransform& CameraToWorld, Float shutterOpen,
 		Float shutterClose, Film* film, const Medium* medium);
 	virtual ~Camera() {};
@@ -64,6 +65,7 @@ protected:
 
 class PerspectiveCamera : public ProjectiveCamera {
 public:
+
 	// PerspectiveCamera Public Methods
 	PerspectiveCamera(const AnimatedTransform& CameraToWorld,
 		const Bounds2f& screenWindow, Float shutterOpen,

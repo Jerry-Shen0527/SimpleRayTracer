@@ -32,7 +32,7 @@ private:
 // Medium Declarations
 template<typename Spectrum>
 class Medium {
-	IMPORT_TYPES
+	IMPORT_TYPES_L1
 
 public:
 	// Medium Interface
@@ -46,7 +46,8 @@ public:
 // MediumInterface Declarations
 template<typename Spectrum>
 struct MediumInterface {
-	IMPORT_TYPES
+	using UnpolarizedSpectrum = Unpolarize<Spectrum>; using BxDF = BxDF<Spectrum>; using Medium=Medium<Spectrum>; using BSDF=BSDF<Spectrum>;
+public:
 		MediumInterface() : inside(nullptr), outside(nullptr) {}
 	// MediumInterface Public Methods
 	MediumInterface(const Medium* medium) : inside(medium), outside(medium) {}

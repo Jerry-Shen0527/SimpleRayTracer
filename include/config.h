@@ -10,8 +10,9 @@ enum class TransportMode { Radiance, Importance };
 
 template<typename T>
 using MuellerMatrix = Matrix4x4<T>;
-
 using Spectrum = MuellerMatrix<SampledSpectrum>;
+using UnpolarizedSpectrum = Unpolarize<Spectrum>;
+
 
 class AnimatedTransform;
 class RayDifferential;

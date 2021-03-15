@@ -5,7 +5,8 @@
 #include <complex>
 class MicrofacetDistribution;
 
-inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
+template<typename Spectrum>
+inline Spectrum FrDielectric(Float cosThetaI, Spectrum etaI, Spectrum etaT) {
 	cosThetaI = Clamp(cosThetaI, -1, 1);
 
 	bool entering = cosThetaI > 0.f;
@@ -14,17 +15,17 @@ inline Float FrDielectric(Float cosThetaI, Float etaI, Float etaT) {
 		cosThetaI = std::abs(cosThetaI);
 	}
 
-	Float sinThetaI = std::sqrt(std::max((Float)0, 1 - cosThetaI * cosThetaI));
-	Float sinThetaT = etaI / etaT * sinThetaI;
+	Spectrum sinThetaI = std::sqrt(std::max((Spectrum)0, 1 - cosThetaI * cosThetaI));
+	Spectrum sinThetaT = etaI / etaT * sinThetaI;
 
-	Float cosThetaT = std::sqrt(std::max((Float)0, 1 - sinThetaT * sinThetaT));
+	Spectrum cosThetaT = std::sqrt(std::max((Spectrum)0, 1 - sinThetaT * sinThetaT));
 
 	if (sinThetaT >= 1)
 		return 1;
 
-	Float Rparl = ((etaT * cosThetaI) - (etaI * cosThetaT)) /
+	Spectrum Rparl = ((etaT * cosThetaI) - (etaI * cosThetaT)) /
 		((etaT * cosThetaI) + (etaI * cosThetaT));
-	Float Rperp = ((etaI * cosThetaI) - (etaT * cosThetaT)) /
+	Spectrum Rperp = ((etaI * cosThetaI) - (etaT * cosThetaT)) /
 		((etaI * cosThetaI) + (etaT * cosThetaT));
 	return (Rparl * Rparl + Rperp * Rperp) / 2;
 }
@@ -33,6 +34,7 @@ inline Vector3f Reflect(const Vector3f& wo, const Vector3f& n) {
 	return -wo + 2 * Dot(wo, n) * n;
 }
 
+template<typename Spectrum>
 inline Spectrum FrConductor(Float cosThetaI, const Spectrum& etaI, const Spectrum& etaT, const Spectrum& k)
 {
 	cosThetaI = Clamp(cosThetaI, -1, 1);
@@ -90,11 +92,11 @@ public:
 	}
 
 	Spectrum FresnelDielectric::Evaluate(Float cosThetaI) const {
-		return FrDielectric(cosThetaI, etaI[0], etaT[0]);
+		return FrDielectric(cosThetaI, etaI, etaT);
 	}
 };
 
-class FresnelBlend : public BxDF {
+class FresnelBlend : public BxDF<Spectrum> {
 public:
 	FresnelBlend::FresnelBlend(const Spectrum& Rd, const Spectrum& Rs,
 		shared_ptr<MicrofacetDistribution> distribution)
@@ -103,7 +105,7 @@ public:
 
 	Spectrum SchlickFresnel(Float cosTheta) const {
 		auto pow5 = [](Float v) { return (v * v) * (v * v) * v; };
-		return Rs + pow5(1 - cosTheta) * (Spectrum(1.) - Rs);
+		return Rs + (Spectrum(1.) - Rs) * pow5(1 - cosTheta);
 	}
 
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const;

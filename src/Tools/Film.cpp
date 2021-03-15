@@ -144,7 +144,7 @@ void Film::WriteImage(Float splatScale, bool timeStamp)
 	}
 }
 
-void Film::SetImage(const Spectrum* img) const
+void Film::SetImage(const UnpolarizedSpectrum* img) const
 {
 	int nPixels = croppedPixelBounds.Volume();
 	for (int i = 0; i < nPixels; ++i) {
@@ -155,7 +155,7 @@ void Film::SetImage(const Spectrum* img) const
 	}
 }
 
-void FilmTile::AddSample(const Point2f& pFilm, Spectrum L, Float sampleWeight)
+void FilmTile::AddSample(const Point2f& pFilm, UnpolarizedSpectrum L, Float sampleWeight)
 {
 	if (L.y() > maxSampleLuminance)
 		L *= maxSampleLuminance / L.y();

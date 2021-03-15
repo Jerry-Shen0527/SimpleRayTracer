@@ -106,7 +106,7 @@ inline Float TrowbridgeReitzDistribution::D(const Vector3f& wh) const
 	return 1 / (Pi * alphax * alphay * cos4Theta * (1 + e) * (1 + e));
 }
 
-class MicrofacetReflection : public BxDF {
+class MicrofacetReflection : public BxDF<Spectrum> {
 public:
 	// MicrofacetReflection Public Methods
 	MicrofacetReflection(const Spectrum& R,
@@ -128,7 +128,7 @@ private:
 	const TransportMode mode;
 };
 
-class MicrofacetTransmission : public BxDF {
+class MicrofacetTransmission : public BxDF<Spectrum> {
 public:
 	// MicrofacetTransmission Public Methods
 	MicrofacetTransmission(const Spectrum& T,

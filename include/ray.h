@@ -2,15 +2,15 @@
 #define RAY_H
 
 #include "Tools/Math/EFloat.h"
-
-class Medium;
+#include <Geometry/Vector3.h>
 
 class Ray {
 public:
+	IMPORT_TYPES_L2
+	
 	Ray() {}
 
-	Ray(const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float time = 0.f, const Medium* medium = nullptr)
-		: o(o), d(d), tMax(tMax), time(time), medium(medium) { }
+	Ray(const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float time = 0.f, const Medium* medium = nullptr)		: o(o), d(d), tMax(tMax), time(time), medium(medium) { }
 
 	Point3f operator()(Float t) const { return o + d * t; }
 

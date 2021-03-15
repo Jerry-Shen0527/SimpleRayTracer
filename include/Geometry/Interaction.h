@@ -9,6 +9,8 @@ const Float ShadowEpsilon = 0.0001f;
 class Interaction
 {
 public:
+	IMPORT_TYPES_L3
+
 	Interaction() {}
 	Interaction(const Point3f& p, const Normal3f& n, const Vector3f& pError, const Vector3f& r_in, Float time, const MediumInterface& mediumInterface)
 		: p(p), pError(pError), wo(r_in), n(n), time(time), mediumInterface(mediumInterface)

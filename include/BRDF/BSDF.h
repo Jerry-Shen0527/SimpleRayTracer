@@ -6,9 +6,9 @@ template<typename Spectrum>
 class BSDF
 {
 public:
-	IMPORT_TYPES
+	IMPORT_TYPES_L1
 
-		BSDF(const SurfaceInteraction& si, Float eta = 1) :eta(eta), ns(si.shading.n), ng(si.n), ss(Normalize(si.shading.dpdu)), ts(Cross(ns, ss)) { }
+	BSDF(const SurfaceInteraction& si, Float eta = 1) :eta(eta), ns(si.shading.n), ng(si.n), ss(Normalize(si.shading.dpdu)), ts(Cross(ns, ss)) { }
 
 	void Add(BxDF* b) {
 		assert(nBxDFs < MaxBxDFs);

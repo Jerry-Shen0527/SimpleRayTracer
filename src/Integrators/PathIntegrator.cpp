@@ -7,7 +7,6 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 	int depth) const
 {
 	Spectrum L(0.f), beta(1.f);
-	beta.mueller_spectrum = linear_polarizer_slant(1);
 	RayDifferential ray(r);
 	bool specularBounce = false;
 
@@ -19,28 +18,16 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 		SurfaceInteraction isect;
 		bool foundIntersection = scene.Intersect(ray, &isect);
 		//	Possibly add emitted light at intersection 877
-		if (polarized)
-		{
-			if (bounces == 0 || specularBounce) {
-				//Add emitted light at path vertex or from the environment 877
-				if (foundIntersection)
-					L += beta.mueller_spectrum.m[0][0] * beta * isect.Le(-ray.d);
-				else
-					for (const auto& light : scene.lights)
-						L += beta.mueller_spectrum.m[0][0] * beta * light->Le(ray);
-			}
+
+		if (bounces == 0 || specularBounce) {
+			//Add emitted light at path vertex or from the environment 877
+			if (foundIntersection)
+				L += beta * isect.Le(-ray.d);
+			else
+				for (const auto& light : scene.lights)
+					L += beta * light->Le(ray);
 		}
-		else
-		{
-			if (bounces == 0 || specularBounce) {
-				//Add emitted light at path vertex or from the environment 877
-				if (foundIntersection)
-					L += beta * isect.Le(-ray.d);
-				else
-					for (const auto& light : scene.lights)
-						L += beta * light->Le(ray);
-			}
-		}
+
 		//	Terminate path if ray escaped or maxDepth was reached 877
 		if (!foundIntersection || bounces >= maxDepth)
 			break;
@@ -60,15 +47,8 @@ Spectrum PathIntegrator::Li(const RayDifferential& r, const Scene& scene, Sample
 		BxDFType flags;
 		Spectrum f = isect.bsdf->Sample_f(wo, &wi, sampler.Get2D(), &pdf, BSDF_ALL, &flags);
 
-		beta.mueller_spectrum = beta.mueller_spectrum * f.mueller_spectrum;
-		if (polarized)
-		{
-			L += beta * beta.mueller_spectrum.m[0][0] * UniformSampleOneLight(isect, scene, arena, sampler);
-		}
-		else
-		{
-			L += beta * UniformSampleOneLight(isect, scene, arena, sampler);
-		}
+		L += beta * UniformSampleOneLight(isect, scene, arena, sampler);
+
 		if (f.IsBlack() || pdf == 0.f)
 			break;
 		beta *= f * AbsDot(wi, isect.shading.n) / pdf;

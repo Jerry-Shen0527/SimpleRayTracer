@@ -4,8 +4,6 @@
 #include "Math/matrix.h"
 #include <Tools/Spectrum/SampledSpectrum.h>
 
-
-
 template<typename T>
 inline MuellerMatrix<T> linear_polarizer(Float value = 1.f) {
 	T a = value * .5f;
@@ -117,7 +115,7 @@ inline MuellerMatrix<T> specular_reflection(T cos_theta_i, Eta eta) {
 	);
 }
 template<typename Float, typename Eta>
-inline MuellerMatrix specular_transmission(Float cos_theta_i, Float eta) {
+inline MuellerMatrix<Float> specular_transmission(Float cos_theta_i, Float eta) {
 	std::complex<Float> a_s, a_p;
 	Float cos_theta_t, eta_it, eta_ti;
 
@@ -144,9 +142,9 @@ inline MuellerMatrix specular_transmission(Float cos_theta_i, Float eta) {
 		0, 0, 0, c
 	);
 }
-
-inline MuellerMatrix reverse(const MuellerMatrix& M) {
-	return MuellerMatrix::Mul(MuellerMatrix(
+template<typename T>
+inline MuellerMatrix<T> reverse(const MuellerMatrix<T>& M) {
+	return MuellerMatrix<T>::Mul(MuellerMatrix(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, -1, 0,
@@ -160,8 +158,9 @@ inline Vector3f stokes_basis(const Vector3f& w) {
 	return s;
 }
 
-inline MuellerMatrix absorber(Float value) {
-	return MuellerMatrix(
+template<typename T>
+inline MuellerMatrix<T> absorber(Float value) {
+	return MuellerMatrix<T>(
 		value, 0, 0, 0,
 		0, value, 0, 0,
 		0, 0, value, 0,

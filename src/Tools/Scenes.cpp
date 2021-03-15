@@ -49,9 +49,9 @@ int light_indices[] =
 
 Scene CreateCornell(MemoryArena& arena)
 {
-	SampledSpectrum::Init();
-
-	auto t = ARENA_ALLOC(arena, Transform);
+	UnpolarizedSpectrum::Init();
+	IMPORT_TYPES_L3
+		auto t = ARENA_ALLOC(arena, Transform);
 	auto wto = ARENA_ALLOC(arena, Transform);
 	*t = Transform();
 	*wto = Inverse(*t);
@@ -70,9 +70,9 @@ Scene CreateCornell(MemoryArena& arena)
 
 	auto Zero = make_shared<ConstantTexture<Float>>(0);
 
-	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red, SpectrumType::Reflectance));
-	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green, SpectrumType::Reflectance));
-	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
+	auto Red = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(red, SpectrumType::Reflectance));
+	auto Green = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(green, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(white, SpectrumType::Reflectance));
 
 	auto red_material = make_shared<MatteMaterial>(Red, Zero, nullptr);
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
@@ -146,7 +146,7 @@ Float glass_eta[] = { 1.6479,1.641,1.6347,1.629,1.6238,1.6191,1.6147,1.6107,1.60
 
 Scene CreateCornellGold(MemoryArena& arena)
 {
-	SampledSpectrum::Init();
+	UnpolarizedSpectrum::Init();
 
 	auto t = ARENA_ALLOC(arena, Transform);
 	auto wto = ARENA_ALLOC(arena, Transform);
@@ -167,18 +167,18 @@ Scene CreateCornellGold(MemoryArena& arena)
 
 	auto Zero = make_shared<ConstantTexture<Float>>(0);
 
-	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red, SpectrumType::Reflectance));
-	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green, SpectrumType::Reflectance));
-	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
+	auto Red = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(red, SpectrumType::Reflectance));
+	auto Green = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(green, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(white, SpectrumType::Reflectance));
 
 	auto red_material = make_shared<MatteMaterial>(Red, Zero, nullptr);
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
 	auto green_material = make_shared<MatteMaterial>(Green, Zero, nullptr);
 
-	auto One = make_shared<ConstantTexture<Spectrum>>(Spectrum(1.0));
+	auto One = make_shared<ConstantTexture<UnpolarizedSpectrum>>(UnpolarizedSpectrum(1.0));
 
-	auto gold_material = make_shared<MetalMaterial>(make_shared<ConstantTexture<Spectrum>>(Spectrum::FromSampled(gold_lambda, gold_eta, 111)), make_shared<ConstantTexture<Spectrum>>(Spectrum::FromSampled(gold_lambda, gold_k, 33)), make_shared<ConstantTexture<float>>(0.0), nullptr, nullptr, nullptr, false);
-	//auto gold_material = make_shared<MetalMaterial>(make_shared<ConstantTexture<Spectrum>>(Spectrum::FromSampled(glass_lambda, glass_eta, 230)), make_shared<ConstantTexture<Spectrum>>(Spectrum(0.f)), make_shared<ConstantTexture<float>>(0.0), nullptr, nullptr, nullptr, false);
+	auto gold_material = make_shared<MetalMaterial>(make_shared<ConstantTexture<UnpolarizedSpectrum>>(UnpolarizedSpectrum::FromSampled(gold_lambda, gold_eta, 111)), make_shared<ConstantTexture<UnpolarizedSpectrum>>(UnpolarizedSpectrum::FromSampled(gold_lambda, gold_k, 33)), make_shared<ConstantTexture<float>>(0.0), nullptr, nullptr, nullptr, false);
+	//auto gold_material = make_shared<MetalMaterial>(make_shared<ConstantTexture<UnpolarizedSpectrum>>(UnpolarizedSpectrum::FromSampled(glass_lambda, glass_eta, 230)), make_shared<ConstantTexture<UnpolarizedSpectrum>>(Spectrum(0.f)), make_shared<ConstantTexture<float>>(0.0), nullptr, nullptr, nullptr, false);
 
 	vector<shared_ptr<Light>> lights;
 
@@ -186,7 +186,7 @@ Scene CreateCornellGold(MemoryArena& arena)
 
 	for (auto light_tri : light_mesh)
 	{
-		auto light_ptr = make_shared<DiffuseAreaLight>(*t_light, MediumInterface(), white_light, 1, light_tri);
+		auto light_ptr = make_shared<DiffuseAreaLight>(*t_light, MediumInterface<Spectrum>(), Spectrum(white_light), 1, light_tri);
 		lights.push_back(light_ptr);
 		primitives.push_back(make_shared<GeometricPrimitive>(light_tri, white_material, light_ptr));
 	}
@@ -240,7 +240,7 @@ Scene CreateCornellGold(MemoryArena& arena)
 
 Scene CreateCornellWithBalls(MemoryArena& arena)
 {
-	SampledSpectrum::Init();
+	UnpolarizedSpectrum::Init();
 
 	auto t = ARENA_ALLOC(arena, Transform);
 	auto wto = ARENA_ALLOC(arena, Transform);
@@ -260,9 +260,9 @@ Scene CreateCornellWithBalls(MemoryArena& arena)
 
 	auto Zero = make_shared<ConstantTexture<Float>>(0);
 
-	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red, SpectrumType::Reflectance));
-	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green, SpectrumType::Reflectance));
-	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
+	auto Red = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(red, SpectrumType::Reflectance));
+	auto Green = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(green, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(white, SpectrumType::Reflectance));
 
 	auto red_material = make_shared<MatteMaterial>(Red, Zero, nullptr);
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
@@ -277,7 +277,7 @@ Scene CreateCornellWithBalls(MemoryArena& arena)
 
 	for (auto light_tri : light_mesh)
 	{
-		auto light_ptr = make_shared<DiffuseAreaLight>(*t_light, MediumInterface(), white_light, 1, light_tri);
+		auto light_ptr = make_shared<DiffuseAreaLight>(*t_light, MediumInterface<Spectrum>(), white_light, 1, light_tri);
 		lights.push_back(light_ptr);
 		primitives.push_back(make_shared<GeometricPrimitive>(light_tri, white_material, light_ptr));
 	}
@@ -363,7 +363,7 @@ int prism_idx[] =
 
 Scene CreatePhysicalGlass(MemoryArena& arena)
 {
-	SampledSpectrum::Init();
+	UnpolarizedSpectrum::Init();
 
 	auto t = ARENA_ALLOC(arena, Transform);
 	auto wto = ARENA_ALLOC(arena, Transform);
@@ -385,10 +385,10 @@ Scene CreatePhysicalGlass(MemoryArena& arena)
 	vector<shared_ptr<Primitive>> primitives;
 
 	auto Zero = make_shared<ConstantTexture<Float>>(0);
-	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(white, SpectrumType::Reflectance));
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
 
-	auto glass_eta_spectrum = Spectrum::FromSampled(glass_lambda, glass_eta, 230);
+	auto glass_eta_spectrum = UnpolarizedSpectrum::FromSampled(glass_lambda, glass_eta, 230);
 
 	auto One = make_shared<ConstantTexture<Spectrum>>(Spectrum(1.0));
 	auto glass_material = make_shared<PhysicalGlassMaterial>(One, One, make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<Spectrum>>(glass_eta_spectrum), nullptr, false, 1);
@@ -436,7 +436,7 @@ Scene CreatePhysicalGlass(MemoryArena& arena)
 
 Scene CreateCornellPolarized(MemoryArena& arena)
 {
-	SampledSpectrum::Init();
+	UnpolarizedSpectrum::Init();
 
 	auto t = ARENA_ALLOC(arena, Transform);
 	auto wto = ARENA_ALLOC(arena, Transform);
@@ -456,9 +456,9 @@ Scene CreateCornellPolarized(MemoryArena& arena)
 
 	auto Zero = make_shared<ConstantTexture<Float>>(0);
 
-	auto Red = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(red, SpectrumType::Reflectance));
-	auto Green = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(green, SpectrumType::Reflectance));
-	auto White = make_shared<ConstantTexture<Spectrum>>(Spectrum::FromRGB(white, SpectrumType::Reflectance));
+	auto Red = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(red, SpectrumType::Reflectance));
+	auto Green = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(green, SpectrumType::Reflectance));
+	auto White = make_shared<ConstantTexture<Spectrum>>(UnpolarizedSpectrum::FromRGB(white, SpectrumType::Reflectance));
 
 	auto red_material = make_shared<MatteMaterial>(Red, Zero, nullptr);
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
@@ -473,11 +473,11 @@ Scene CreateCornellPolarized(MemoryArena& arena)
 
 	for (auto light_tri : light_mesh)
 	{
-		auto light_ptr = make_shared<DiffuseAreaLight>(*t_light, MediumInterface(), white_light, 1, light_tri);
+		auto light_ptr = make_shared<DiffuseAreaLight>(*t_light, MediumInterface<Spectrum>(), white_light, 1, light_tri);
 		lights.push_back(light_ptr);
 		primitives.push_back(make_shared<GeometricPrimitive>(light_tri, white_material, light_ptr));
 	}
-	auto gold_material = make_shared<MetalMaterial>(make_shared<ConstantTexture<Spectrum>>(Spectrum::FromSampled(gold_lambda, gold_eta, 111)), make_shared<ConstantTexture<Spectrum>>(Spectrum::FromSampled(gold_lambda, gold_k, 33)), make_shared<ConstantTexture<float>>(0.0), nullptr, nullptr, nullptr, false);
+	auto gold_material = make_shared<MetalMaterial>(make_shared<ConstantTexture<UnpolarizedSpectrum>>(UnpolarizedSpectrum::FromSampled(gold_lambda, gold_eta, 111)), make_shared<ConstantTexture<UnpolarizedSpectrum>>(UnpolarizedSpectrum::FromSampled(gold_lambda, gold_k, 33)), make_shared<ConstantTexture<float>>(0.0), nullptr, nullptr, nullptr, false);
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[0], green_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[1], green_material, nullptr));
 	primitives.push_back(make_shared<GeometricPrimitive>(mesh[2], white_material, nullptr));
@@ -517,11 +517,10 @@ Scene CreateCornellPolarized(MemoryArena& arena)
 
 	for (auto&& tri : prism_mesh)
 	{
-		primitives.push_back(make_shared<GeometricPrimitive>(tri,glass_material, nullptr));
+		primitives.push_back(make_shared<GeometricPrimitive>(tri, glass_material, nullptr));
 	}
 
 	//primitives.push_back(make_shared<GeometricPrimitive>(sphere, glass_material, nullptr));
-
 
 	auto bvh = make_shared<BVHAccel>(primitives, 3, SplitMethod::Middle);
 

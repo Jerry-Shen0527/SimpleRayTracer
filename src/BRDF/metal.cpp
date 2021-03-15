@@ -3,8 +3,6 @@
 #include <Tools/Mueller.h>
 #include <Tools/Polarized.h>
 
-
-
 #include "BRDF/Specular.h"
 #include "Tools/Math/Sampling.h"
 
@@ -114,17 +112,13 @@ static Vector3f BeckmannSample(const Vector3f& wi, Float alpha_x, Float alpha_y,
 Spectrum FresnelBlend::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	auto pow5 = [](Float v) { return (v * v) * (v * v) * v; };
-	Spectrum diffuse = (28.f / (23.f * Pi)) * Rd *
-		(Spectrum(1.f) - Rs) *
+	Spectrum diffuse = Rd * (28.f / (23.f * Pi)) * (Spectrum(1.f) - Rs) *
 		(1 - pow5(1 - .5f * AbsCosTheta(wi))) *
 		(1 - pow5(1 - .5f * AbsCosTheta(wo)));
 	Vector3f wh = wi + wo;
 	if (wh.x() == 0 && wh.y() == 0 && wh.z() == 0) return Spectrum(0);
 	wh = wh.Normalize();
-	Spectrum specular = distribution->D(wh) /
-		(4 * abs(Dot(wi, wh)) *
-			std::max(AbsCosTheta(wi), AbsCosTheta(wo))) *
-		SchlickFresnel(Dot(wi, wh));
+	Spectrum specular = SchlickFresnel(Dot(wi, wh)) * (distribution->D(wh) / (4 * abs(Dot(wi, wh)) * std::max(AbsCosTheta(wi), AbsCosTheta(wo))));
 	return diffuse + specular;
 }
 
@@ -286,7 +280,6 @@ Vector3f TrowbridgeReitzDistribution::Sample_wh(const Vector3f& wo, const Point2
 	return wh;
 }
 
-
 Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 {
 	using UnpolarizedSpectrum = Unpolarize<Spectrum>;
@@ -298,29 +291,29 @@ Spectrum MicrofacetReflection::f(const Vector3f& wo, const Vector3f& wi) const
 	wh = wh.Normalize();
 	Spectrum F = fresnel->Evaluate(Dot(wi, wh));
 
-	MuellerMatrix value;
-	if (polarized)
-	{
-		Vector3f wi_hat = mode == TransportMode::Radiance ? wo : wi,
-			wo_hat = mode == TransportMode::Radiance ? wi : wo;
-		// Mueller matrix for specular reflection.
-		value = specular_reflection(UnpolarizedSpectrum(CosTheta(wi_hat)), std::complex<Float>(fresnel->etaT[10], fresnel->k[10]));
+	//Spectrum value;
+	//if (polarized)
+	//{
+	//	Vector3f wi_hat = mode == TransportMode::Radiance ? wo : wi,
+	//		wo_hat = mode == TransportMode::Radiance ? wi : wo;
+	//	// Mueller matrix for specular reflection.
+	//	value = specular_reflection(UnpolarizedSpectrum(CosTheta(wi_hat)), std::complex<Float>(fresnel->etaT[10], fresnel->k[10]));
 
-		value = reverse(value);
+	//	value = reverse(value);
 
-		Vector3f n(0, 0, 1);
-		Vector3f s_axis_in = Normalize(Cross(n, -wi_hat)),
-			p_axis_in = Normalize(Cross(-wi_hat, s_axis_in)),
-			s_axis_out = Normalize(Cross(n, wo_hat)),
-			p_axis_out = Normalize(Cross(wo_hat, s_axis_out));
+	//	Vector3f n(0, 0, 1);
+	//	Vector3f s_axis_in = Normalize(Cross(n, -wi_hat)),
+	//		p_axis_in = Normalize(Cross(-wi_hat, s_axis_in)),
+	//		s_axis_out = Normalize(Cross(n, wo_hat)),
+	//		p_axis_out = Normalize(Cross(wo_hat, s_axis_out));
 
-		value = rotate_mueller_basis(value,
-			-wi_hat, p_axis_in, stokes_basis(-wi_hat),
-			wo_hat, p_axis_out, stokes_basis(wo_hat));
-		value = value * absorber(1);
-	}
+	//	value = rotate_mueller_basis(value,
+	//		-wi_hat, p_axis_in, stokes_basis(-wi_hat),
+	//		wo_hat, p_axis_out, stokes_basis(wo_hat));
+	//	value = value * absorber(1);
+	//}
 	auto ret = R * distribution->D(wh) * distribution->G(wo, wi) * F / (4 * cosThetaI * cosThetaO);
-	ret.mueller_spectrum = value;
+	//ret.mueller_spectrum = value;
 	return ret;
 }
 
@@ -328,48 +321,48 @@ Spectrum MicrofacetReflection::Sample_f(const Vector3f& wo, Vector3f* wi, const 
 	BxDFType* sampledType) const
 {
 	// Sample microfacet orientation $\wh$ and reflected direction $\wi$
-	if (wo.z() == 0) return 0.;
+	if (wo.z() == 0) return Spectrum(0.);
 	Vector3f wh = distribution->Sample_wh(wo, u);
-	if (Dot(wo, wh) < 0) return 0.;   // Should be rare
+	if (Dot(wo, wh) < 0) return  Spectrum(0.);   // Should be rare
 	*wi = Reflect(wo, wh);
 	if (!SameHemisphere(wo, *wi)) return Spectrum(0.f);
 
 	// Compute PDF of _wi_ for microfacet reflection
 	*pdf = distribution->Pdf(wo, wh) / (4 * Dot(wo, wh));
-	MuellerMatrix value;
+	//MuellerMatrix value;
 
-	if (polarized)
-	{
-		/* Due to lack of reciprocity in polarization-aware pBRDFs, they are
-   always evaluated w.r.t. the actual light propagation direction, no
-   matter the transport mode. In the following, 'wi_hat' is toward the
-   light source. */
-		Vector3f wi_hat = mode == TransportMode::Radiance ? wo : *wi,
-			wo_hat = mode == TransportMode::Radiance ? *wi : wo;
-		// Mueller matrix for specular reflection.
-		value = specular_reflection(UnpolarizedSpectrum(CosTheta(wi_hat)), std::complex<Float>(fresnel->etaT[10], fresnel->k[10]));
+	//if (polarized)
+	//{
+	//	/* Due to lack of reciprocity in polarization-aware pBRDFs, they are
+ //  always evaluated w.r.t. the actual light propagation direction, no
+ //  matter the transport mode. In the following, 'wi_hat' is toward the
+ //  light source. */
+	//	Vector3f wi_hat = mode == TransportMode::Radiance ? wo : *wi,
+	//		wo_hat = mode == TransportMode::Radiance ? *wi : wo;
+	//	// Mueller matrix for specular reflection.
+	//	value = specular_reflection(UnpolarizedSpectrum(CosTheta(wi_hat)), std::complex<Float>(fresnel->etaT[10], fresnel->k[10]));
 
-		/* Apply frame reflection, according to "Stellar Polarimetry" by
-		   David Clarke, Appendix A.2 (A26) */
-		value = reverse(value);
+	//	/* Apply frame reflection, according to "Stellar Polarimetry" by
+	//	   David Clarke, Appendix A.2 (A26) */
+	//	value = reverse(value);
 
-		/* The Stokes reference frame vector of this matrix lies in the plane
-		   of reflection. */
-		Vector3f n(0, 0, 1);
-		Vector3f s_axis_in = Normalize(Cross(n, -wi_hat)),
-			p_axis_in = Normalize(Cross(-wi_hat, s_axis_in)),
-			s_axis_out = Normalize(Cross(n, wo_hat)),
-			p_axis_out = Normalize(Cross(wo_hat, s_axis_out));
+	//	/* The Stokes reference frame vector of this matrix lies in the plane
+	//	   of reflection. */
+	//	Vector3f n(0, 0, 1);
+	//	Vector3f s_axis_in = Normalize(Cross(n, -wi_hat)),
+	//		p_axis_in = Normalize(Cross(-wi_hat, s_axis_in)),
+	//		s_axis_out = Normalize(Cross(n, wo_hat)),
+	//		p_axis_out = Normalize(Cross(wo_hat, s_axis_out));
 
-		/* Rotate in/out reference vector of M s.t. it aligns with the implicit
-		   Stokes bases of -wi_hat & wo_hat. */
-		value = rotate_mueller_basis(value,
-			-wi_hat, p_axis_in, stokes_basis(-wi_hat),
-			wo_hat, p_axis_out, stokes_basis(wo_hat));
-		value = value * absorber(1);
-	}
+	//	/* Rotate in/out reference vector of M s.t. it aligns with the implicit
+	//	   Stokes bases of -wi_hat & wo_hat. */
+	//	value = rotate_mueller_basis(value,
+	//		-wi_hat, p_axis_in, stokes_basis(-wi_hat),
+	//		wo_hat, p_axis_out, stokes_basis(wo_hat));
+	//	value = value * absorber(1);
+	//}
 	auto ret = f(wo, *wi);
-	ret.mueller_spectrum = value;
+	//ret.mueller_spectrum = value;
 	return ret;
 }
 
@@ -410,9 +403,9 @@ Spectrum MicrofacetTransmission::f(const Vector3f& wo, const Vector3f& wi) const
 Spectrum MicrofacetTransmission::Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& u, Float* pdf,
 	BxDFType* sampledType) const
 {
-	if (wo.z() == 0) return 0.;
+	if (wo.z() == 0) return Spectrum(0.);
 	Vector3f wh = distribution->Sample_wh(wo, u);
-	if (Dot(wo, wh) < 0) return 0.;  // Should be rare
+	if (Dot(wo, wh) < 0) return Spectrum(0.);  // Should be rare
 
 	Float eta = CosTheta(wo) > 0 ? (etaA / etaB) : (etaB / etaA);
 	if (!Refract(wo, (Normal3f)wh, eta, wi)) return 0;

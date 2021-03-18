@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "Geometry/Vector3.h"
-static const int sampledLambdaStart = 400;
-static const int sampledLambdaEnd = 700;
+static const Float sampledLambdaStart = 400;
+static const Float sampledLambdaEnd = 700;
 static  const int nSpectralSamples = 30;
 static const Float CIE_Y_integral = 106.856895;
 
@@ -49,6 +49,8 @@ private:
 	static SampledSpectrum rgbIllum2SpectRed, rgbIllum2SpectGreen;
 	static SampledSpectrum rgbIllum2SpectBlue;
 };
+
+
 
 inline float SampledSpectrum::AverageSpectrumSamples(const float* lambda, const float* vals, int n, float lambdaStart,
 	float lambdaEnd)

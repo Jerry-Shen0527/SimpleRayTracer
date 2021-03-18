@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 template<typename T> class Matrix4x4;
 
@@ -20,28 +21,33 @@ struct UnpolarizedT<Matrix4x4<Spectrum>>
 template<typename Spectrum>
 struct SpectrumTrait
 {
-	static constexpr bool polarized = false;
+	using polarized = std::false_type;
+
 };
 
 template<typename Spectrum>
 struct SpectrumTrait<Matrix4x4<Spectrum>>
 {
-	static constexpr bool polarized = true;
+	using polarized = std::true_type;
+
 };
 
 template<typename Spectrum>
-constexpr bool is_polarized_t() { return SpectrumTrait<Spectrum>::polarized; }
+constexpr bool is_polarized_t() { return SpectrumTrait<Spectrum>::polarized::value; }
 
 template<typename Spectrum>
-constexpr bool is_polarized_v(Spectrum spectrum) { return SpectrumTrait<Spectrum>::polarized; }
+bool constexpr is_polarized_v(Spectrum spectrum)
+{
+	return SpectrumTrait<Spectrum>::polarized::value;
+}
 
 template<typename Spectrum>
 using Unpolarize = typename UnpolarizedT<Spectrum>::UnpolarizedType;
 
 template<typename Spectrum>
-Unpolarize<Spectrum> unpolarize_v(const Spectrum& spectrum)
+auto& unpolarize_v(Spectrum& spectrum)
 {
-	if constexpr (is_polarized_v(spectrum))
+	if constexpr (is_polarized_t<Spectrum>())
 	{
 		return spectrum.m[0][0];
 	}

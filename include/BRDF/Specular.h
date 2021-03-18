@@ -40,7 +40,7 @@ private:
 class FresnelSpecular : public BxDF<Spectrum> {
 public:
 	//FresnelSpecular Public Methods 532
-	FresnelSpecular(const Spectrum& R, const Spectrum& T, Float etaA,
+	FresnelSpecular(const UnpolarizedSpectrum& R, const UnpolarizedSpectrum& T, Float etaA,
 		Float etaB, TransportMode mode)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_SPECULAR)),
 		R(R), T(T), etaA(etaA), etaB(etaB), fresnel(etaA, etaB),
@@ -51,7 +51,7 @@ public:
 
 	Spectrum Sample_f(const Vector3f& wo, Vector3f* wi, const Point2f& sample, float* pdf, BxDFType* sampledType = nullptr) const override;
 private:
-	const Spectrum R, T;
+	const UnpolarizedSpectrum R, T;
 	const Float etaA, etaB;
 	const FresnelDielectric fresnel;
 	const TransportMode mode;

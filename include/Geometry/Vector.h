@@ -14,6 +14,15 @@ public:
 		}
 	}
 
+	template<typename U>
+	Vector(const Vector<U,n> &vec)
+	{
+		for (int i = 0; i < n; ++i)
+		{
+			data[i] = vec[i];
+		}
+	}
+	
 	Vector(T x, T y) { data[0] = x; data[1] = y; }
 	Vector(T x, T y, T z) { data[0] = x; data[1] = y; data[2] = z; }
 	Vector(T x, T y, T z, T w) { data[0] = x; data[1] = y; data[2] = z; data[3] = w; }

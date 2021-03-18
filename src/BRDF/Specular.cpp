@@ -89,7 +89,7 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 		/* BSDF weights are Mueller matrices now. */
 		Float cos_theta_i_hat = CosTheta(wi_hat);
 		Spectrum R_mat = specular_reflection(UnpolarizedSpectrum(cos_theta_i_hat), UnpolarizedSpectrum(m_eta)),
-			T_mat = specular_transmission(UnpolarizedSpectrum(cos_theta_i_hat), UnpolarizedSpectrum(m_eta));
+			T_mat = specular_transmission<UnpolarizedSpectrum, Float>(cos_theta_i_hat, m_eta);
 
 		if (has_reflection && has_transmission) {
 			weight = (selected_r ? R_mat : T_mat) * (1 / *pdf);
@@ -119,9 +119,9 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 			weight = weight * absorber(reflectance);
 			if (sampledType)
 				*sampledType = BxDFType(BSDF_SPECULAR | BSDF_REFLECTION);
-			auto ret = R;
-			ret.mueller_spectrum = weight;
-			ret = F * ret / AbsCosTheta(*wi);
+			auto ret = Spectrum(R);
+			ret = ret * weight;
+			ret = ret / AbsCosTheta(*wi) * F;
 			return ret;
 		}
 		else
@@ -133,11 +133,10 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 
 			//Compute ray direction for specular transmission 529
 
-			Spectrum ft = T * (1 - F);
-			ft.mueller_spectrum = weight;
+			Spectrum ft = Spectrum(T * (1 - F)) * weight;
 			//Account for non - symmetry with transmission to different medium 961
 			if (mode == TransportMode::Radiance)
-				ft *= (etaI * etaI) / (etaT * etaT);
+				ft = ft * (etaI * etaI) / (etaT * etaT);
 			if (sampledType)
 				*sampledType = BxDFType(BSDF_SPECULAR | BSDF_TRANSMISSION);
 			ft = ft / AbsCosTheta(*wi);
@@ -161,7 +160,7 @@ Spectrum FresnelSpecular::Sample_f(const Vector3f& wo, Vector3f* wi, const Point
 			Float etaI = entering ? etaA : etaB;
 			Float etaT = entering ? etaB : etaA;
 			if (mode == TransportMode::Radiance)
-				ft *= (etaI * etaI) / (etaT * etaT);
+				ft = ft * (etaI * etaI) / (etaT * etaT);
 			if (sampledType)
 				*sampledType = BxDFType(BSDF_SPECULAR | BSDF_TRANSMISSION);
 			return ft / AbsCosTheta(*wi);

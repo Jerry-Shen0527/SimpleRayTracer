@@ -52,7 +52,19 @@ struct Matrix4x4 {
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j)
 				ret.m[i][j] /= scalar;
+		return ret;
+	}
+	Matrix4x4 operator/=(T scalar)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] /= scalar;
+		return *this;
+	}
 
+	Matrix4x4 operator/(const Matrix4x4& rhs) const
+	{
+		Matrix4x4 ret = *this * Inverse(rhs);
 		return ret;
 	}
 
@@ -123,10 +135,38 @@ struct Matrix4x4 {
 
 	Float y() { return m[0][0].y(); }
 
+	Matrix4x4 Clamp()
+	{
+		Matrix4x4 ret = *this;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				ret.m[i][j].Clamp();
+		return ret;
+	}
+
+	template<typename U>
+	friend std::ostream& operator<<(std::ostream& stream, const Matrix4x4<U>& matrix);
+
 	T m[4][4];
 	template<typename T>
 	friend Matrix4x4 Inverse(const Matrix4x4&);
 };
+
+
+
+template<typename T>
+inline std::ostream& operator<<(std::ostream& stream, const Matrix4x4<T>& matrix)
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			stream << matrix.m[i][j] << std::endl;
+		}
+	}
+	return stream;
+}
+
 template<typename T>
 Matrix4x4<T> operator*(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs)
 {

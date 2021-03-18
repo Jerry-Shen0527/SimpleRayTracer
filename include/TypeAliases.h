@@ -12,4 +12,6 @@
 
 #define IMPORT_TYPES_L3\
 	IMPORT_TYPES_L2\
-	using MediumInterface=MediumInterface<Spectrum>;
+	using MediumInterface=MediumInterface<Spectrum>;	\
+	using LambertianReflection=LambertianReflection<Spectrum>;\
+	using OrenNayar=OrenNayar<Spectrum>;

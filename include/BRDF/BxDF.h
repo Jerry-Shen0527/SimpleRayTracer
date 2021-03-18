@@ -36,7 +36,7 @@ template<typename Spectrum>
 class LambertianReflection : public BxDF<Spectrum> {
 public:
 	//LambertianReflection Public Methods 532
-	LambertianReflection(const UnpolarizedSpectrum& R)
+	LambertianReflection(const Spectrum& R)
 		: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), R(R) { }
 
 	Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
@@ -44,25 +44,13 @@ public:
 	Spectrum rho(int nSamples, const Point2f* samples1, const Point2f* samples2) const override;
 private:
 	//LambertianReflection Private Data 532
-	const UnpolarizedT<Spectrum> R;
+	const Spectrum R;
 };
 
 template<typename Spectrum>
 inline Spectrum LambertianReflection<Spectrum>::f(const Vector3f& wo, const Vector3f& wi) const
 {
-	UnpolarizedSpectrum ret_spectrum = R * InvPi;
-
-	if (is_polarized_t<Spectrum>())
-	{
-		Spectrum ret;
-		ret.m[0][0] = ret_spectrum;
-		ret.m[1][1] = UnpolarizedSpectrum(0);
-		ret.m[2][2] = UnpolarizedSpectrum(0);
-		ret.m[3][3] = UnpolarizedSpectrum(0);
-	}
-	else {
-		return ret_spectrum;
-	}
+	return R;
 }
 
 template<typename Spectrum>

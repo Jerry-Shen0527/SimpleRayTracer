@@ -71,8 +71,8 @@ void GlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
 	Float eta = index->Evaluate(*si);
 	Float urough = uRoughness->Evaluate(*si);
 	Float vrough = vRoughness->Evaluate(*si);
-	Spectrum R = Kr->Evaluate(*si).Clamp();
-	Spectrum T = Kt->Evaluate(*si).Clamp();
+	UnpolarizedSpectrum R = Kr->Evaluate(*si).Clamp();
+	UnpolarizedSpectrum T = Kt->Evaluate(*si).Clamp();
 	// Initialize _bsdf_ for smooth or rough dielectric
 	si->bsdf = ARENA_ALLOC(arena, BSDF)(*si, eta);
 
@@ -120,7 +120,7 @@ void PhysicalGlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
 
 	for (int i = 1; i < nSpectralSamples + 1; ++i)
 	{
-		beta_accumulate[i] = beta_accumulate[i - 1] + spectrum[i - 1];
+		beta_accumulate[i] = beta_accumulate[i - 1] + unpolarize_v(spectrum)[i - 1];
 	}
 
 	auto beta_sum = beta_accumulate[nSpectralSamples];
@@ -145,8 +145,8 @@ void PhysicalGlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
 
 	for (int i = index; i < index + lambda_group; ++i)
 	{
-		R[i] = 1.0f / beta_part * beta_sum;
-		T[i] = 1.0f / beta_part * beta_sum;
+		unpolarize_v(R)[i] = 1.0f / beta_part * beta_sum;
+		unpolarize_v(T)[i] = 1.0f / beta_part * beta_sum;
 	}
 	index = index + (lambda_group - 1) / 2;
 
@@ -155,13 +155,13 @@ void PhysicalGlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
 	R *= Kr->Evaluate(*si).Clamp();
 	T *= Kt->Evaluate(*si).Clamp();
 	// Initialize _bsdf_ for smooth or rough dielectric
-	si->bsdf = ARENA_ALLOC(arena, BSDF)(*si, eta[index]);
+	si->bsdf = ARENA_ALLOC(arena, BSDF)(*si, unpolarize_v(eta)[index]);
 
 	if (R.IsBlack() && T.IsBlack()) return;
 
 	bool isSpecular = urough == 0 && vrough == 0;
 	if (isSpecular && allowMultipleLobes) {
-		si->bsdf->Add(ARENA_ALLOC(arena, FresnelSpecular)(R, T, 1.f, eta[index], mode));
+		si->bsdf->Add(ARENA_ALLOC(arena, FresnelSpecular)(R, T, 1.f, unpolarize_v(eta)[index], mode));
 	}
 	else {
 		if (remapRoughness) {
@@ -172,7 +172,7 @@ void PhysicalGlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
 			isSpecular ? nullptr
 			: ARENA_ALLOC(arena, TrowbridgeReitzDistribution)(urough, vrough);
 		if (!R.IsBlack()) {
-			Fresnel* fresnel = ARENA_ALLOC(arena, FresnelDielectric)(1.f, eta[index]);
+			Fresnel* fresnel = ARENA_ALLOC(arena, FresnelDielectric)(1.f, unpolarize_v(eta)[index]);
 			if (isSpecular)
 				si->bsdf->Add(
 					ARENA_ALLOC(arena, SpecularReflection)(R, fresnel));
@@ -181,14 +181,14 @@ void PhysicalGlassMaterial::ComputeScatteringFunctions(const Spectrum& spectrum,
 		}
 		if (!T.IsBlack()) {
 			if (isSpecular)
-				si->bsdf->Add(ARENA_ALLOC(arena, SpecularTransmission)(T, 1.f, eta[index], mode));
+				si->bsdf->Add(ARENA_ALLOC(arena, SpecularTransmission)(T, 1.f, unpolarize_v(eta)[index], mode));
 			else
-				si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetTransmission)(T, distrib, 1.f, eta[index], mode));
+				si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetTransmission)(T, distrib, 1.f, unpolarize_v(eta)[index], mode));
 		}
 	}
 }
 
-MetalMaterial::MetalMaterial(const std::shared_ptr<Texture<Spectrum>>& eta, const std::shared_ptr<Texture<Spectrum>>& k,
+MetalMaterial::MetalMaterial(const std::shared_ptr<Texture<UnpolarizedSpectrum>>& eta, const std::shared_ptr<Texture<UnpolarizedSpectrum>>& k,
 	const std::shared_ptr<Texture<Float>>& rough, const std::shared_ptr<Texture<Float>>& urough,
 	const std::shared_ptr<Texture<Float>>& vrough, const std::shared_ptr<Texture<Float>>& bump, bool remapRoughness)
 	: eta(eta), k(k), roughness(rough), uRoughness(urough), vRoughness(vrough), bumpMap(bump), remapRoughness(remapRoughness) {}
@@ -207,8 +207,8 @@ void MetalMaterial::ComputeScatteringFunctions(const Spectrum& spectrum, Surface
 		uRough = TrowbridgeReitzDistribution::RoughnessToAlpha(uRough);
 		vRough = TrowbridgeReitzDistribution::RoughnessToAlpha(vRough);
 	}
-	Fresnel* frMf = ARENA_ALLOC(arena, FresnelConductor)(1., eta->Evaluate(*si), k->Evaluate(*si));
+	Fresnel* frMf = ARENA_ALLOC(arena, FresnelConductor)(Spectrum(1.), eta->Evaluate(*si), k->Evaluate(*si));
 	MicrofacetDistribution* distrib =
 		ARENA_ALLOC(arena, TrowbridgeReitzDistribution)(uRough, vRough);
-	si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetReflection)(1., distrib, frMf,mode));
+	si->bsdf->Add(ARENA_ALLOC(arena, MicrofacetReflection)(Spectrum(1.), distrib, frMf, mode));
 }

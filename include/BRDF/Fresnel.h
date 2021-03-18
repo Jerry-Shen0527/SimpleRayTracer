@@ -15,10 +15,10 @@ inline Spectrum FrDielectric(Float cosThetaI, Spectrum etaI, Spectrum etaT) {
 		cosThetaI = std::abs(cosThetaI);
 	}
 
-	Spectrum sinThetaI = std::sqrt(std::max((Spectrum)0, 1 - cosThetaI * cosThetaI));
-	Spectrum sinThetaT = etaI / etaT * sinThetaI;
+	Float sinThetaI = std::sqrt(std::max(Float(0), 1 - cosThetaI * cosThetaI));
+	Float sinThetaT = etaI / etaT * sinThetaI;
 
-	Spectrum cosThetaT = std::sqrt(std::max((Spectrum)0, 1 - sinThetaT * sinThetaT));
+	Float cosThetaT = std::sqrt(std::max((Spectrum)0, 1 - sinThetaT * sinThetaT));
 
 	if (sinThetaT >= 1)
 		return 1;
@@ -38,6 +38,7 @@ template<typename Spectrum>
 inline Spectrum FrConductor(Float cosThetaI, const Spectrum& etaI, const Spectrum& etaT, const Spectrum& k)
 {
 	cosThetaI = Clamp(cosThetaI, -1, 1);
+
 	Spectrum eta = etaT / etaI;
 	Spectrum etak = k / etaI;
 
@@ -53,7 +54,7 @@ inline Spectrum FrConductor(Float cosThetaI, const Spectrum& etaI, const Spectru
 	Spectrum t2 = (Float)2 * cosThetaI * a;
 	Spectrum Rs = (t1 - t2) / (t1 + t2);
 
-	Spectrum t3 = cosThetaI2 * a2plusb2 + sinThetaI2 * sinThetaI2;
+	Float t3 = a2plusb2 * cosThetaI2 + sinThetaI2 * sinThetaI2;
 	Spectrum t4 = t2 * sinThetaI2;
 	Spectrum Rp = Rs * (t3 - t4) / (t3 + t4);
 

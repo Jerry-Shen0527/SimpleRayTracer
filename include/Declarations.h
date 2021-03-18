@@ -14,3 +14,5 @@ class SampledSpectrum;
 
 template<typename Spectrum> class BSDF;
 template<typename Spectrum> class BxDF;
+template<typename Spectrum> class LambertianReflection;
+template<typename Spectrum> class OrenNayar;

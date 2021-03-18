@@ -116,7 +116,6 @@ inline Spectrum BSDF<Spectrum>::Sample_f(const Vector3f& woWorld, Vector3f* wiWo
 	auto sampled_f = bxdf->Sample_f(wo, &wi, uRemapped, pdf, sampledType);
 
 	Spectrum f = sampled_f;
-	f.mueller_spectrum = sampled_f.mueller_spectrum;
 
 	if (*pdf == 0) {
 		if (sampledType) *sampledType = BxDFType(0);
@@ -142,7 +141,6 @@ inline Spectrum BSDF<Spectrum>::Sample_f(const Vector3f& woWorld, Vector3f* wiWo
 			{
 				auto sampled_f = bxdfs[i]->f(wo, wi);
 				f += sampled_f;
-				f.mueller_spectrum = sampled_f.mueller_spectrum;
 			}
 	}
 	return f;

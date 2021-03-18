@@ -22,11 +22,20 @@ public:
 		}
 	}
 
+	CoefficientSpectrum(const CoefficientSpectrum& spectrum)
+	{
+		for (int i = 0; i < nSamples; ++i)
+		{
+			c[i] = spectrum.c[i];
+		}
+	}
+
 	CoefficientSpectrum& operator+=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum operator+(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum& operator-=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum operator-(const CoefficientSpectrum& s2) const;
 	CoefficientSpectrum& operator*=(const CoefficientSpectrum& s2);
+	CoefficientSpectrum& operator/=(const CoefficientSpectrum& s2);
 	CoefficientSpectrum& operator*=(Float f);
 	CoefficientSpectrum& operator/=(Float f);
 	CoefficientSpectrum operator*(const CoefficientSpectrum& s2) const;
@@ -50,9 +59,21 @@ public:
 	template <int nSamples> friend CoefficientSpectrum<nSamples> Pow(const CoefficientSpectrum<nSamples>& s, Float x);
 	template <int nSamples> friend CoefficientSpectrum<nSamples> operator*(Float x, const CoefficientSpectrum<nSamples>& s);
 
+	template<int nSamples>
+	friend std::ostream& operator<<(std::ostream& stream, const CoefficientSpectrum<nSamples>& spectrum);
+
 protected:
 	Float c[nSamples];
 };
+template<int nSamples>
+inline std::ostream& operator<<(std::ostream& stream, const CoefficientSpectrum<nSamples>& spectrum)
+{
+	for (int i = 0; i < nSamples; ++i)
+	{
+		stream << spectrum[i] << ' ';
+	}
+	return stream;
+}
 
 template <int nSamples>
 CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator+=(const CoefficientSpectrum& s2)
@@ -103,6 +124,16 @@ CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator*=(const C
 	for (int i = 0; i < nSamples; ++i)
 	{
 		c[i] *= s2.c[i];
+	}
+	return *this;
+}
+
+template <int nSamples>
+CoefficientSpectrum<nSamples>& CoefficientSpectrum<nSamples>::operator/=(const CoefficientSpectrum& s2)
+{
+	for (int i = 0; i < nSamples; ++i)
+	{
+		c[i] /= s2.c[i];
 	}
 	return *this;
 }

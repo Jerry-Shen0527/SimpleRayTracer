@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <BRDF/BxDF_Utility.h>
 
 #include "ray.h"

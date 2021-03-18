@@ -7,10 +7,10 @@
 class Ray {
 public:
 	IMPORT_TYPES_L2
-	
-	Ray() {}
 
-	Ray(const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float time = 0.f, const Medium* medium = nullptr)		: o(o), d(d), tMax(tMax), time(time), medium(medium) { }
+		Ray() {}
+
+	Ray(const Point3f& o, const Vector3f& d, Float tMax = Infinity, Float time = 0.f, const Medium* medium = nullptr) : o(o), d(d), tMax(tMax), time(time), medium(medium) { }
 
 	Point3f operator()(Float t) const { return o + d * t; }
 
@@ -27,6 +27,8 @@ public:
 	mutable Float tMax;
 	Vector3f d;
 	const Medium* medium;
+
+	Vector3f auxiliary_axis = Vector3f(0, 1, 0);
 };
 
 inline Point3f OffsetRayOrigin(const Point3f& p, const Vector3f& pError, const Normal3f& n, const Vector3f& w) {

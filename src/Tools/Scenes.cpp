@@ -268,7 +268,7 @@ Scene CreateCornellWithBalls(MemoryArena& arena)
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
 	auto green_material = make_shared<MatteMaterial>(Green, Zero, nullptr);
 
-	auto One = make_shared<ConstantTexture<Spectrum>>(Spectrum(1.0));
+	auto One = make_shared<ConstantTexture<UnpolarizedSpectrum>>(1.0);
 	auto glass_material = make_shared<GlassMaterial>(One, One, make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<Float>>(1.5), nullptr, true);
 
 	vector<shared_ptr<Light>> lights;
@@ -464,7 +464,7 @@ Scene CreateCornellPolarized(MemoryArena& arena)
 	auto white_material = make_shared<MatteMaterial>(White, Zero, nullptr);
 	auto green_material = make_shared<MatteMaterial>(Green, Zero, nullptr);
 
-	auto One = make_shared<ConstantTexture<Spectrum>>(Spectrum(1.0));
+	auto One = make_shared<ConstantTexture<UnpolarizedSpectrum>>(1.0);
 	auto glass_material = make_shared<GlassMaterial>(One, One, make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<float>>(0), make_shared<ConstantTexture<Float>>(1.5), nullptr, true);
 
 	vector<shared_ptr<Light>> lights;

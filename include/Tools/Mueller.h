@@ -114,26 +114,26 @@ inline MuellerMatrix<T> specular_reflection(T cos_theta_i, Eta eta) {
 		0, 0, -c * sin_delta, c * cos_delta
 	);
 }
-template<typename Float, typename Eta>
-inline MuellerMatrix<Float> specular_transmission(Float cos_theta_i, Float eta) {
-	std::complex<Float> a_s, a_p;
-	Float cos_theta_t, eta_it, eta_ti;
+template<typename Spectrum, typename Eta>
+inline MuellerMatrix<Spectrum> specular_transmission(Float cos_theta_i, Eta eta) {
+	std::complex<Spectrum> a_s, a_p;
+	Spectrum cos_theta_t, eta_it, eta_ti;
 
 	std::tie(a_s, a_p, cos_theta_t, eta_it, eta_ti) =
 		fresnel_polarized(cos_theta_i, eta);
 
 	// Unit conversion factor
-	Float factor = -eta_it * (abs(cos_theta_i) > 1e-8f ? cos_theta_t / cos_theta_i : 0.f);
+	Spectrum factor = -eta_it * (abs(cos_theta_i) > 1e-8f ? cos_theta_t / cos_theta_i : 0.f);
 
 	// Compute transmission amplitudes
-	Float a_s_r = real(a_s) + 1.f,
+	Spectrum a_s_r = real(a_s) + 1.f,
 		a_p_r = (1.f - real(a_p)) * eta_ti;
 
-	Float t_s = a_s_r * a_s_r;
-	Float t_p = a_p_r * a_p_r;
-	Float a = .5f * factor * (t_s + t_p);
-	Float b = .5f * factor * (t_s - t_p);
-	Float c = factor * sqrt(t_s * t_p);
+	Spectrum t_s = a_s_r * a_s_r;
+	Spectrum t_p = a_p_r * a_p_r;
+	Spectrum a = .5f * factor * (t_s + t_p);
+	Spectrum b = .5f * factor * (t_s - t_p);
+	Spectrum c = factor * sqrt(t_s * t_p);
 
 	return MuellerMatrix(
 		a, b, 0, 0,
@@ -159,11 +159,11 @@ inline Vector3f stokes_basis(const Vector3f& w) {
 }
 
 template<typename T>
-inline MuellerMatrix<T> absorber(Float value) {
+inline MuellerMatrix<T> absorber(T value) {
 	return MuellerMatrix<T>(
 		value, 0, 0, 0,
 		0, value, 0, 0,
 		0, 0, value, 0,
 		0, 0, 0, value
-	);
+		);
 }
